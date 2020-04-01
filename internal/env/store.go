@@ -23,7 +23,7 @@ type Redis struct {
 }
 
 func newStore(ctx context.Context, conf config.Store) (*Store, error) {
-	postgresEnv, err := newPostgres(ctx, conf.Mongo)
+	postgresEnv, err := newPostgres(ctx, conf.Postgres)
 	if err != nil {
 		return nil, err
 	}

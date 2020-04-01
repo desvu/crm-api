@@ -9,8 +9,8 @@ type Config struct {
 }
 
 type Store struct {
-	Mongo PostgresConf `envconfig:"POSTGRES"`
-	Redis RedisConf    `envconfig:"REDIS"`
+	Postgres PostgresConf `envconfig:"POSTGRES"`
+	Redis    RedisConf    `envconfig:"REDIS"`
 }
 
 type PostgresConf struct {
