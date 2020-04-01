@@ -25,6 +25,8 @@ services:
       - QILIN_STORE_POSTGRES_HOST=postgres
       - QILIN_STORE_POSTGRES_PORT=5432
       - QILIN_STORE_POSTGRES_USER=user
+      - QILIN_STORE_POSTGRES_PASSWORD=password
+      - QILIN_STORE_POSTGRES_DATABASE=crm
 
 volumes:
   crm-postgres:
