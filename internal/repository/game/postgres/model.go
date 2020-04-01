@@ -30,7 +30,7 @@ func (m model) Convert() *entity.Game {
 		License:     m.License,
 		Ranking:     m.Ranking,
 		Type:        game.NewType(m.Type),
-		Platforms:   game.NewPlatformArray(m.Platforms),
+		Platforms:   game.NewPlatformArray(m.Platforms...),
 		ReleaseDate: m.ReleaseDate,
 	}
 }
