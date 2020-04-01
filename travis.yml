@@ -1,0 +1,24 @@
+language: go
+sudo: false
+go:
+  - 1.13.x
+
+cache:
+  directories:
+    - $GOPATH/pkg/mod
+
+stages:
+  - test
+
+jobs:
+  include:
+    - stage: test
+      script:
+        - go test --tags=integration ./... -coverprofile=coverage.out -covermode=atomic -p=1
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email: false
+  slack:
+    secure: UViqMku6a56CQYktC7q5ewDbH6Q0IlnaDEgaPGIm8JNmuYAmskfT8o41erOFy5V5IMvvd+L7xYg9A/5wd/pxQ3Yela6KdzymXN49bR+ZfyESspL30nkff6hs1DRBdXaGKS0y47i7C5c1VwYJZAlj1l+e/NPOyXgXSSVZsrqlL2FQmuP5vza0ACTkXxAuJ+qn59P/r0825qTbC6ZM9v/z/vpG8zjLc3jyUMkm7VZ74aV6c4jqyi8C/fbRs2OeBwDsnjf/GM222tMYyAjzyu+l/9O4I4RDljcTsDl5QgH6FpTK4/09d7cyTcyceCCmze/9dlOww/ARCb6Tyrj2bcXd89n58sUM1CJooIIL1HzvhA9xHmSwNifkWifql95HnqEJbNfYe1MhJB3llt/cNIzQreiNCmWdNSBcFaYqpnHF8GXYbhEbNCwnBhTsOihSUWe5crEhBgOYqqqUrnOcLXVytvgQSluW+d/krH/ngPEIiScSG3pmzV+JX6Z85bb8XXXJZ8zTa14y6VD7w8zFg3jLhuCDCzov2rT0kJN+fwxCBn8OD57tVLqGoVdNSbvcfa2mLdeHGTiS/MDK4SAuIwfI0SvHML3e1lm6tgXLZeuI4Qk3nFRbKWEV3gwGlUax55PHuxEG8urnb/QgZD8K26/kc0tjzmmtWCeJY3LtaYmYa4I=

@@ -35,26 +35,6 @@ func main() {
 	srv.Any("/api/graphql/client", echo.WrapHandler(graphql.Playground("/api/graphql")))
 	srv.Any("/api/graphql", echo.WrapHandler(graphql.NewHandler(gqlResolver)))
 
-	// for {
-	// 	g, err := gameService.Create(ctx, &service.CreateGameData{
-	// 		Title:       "title",
-	// 		Summary:     "summary",
-	// 		Description: "description",
-	// 		License:     "license",
-	// 		Ranking:     "ranking",
-	// 		Type:        game.TypeDesktop,
-	// 		Platforms:   game.NewPlatformArray([]uint8{1, 2, 3}),
-	// 		ReleaseDate: time.Now(),
-	// 	})
-	// 	if err != nil {
-	// 		srv.Logger.Fatal(err)
-	// 	}
-
-	// 	srv.Logger.Print(g)
-	// 	time.Sleep(time.Second * 5)
-	// }
-
-	//e.POST("/users", userHandler.Create)
 	if err = srv.Start(":8080"); err != nil {
 		srv.Logger.Fatal(err)
 	}
