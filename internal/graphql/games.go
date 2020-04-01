@@ -31,7 +31,7 @@ func (r *mutationResolver) CreateGame(ctx context.Context, title string) (*Game,
 		License:     "qqq",
 		Ranking:     "rrr",
 		Type:        game.TypeDesktop,
-		Platforms:   game.NewPlatformArray([]uint8{1, 2, 3}),
+		Platforms:   []game.Platform{game.PlatformWindows, game.PlatformWeb},
 		ReleaseDate: time.Now(),
 	})
 	if err != nil {

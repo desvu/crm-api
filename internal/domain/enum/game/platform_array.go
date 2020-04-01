@@ -1,12 +1,9 @@
 package game
 
-type PlatformArray struct {
-	len   int
-	items []Platform
-}
+type PlatformArray []Platform
 
-func NewPlatformArray(v []uint8) PlatformArray {
-	source := PlatformArray{}
+func NewPlatformArray(v ...uint8) PlatformArray {
+	source := make(PlatformArray, 0, len(v))
 
 	for i := range v {
 		source.Add(NewPlatform(v[i]))
@@ -20,20 +17,18 @@ func (p *PlatformArray) Add(v Platform) {
 		return
 	}
 
-	for i := range p.items {
-		if (*p).items[i] == v {
+	for _, platform := range *p {
+		if platform == v {
 			return
 		}
 	}
-
-	p.len++
-	p.items = append(p.items, v)
+	*p = append(*p, v)
 }
 
-func (p *PlatformArray) Values() []uint8 {
-	source := make([]uint8, p.len)
-	for i := range p.items {
-		source[i] = p.items[i].Value()
+func (p PlatformArray) Values() []uint8 {
+	source := make([]uint8, len(p))
+	for i, platform := range p {
+		source[i] = platform.Value()
 	}
 
 	return source
