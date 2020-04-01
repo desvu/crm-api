@@ -1,0 +1,142 @@
+# Products
+
+# Game represents game object
+type Game {
+
+	# unique id
+	id: ID!
+
+	# game type
+	type: GameType!
+
+	# user- and SEO-friendly short text used in a URL
+	slug: String!
+
+	title: String!
+	summary: [LString!]
+	description: [LString!]
+
+	developers: [Developer!]
+	publishers: [Publisher!]
+	# Release Date in ISO 8601 UTC
+	releaseDate: String
+	# License line
+	license: String
+
+	# Age ranking: 17+
+	ranking: String
+
+	genres: [Genre!]
+	tags: [Tag!]
+	features: [Feature!]
+	languages: [Language!]
+
+	platforms: [Platform!]!
+	requirements: [SystemRequirements!]!
+
+	media: Media!
+
+	# Critics
+	reviews: Reviews
+	# Age ratings PEGI, ESRB, etc
+	ratings: [Rating!]
+
+
+	pricing: Pricing
+}
+
+type LString {
+	locale: String
+	value: String
+}
+
+type Pricing {
+	price: Float
+	currency: String
+	discount: Int
+}
+
+type Rating {
+	agency: String!
+}
+
+type Reviews {
+	score: Int
+	review: [Review!]
+}
+
+type Review {
+	# date: String
+	url: String
+	score: Int
+	quote: String
+    pressName: String
+    author: String
+ }
+
+type Feature {
+	name: String!
+}
+
+type Genre {
+	name: String!
+}
+
+type Tag {
+	name: String!
+}
+
+type Developer {
+	name: String!
+}
+
+type Publisher {
+	name: String!
+}
+
+enum GameType {
+	Web
+	Desktop
+}
+
+enum Platform {
+	Linux
+	MacOS
+	Windows
+	Web
+}
+
+type Language {
+	language: String!
+	interface: Boolean!
+	audio: Boolean!
+	subtitles: Boolean!
+}
+
+type SystemRequirements {
+	platform: String!
+	minimal: RequirementsSet
+	recommended: RequirementsSet
+}
+
+type RequirementsSet {
+	cpu: String
+	diskSpace: String
+	gpu: String
+	os: String
+	ram: String
+}
+
+type Media {
+	screenshots: [Image!]!
+	trailers: [Video!]!
+}
+
+
+type Image {
+	url: String!
+}
+
+type Video {
+	url: String!
+}
