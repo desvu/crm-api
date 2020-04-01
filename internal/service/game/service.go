@@ -7,10 +7,6 @@ import (
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
-type Service struct {
-	ServiceParams
-}
-
 func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*entity.Game, error) {
 	gm := &entity.Game{
 		Title:       data.Title,

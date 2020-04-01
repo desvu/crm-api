@@ -5,7 +5,6 @@ import (
 
 	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
-	"github.com/qilin/crm-api/internal/domain/repository"
 	"github.com/qilin/crm-api/internal/env"
 )
 
@@ -13,7 +12,7 @@ type GameRepository struct {
 	conn *pg.DB
 }
 
-func New(env *env.Postgres) repository.IGameRepository {
+func New(env *env.Postgres) GameRepository {
 	return GameRepository{conn: env.Conn}
 }
 
