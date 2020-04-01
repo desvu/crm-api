@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	"strconv"
+	"time"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/game"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
@@ -23,7 +25,14 @@ func (r *queryResolver) Game(ctx context.Context, id string) (*Game, error) {
 // CreateGame creates new game in db
 func (r *mutationResolver) CreateGame(ctx context.Context, title string) (*Game, error) {
 	g, err := r.games.Create(ctx, &service.CreateGameData{
-		Title: title,
+		Title:       title,
+		Summary:     "xxx",
+		Description: "zzz",
+		License:     "qqq",
+		Ranking:     "rrr",
+		Type:        game.TypeDesktop,
+		Platforms:   game.NewPlatformArray([]uint8{1, 2, 3}),
+		ReleaseDate: time.Now(),
 	})
 	if err != nil {
 		return nil, err

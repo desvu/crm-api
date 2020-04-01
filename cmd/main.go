@@ -32,7 +32,8 @@ func main() {
 
 	// register graphql api handlers
 	gqlResolver := graphql.NewResolver(gameService)
-	srv.Any("/graphql", echo.WrapHandler(graphql.NewHandler(gqlResolver)))
+	srv.Any("/api/graphql/client", echo.WrapHandler(graphql.Playground("/api/graphql")))
+	srv.Any("/api/graphql", echo.WrapHandler(graphql.NewHandler(gqlResolver)))
 
 	// for {
 	// 	g, err := gameService.Create(ctx, &service.CreateGameData{

@@ -6,8 +6,14 @@ import (
 	"github.com/99designs/gqlgen/handler"
 )
 
-func NewHandler(resolver *Resolver) http.HandlerFunc {
-	options := []handler.Option{}
+func Playground(endpoint string) http.Handler {
+	return handler.Playground("local", endpoint)
+}
+
+func NewHandler(resolver *Resolver) http.Handler {
+	options := []handler.Option{
+		handler.IntrospectionEnabled(true),
+	}
 
 	cfg := Config{
 		Resolvers: resolver,
