@@ -1,4 +1,4 @@
-package game
+package tag
 
 import (
 	"github.com/qilin/crm-api/internal/domain/repository"
@@ -6,8 +6,9 @@ import (
 )
 
 type ServiceParams struct {
-	TagService     service.TagService
-	GameRepository repository.IGameRepository
+	GameService       service.IGameService
+	TagRepository     repository.TagRepository
+	GameTagRepository repository.GameTagRepository
 }
 
 func New(params ServiceParams) *Service {

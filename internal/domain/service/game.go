@@ -9,6 +9,7 @@ import (
 	"github.com/qilin/crm-api/internal/domain/entity"
 )
 
+//go:generate mockgen -destination=../mocks/game_service.go -package=mocks github.com/qilin/crm-api/internal/domain/service IGameService
 type IGameService interface {
 	Create(ctx context.Context, data *CreateGameData) (*entity.Game, error)
 	Update(ctx context.Context, data *UpdateGameData) (*entity.Game, error)
@@ -16,6 +17,7 @@ type IGameService interface {
 	Publish(ctx context.Context, id uint) error
 
 	GetByID(ctx context.Context, id uint) (*entity.Game, error)
+	GetExistByID(ctx context.Context, id uint) (*entity.Game, error)
 }
 
 type CreateGameData struct {
@@ -31,5 +33,5 @@ type CreateGameData struct {
 
 type UpdateGameData struct {
 	ID    uint
-	Title *string
+	Title string
 }
