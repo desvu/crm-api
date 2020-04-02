@@ -10,6 +10,8 @@ import (
 type gameConverter struct {
 }
 
+var ISO8601Extended = "2006-01-02T15:04:05.000Z"
+
 func (c gameConverter) convertGame(g *entity.Game) *Game {
 	return &Game{
 		ID:          strconv.FormatUint(uint64(g.ID), 10),
@@ -20,7 +22,7 @@ func (c gameConverter) convertGame(g *entity.Game) *Game {
 		License:     g.License,
 		Ranking:     g.Ranking,
 		Platforms:   c.convertPlatforms(g.Platforms...),
-		ReleaseDate: g.ReleaseDate.String(),
+		ReleaseDate: g.ReleaseDate.Format(ISO8601Extended),
 	}
 }
 

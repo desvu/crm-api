@@ -8,8 +8,7 @@ import (
 
 type IGameRepository interface {
 	Create(ctx context.Context, i *entity.Game) error
-	//Update(ctx context.Context, i *entity.Game) error
-	//Delete(ctx context.Context, i *entity.Game) error
-
+	Update(ctx context.Context, i *entity.Game) error
+	Delete(ctx context.Context, id uint) error
 	FindByID(ctx context.Context, id uint) (*entity.Game, error)
 }

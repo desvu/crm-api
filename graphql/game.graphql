@@ -18,7 +18,7 @@ type Game {
 
 	developers: [Developer!]
 	publishers: [Publisher!]
-	# Release Date in ISO 8601 UTC
+	# Release Date in ISO 8601 Extended UTC
 	releaseDate: String!
 	# License line
 	license: String!
