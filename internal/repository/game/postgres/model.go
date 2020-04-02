@@ -9,14 +9,14 @@ import (
 
 type model struct {
 	ID          uint      `pg:"id"`
-	Title       string    `pg:"title"`
-	Summary     string    `pg:"summary"`
-	Description string    `pg:"description"`
-	License     string    `pg:"license"`
-	Ranking     string    `pg:"ranking"`
-	Type        uint8     `pg:"type"`
-	Platforms   []uint8   `pg:"platforms,array"`
-	ReleaseDate time.Time `pg:"release_date"`
+	Title       string    `pg:"title,notnull,use_zero"`
+	Summary     string    `pg:"summary,notnull,use_zero"`
+	Description string    `pg:"description,notnull,use_zero"`
+	License     string    `pg:"license,notnull,use_zero"`
+	Ranking     string    `pg:"ranking,notnull,use_zero"`
+	Type        uint8     `pg:"type,notnull,use_zero"`
+	Platforms   []uint8   `pg:"platforms,array,notnull,use_zero"`
+	ReleaseDate time.Time `pg:"release_date,notnull,use_zero"`
 
 	tableName struct{} `pg:"games"`
 }

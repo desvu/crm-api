@@ -34,19 +34,29 @@ func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*ent
 }
 
 func (s Service) Update(ctx context.Context, data *service.UpdateGameData) (*entity.Game, error) {
-	panic("implement me")
+	gm, err := s.GameRepository.FindByID(ctx, data.ID)
+	if err != nil {
+		return nil, err
+	}
+	gm.Title = data.Title
+	err = s.GameRepository.Update(ctx, gm)
+	return gm, err
 }
 
 func (s Service) Delete(ctx context.Context, id uint) error {
-	panic("implement me")
+	game, err := s.GetByID(ctx, id)
+	if err != nil {
+		return err
+	}
+	return s.GameRepository.Delete(ctx, game)
 }
 
 func (s Service) Publish(ctx context.Context, id uint) error {
-	panic("implement me")
+	panic("implement me") // TODO
 }
 
 func (s Service) GetByID(ctx context.Context, id uint) (*entity.Game, error) {
-	panic("implement me")
+	return s.GameRepository.FindByID(ctx, id)
 }
 
 func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Game, error) {

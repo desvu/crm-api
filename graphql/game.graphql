@@ -13,18 +13,18 @@ type Game {
 	slug: String!
 
 	title: String!
-	summary: [LString!]
-	description: [LString!]
+	summary: String!
+	description: String!
 
 	developers: [Developer!]
 	publishers: [Publisher!]
-	# Release Date in ISO 8601 UTC
-	releaseDate: String
+	# Release Date in ISO 8601 Extended UTC
+	releaseDate: String!
 	# License line
-	license: String
+	license: String!
 
 	# Age ranking: 17+
-	ranking: String
+	ranking: String!
 
 	genres: [Genre!]
 	tags: [Tag!]

@@ -21,13 +21,13 @@ type Game struct {
 	Type         GameType              `json:"type"`
 	Slug         string                `json:"slug"`
 	Title        string                `json:"title"`
-	Summary      []*LString            `json:"summary"`
-	Description  []*LString            `json:"description"`
+	Summary      string                `json:"summary"`
+	Description  string                `json:"description"`
 	Developers   []*Developer          `json:"developers"`
 	Publishers   []*Publisher          `json:"publishers"`
-	ReleaseDate  *string               `json:"releaseDate"`
-	License      *string               `json:"license"`
-	Ranking      *string               `json:"ranking"`
+	ReleaseDate  string                `json:"releaseDate"`
+	License      string                `json:"license"`
+	Ranking      string                `json:"ranking"`
 	Genres       []*Genre              `json:"genres"`
 	Tags         []*Tag                `json:"tags"`
 	Features     []*Feature            `json:"features"`
