@@ -704,18 +704,18 @@ type Game {
 	slug: String!
 
 	title: String!
-	summary: [LString!]
-	description: [LString!]
+	summary: String!
+	description: String!
 
 	developers: [Developer!]
 	publishers: [Publisher!]
 	# Release Date in ISO 8601 UTC
-	releaseDate: String
+	releaseDate: String!
 	# License line
-	license: String
+	license: String!
 
 	# Age ranking: 17+
-	ranking: String
+	ranking: String!
 
 	genres: [Genre!]
 	tags: [Tag!]
@@ -1194,11 +1194,14 @@ func (ec *executionContext) _Game_summary(ctx context.Context, field graphql.Col
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]*LString)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOLString2ᚕᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋgraphqlᚐLStringᚄ(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Game_description(ctx context.Context, field graphql.CollectedField, obj *Game) (ret graphql.Marshaler) {
@@ -1225,11 +1228,14 @@ func (ec *executionContext) _Game_description(ctx context.Context, field graphql
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]*LString)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOLString2ᚕᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋgraphqlᚐLStringᚄ(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Game_developers(ctx context.Context, field graphql.CollectedField, obj *Game) (ret graphql.Marshaler) {
@@ -1318,11 +1324,14 @@ func (ec *executionContext) _Game_releaseDate(ctx context.Context, field graphql
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Game_license(ctx context.Context, field graphql.CollectedField, obj *Game) (ret graphql.Marshaler) {
@@ -1349,11 +1358,14 @@ func (ec *executionContext) _Game_license(ctx context.Context, field graphql.Col
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Game_ranking(ctx context.Context, field graphql.CollectedField, obj *Game) (ret graphql.Marshaler) {
@@ -1380,11 +1392,14 @@ func (ec *executionContext) _Game_ranking(ctx context.Context, field graphql.Col
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Game_genres(ctx context.Context, field graphql.CollectedField, obj *Game) (ret graphql.Marshaler) {
@@ -4145,18 +4160,33 @@ func (ec *executionContext) _Game(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "summary":
 			out.Values[i] = ec._Game_summary(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "description":
 			out.Values[i] = ec._Game_description(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "developers":
 			out.Values[i] = ec._Game_developers(ctx, field, obj)
 		case "publishers":
 			out.Values[i] = ec._Game_publishers(ctx, field, obj)
 		case "releaseDate":
 			out.Values[i] = ec._Game_releaseDate(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "license":
 			out.Values[i] = ec._Game_license(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "ranking":
 			out.Values[i] = ec._Game_ranking(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "genres":
 			out.Values[i] = ec._Game_genres(ctx, field, obj)
 		case "tags":
@@ -5124,20 +5154,6 @@ func (ec *executionContext) marshalNImage2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋ
 	return ec._Image(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNLString2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋgraphqlᚐLString(ctx context.Context, sel ast.SelectionSet, v LString) graphql.Marshaler {
-	return ec._LString(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNLString2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋgraphqlᚐLString(ctx context.Context, sel ast.SelectionSet, v *LString) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	return ec._LString(ctx, sel, v)
-}
-
 func (ec *executionContext) marshalNLanguage2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋgraphqlᚐLanguage(ctx context.Context, sel ast.SelectionSet, v Language) graphql.Marshaler {
 	return ec._Language(ctx, sel, &v)
 }
@@ -5828,46 +5844,6 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 		return graphql.Null
 	}
 	return ec.marshalOInt2int(ctx, sel, *v)
-}
-
-func (ec *executionContext) marshalOLString2ᚕᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋgraphqlᚐLStringᚄ(ctx context.Context, sel ast.SelectionSet, v []*LString) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNLString2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋgraphqlᚐLString(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-	return ret
 }
 
 func (ec *executionContext) marshalOLanguage2ᚕᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋgraphqlᚐLanguageᚄ(ctx context.Context, sel ast.SelectionSet, v []*Language) graphql.Marshaler {

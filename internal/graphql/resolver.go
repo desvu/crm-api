@@ -5,6 +5,7 @@ import (
 )
 
 type Resolver struct {
+	gameConverter
 	games service.IGameService
 }
 
