@@ -28,10 +28,10 @@ func main() {
 	}
 
 	repos := repository.New(e.Store)
-	_ = service.New(repos)
+	services := service.New(repos)
 
 	// register graphql api handlers
-	gqlResolver := graphql.NewResolver(gameService)
+	gqlResolver := graphql.NewResolver(services.GameService)
 	srv.Any("/api/graphql/client", echo.WrapHandler(graphql.Playground("/api/graphql")))
 	srv.Any("/api/graphql", echo.WrapHandler(graphql.NewHandler(gqlResolver)))
 
