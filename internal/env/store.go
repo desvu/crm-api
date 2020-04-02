@@ -15,7 +15,7 @@ type Store struct {
 }
 
 type Postgres struct {
-	Conn *pg.DB
+	DB *pg.DB
 }
 
 type Redis struct {
@@ -41,7 +41,7 @@ func newStore(ctx context.Context, conf config.Store) (*Store, error) {
 
 func newPostgres(ctx context.Context, conf config.PostgresConf) (*Postgres, error) {
 	postgres := &Postgres{}
-	postgres.Conn = pg.Connect(&pg.Options{
+	postgres.DB = pg.Connect(&pg.Options{
 		Addr:     fmt.Sprintf("%s:%s", conf.Host, conf.Port),
 		Database: conf.Database,
 		User:     conf.User,
