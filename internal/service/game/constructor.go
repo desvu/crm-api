@@ -6,7 +6,7 @@ import (
 )
 
 type ServiceParams struct {
-	TagService     service.ITagService
+	TagService     service.TagService
 	GameRepository repository.IGameRepository
 }
 

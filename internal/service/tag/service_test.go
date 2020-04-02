@@ -15,8 +15,8 @@ func TestService_sanitizeAttachTags(t *testing.T) {
 
 	ctrl := gomock.NewController(t)
 	gameService := mocks.NewMockIGameService(ctrl)
-	tagRepository := mocks.NewMockITagRepository(ctrl)
-	gameTagRepository := mocks.NewMockIGameTagRepository(ctrl)
+	tagRepository := mocks.NewMockTagRepository(ctrl)
+	gameTagRepository := mocks.NewMockGameTagRepository(ctrl)
 
 	s := New(ServiceParams{
 		GameService:       gameService,
@@ -94,8 +94,8 @@ func TestService_sanitizeDetachTags(t *testing.T) {
 
 	ctrl := gomock.NewController(t)
 	gameService := mocks.NewMockIGameService(ctrl)
-	tagRepository := mocks.NewMockITagRepository(ctrl)
-	gameTagRepository := mocks.NewMockIGameTagRepository(ctrl)
+	tagRepository := mocks.NewMockTagRepository(ctrl)
+	gameTagRepository := mocks.NewMockGameTagRepository(ctrl)
 
 	s := New(ServiceParams{
 		GameService:       gameService,

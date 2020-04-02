@@ -6,6 +6,6 @@ import (
 	"github.com/qilin/crm-api/internal/repository/tag/postgres"
 )
 
-func New(env *env.Store) repository.ITagRepository {
+func New(env *env.Store) repository.TagRepository {
 	return postgres.New(env.Postgres)
 }

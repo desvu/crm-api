@@ -9,7 +9,7 @@ import (
 
 type Services struct {
 	GameService service.IGameService
-	TagService  service.ITagService
+	TagService  service.TagService
 }
 
 func New(r *repository.Repositories) *Services {

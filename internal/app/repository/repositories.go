@@ -10,8 +10,8 @@ import (
 
 type Repositories struct {
 	GameRepository    repository.IGameRepository
-	TagRepository     repository.ITagRepository
-	GameTagRepository repository.IGameTagRepository
+	TagRepository     repository.TagRepository
+	GameTagRepository repository.GameTagRepository
 }
 
 func New(e *env.Store) *Repositories {

@@ -6,8 +6,8 @@ import (
 	"github.com/qilin/crm-api/internal/domain/entity"
 )
 
-//go:generate mockgen -destination=../mocks/tag_repository.go -package=mocks github.com/qilin/crm-api/internal/domain/repository ITagRepository
-type ITagRepository interface {
+//go:generate mockgen -destination=../mocks/tag_repository.go -package=mocks github.com/qilin/crm-api/internal/domain/repository TagRepository
+type TagRepository interface {
 	Create(ctx context.Context, i *entity.Tag) error
 	Update(ctx context.Context, i *entity.Tag) error
 	Delete(ctx context.Context, i *entity.Tag) error

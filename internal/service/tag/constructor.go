@@ -7,8 +7,8 @@ import (
 
 type ServiceParams struct {
 	GameService       service.IGameService
-	TagRepository     repository.ITagRepository
-	GameTagRepository repository.IGameTagRepository
+	TagRepository     repository.TagRepository
+	GameTagRepository repository.GameTagRepository
 }
 
 func New(params ServiceParams) *Service {

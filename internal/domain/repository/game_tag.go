@@ -6,8 +6,8 @@ import (
 	"github.com/qilin/crm-api/internal/domain/entity"
 )
 
-//go:generate mockgen -destination=../mocks/game_tag_repository.go -package=mocks github.com/qilin/crm-api/internal/domain/repository IGameTagRepository
-type IGameTagRepository interface {
+//go:generate mockgen -destination=../mocks/game_tag_repository.go -package=mocks github.com/qilin/crm-api/internal/domain/repository GameTagRepository
+type GameTagRepository interface {
 	Create(ctx context.Context, i *entity.GameTag) error
 	CreateMultiple(ctx context.Context, items []entity.GameTag) error
 	Delete(ctx context.Context, i *entity.GameTag) error
