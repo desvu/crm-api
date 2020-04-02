@@ -9,6 +9,7 @@ import (
 	"github.com/qilin/crm-api/internal/app/service"
 	"github.com/qilin/crm-api/internal/config"
 	"github.com/qilin/crm-api/internal/env"
+	"github.com/qilin/crm-api/internal/graphql"
 )
 
 func main() {
@@ -29,9 +30,12 @@ func main() {
 	repos := repository.New(e.Store)
 	_ = service.New(repos)
 
-	//e.POST("/users", userHandler.Create)
-	//
-	//if err = e.Start(":1323"); err != nil {
-	//	e.Logger.Fatal(err)
-	//}
+	// register graphql api handlers
+	gqlResolver := graphql.NewResolver(gameService)
+	srv.Any("/api/graphql/client", echo.WrapHandler(graphql.Playground("/api/graphql")))
+	srv.Any("/api/graphql", echo.WrapHandler(graphql.NewHandler(gqlResolver)))
+
+	if err = srv.Start(":8080"); err != nil {
+		srv.Logger.Fatal(err)
+	}
 }
