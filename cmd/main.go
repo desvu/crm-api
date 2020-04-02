@@ -5,11 +5,11 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
+	"github.com/qilin/crm-api/internal/app/repository"
+	"github.com/qilin/crm-api/internal/app/service"
 	"github.com/qilin/crm-api/internal/config"
 	"github.com/qilin/crm-api/internal/env"
 	"github.com/qilin/crm-api/internal/graphql"
-	gamerepository "github.com/qilin/crm-api/internal/repository/game"
-	gameservice "github.com/qilin/crm-api/internal/service/game"
 )
 
 func main() {
@@ -27,11 +27,11 @@ func main() {
 		srv.Logger.Fatal(err)
 	}
 
-	gameRepository := gamerepository.New(e.Store)
-	gameService := gameservice.New(gameservice.ServiceParams{GameRepository: gameRepository})
+	repos := repository.New(e.Store)
+	services := service.New(repos)
 
 	// register graphql api handlers
-	gqlResolver := graphql.NewResolver(gameService)
+	gqlResolver := graphql.NewResolver(services.GameService)
 	srv.Any("/api/graphql/client", echo.WrapHandler(graphql.Playground("/api/graphql")))
 	srv.Any("/api/graphql", echo.WrapHandler(graphql.NewHandler(gqlResolver)))
 

@@ -44,7 +44,7 @@ func (r *mutationResolver) UpdateGame(ctx context.Context, id string, gameJSON s
 	}
 	r.games.Update(ctx, &service.UpdateGameData{
 		ID:    uint(gid),
-		Title: &g.Title,
+		Title: g.Title,
 		// TODO more fields
 	})
 	return r.getGame(ctx, id)

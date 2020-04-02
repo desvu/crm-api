@@ -8,15 +8,15 @@ import (
 	"github.com/qilin/crm-api/internal/env"
 )
 
-type GameRepository struct {
+type TagRepository struct {
 	db *pg.DB
 }
 
-func New(env *env.Postgres) GameRepository {
-	return GameRepository{db: env.DB}
+func New(env *env.Postgres) TagRepository {
+	return TagRepository{db: env.DB}
 }
 
-func (r GameRepository) Create(ctx context.Context, i *entity.Game) error {
+func (r TagRepository) Create(ctx context.Context, i *entity.Tag) error {
 	model, err := newModel(i)
 	if err != nil {
 		return err
@@ -31,7 +31,7 @@ func (r GameRepository) Create(ctx context.Context, i *entity.Game) error {
 	return nil
 }
 
-func (r GameRepository) Update(ctx context.Context, i *entity.Game) error {
+func (r TagRepository) Update(ctx context.Context, i *entity.Tag) error {
 	model, err := newModel(i)
 	if err != nil {
 		return err
@@ -46,7 +46,7 @@ func (r GameRepository) Update(ctx context.Context, i *entity.Game) error {
 	return nil
 }
 
-func (r GameRepository) Delete(ctx context.Context, i *entity.Game) error {
+func (r TagRepository) Delete(ctx context.Context, i *entity.Tag) error {
 	model, err := newModel(i)
 	if err != nil {
 		return err
@@ -61,7 +61,7 @@ func (r GameRepository) Delete(ctx context.Context, i *entity.Game) error {
 	return nil
 }
 
-func (r GameRepository) FindByID(ctx context.Context, id uint) (*entity.Game, error) {
+func (r TagRepository) FindByID(ctx context.Context, id uint) (*entity.Tag, error) {
 	model := new(model)
 
 	err := r.db.ModelContext(ctx, model).Where("id = ?", id).Select()
@@ -72,7 +72,7 @@ func (r GameRepository) FindByID(ctx context.Context, id uint) (*entity.Game, er
 	return model.Convert(), nil
 }
 
-func (r GameRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.Game, error) {
+func (r TagRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.Tag, error) {
 	var models []model
 
 	err := r.db.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
@@ -80,7 +80,7 @@ func (r GameRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.Gam
 		return nil, err
 	}
 
-	entities := make([]entity.Game, len(models))
+	entities := make([]entity.Tag, len(models))
 	for i := range models {
 		entities[i] = *models[i].Convert()
 	}
