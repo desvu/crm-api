@@ -6,7 +6,7 @@ import (
 	"github.com/qilin/crm-api/internal/domain/entity"
 )
 
-type IGameRepository interface {
+type GameRepository interface {
 	Create(ctx context.Context, i *entity.Game) error
 	Update(ctx context.Context, i *entity.Game) error
 	Delete(ctx context.Context, i *entity.Game) error

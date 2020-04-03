@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 	"github.com/qilin/crm-api/internal/app/repository"
 	"github.com/qilin/crm-api/internal/app/service"
 	"github.com/qilin/crm-api/internal/config"
@@ -14,7 +13,6 @@ import (
 
 func main() {
 	srv := echo.New()
-	srv.Logger.SetLevel(log.DEBUG)
 	ctx := context.Background()
 
 	cfg, err := config.New()

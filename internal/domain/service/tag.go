@@ -17,8 +17,7 @@ type TagService interface {
 	GetByIDs(ctx context.Context, ids []uint) ([]entity.Tag, error)
 	GetByGameID(ctx context.Context, gameID uint) ([]entity.Tag, error)
 
-	AttachTagsToGame(ctx context.Context, gameID uint, tagIDs []uint) error
-	DetachTagsFromGame(ctx context.Context, gameID uint, tagIDs []uint) error
+	UpdateTagsForGame(ctx context.Context, game *entity.Game, tagIDs []uint) error
 }
 
 type CreateTagData struct {

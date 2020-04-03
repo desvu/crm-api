@@ -1,13 +1,13 @@
 package entity
 
-type GameExt struct {
+type GameEx struct {
 	Game
+	Tags         []Tag
 	Developers   []Developer
 	Publishers   []Publisher
-	Genres       []Genre
-	Tags         []Tag
-	Languages    []Language
 	Features     []Feature
+	Genres       []Genre
+	Languages    []Language
 	Ratings      []Rating
 	Requirements []SystemRequirements
 }

@@ -2,8 +2,8 @@ package game
 
 import (
 	"context"
+	"errors"
 
-	"github.com/pkg/errors"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
@@ -34,20 +34,69 @@ func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*ent
 }
 
 func (s Service) Update(ctx context.Context, data *service.UpdateGameData) (*entity.Game, error) {
-	gm, err := s.GameRepository.FindByID(ctx, data.ID)
+	game, err := s.GetExistByID(ctx, data.ID)
 	if err != nil {
 		return nil, err
 	}
-	gm.Title = data.Title
-	err = s.GameRepository.Update(ctx, gm)
-	return gm, err
+
+	game.Title = data.Title
+	if err = s.GameRepository.Update(ctx, game); err != nil {
+		return nil, err
+	}
+
+	return game, nil
+}
+
+func (s Service) UpdateEx(ctx context.Context, data *service.UpdateGameExData) (*entity.GameEx, error) {
+	game, err := s.Update(ctx, &data.UpdateGameData)
+	if err != nil {
+		return nil, err
+	}
+
+	if data.Tags != nil {
+		err := s.TagService.UpdateTagsForGame(ctx, game, *data.Tags)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if data.Developers != nil {
+		err := s.DeveloperService.UpdateDevelopersForGame(ctx, game, *data.Developers)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if data.Publishers != nil {
+		err := s.PublisherService.UpdatePublishersForGame(ctx, game, *data.Publishers)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if data.Features != nil {
+		err := s.FeatureService.UpdateFeaturesForGame(ctx, game, *data.Features)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if data.Genres != nil {
+		err := s.GenreService.UpdateGenresForGame(ctx, game, *data.Genres)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return s.GameExRepository.FindByID(ctx, game.ID)
 }
 
 func (s Service) Delete(ctx context.Context, id uint) error {
-	game, err := s.GetByID(ctx, id)
+	game, err := s.GetExistByID(ctx, id)
 	if err != nil {
 		return err
 	}
+
 	return s.GameRepository.Delete(ctx, game)
 }
 
@@ -66,7 +115,7 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Game, error
 	}
 
 	if game == nil {
-		return nil, errors.WithStack(ErrGameNotFound)
+		return nil, ErrGameNotFound
 	}
 
 	return game, nil
