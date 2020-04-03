@@ -6,10 +6,10 @@ import (
 
 type Resolver struct {
 	gameConverter
-	games service.IGameService
+	games service.GameService
 }
 
-func NewResolver(games service.IGameService) *Resolver {
+func NewResolver(games service.GameService) *Resolver {
 	return &Resolver{games: games}
 }
 

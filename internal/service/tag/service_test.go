@@ -10,11 +10,11 @@ import (
 	"github.com/qilin/crm-api/internal/domain/mocks"
 )
 
-func TestService_sanitizeAttachTags(t *testing.T) {
+func TestService_getGameTagsForInsert(t *testing.T) {
 	t.Parallel()
 
 	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockIGameService(ctrl)
+	gameService := mocks.NewMockGameService(ctrl)
 	tagRepository := mocks.NewMockTagRepository(ctrl)
 	gameTagRepository := mocks.NewMockGameTagRepository(ctrl)
 
@@ -25,75 +25,123 @@ func TestService_sanitizeAttachTags(t *testing.T) {
 	})
 
 	type args struct {
-		ctx    context.Context
-		gameID uint
-		tagIDs []uint
+		gameID          uint
+		newTagIDs       []uint
+		currentGameTags []entity.GameTag
 	}
 	tests := []struct {
-		name    string
-		args    args
-		want    []uint
-		wantErr bool
+		name string
+		args args
+		want []entity.GameTag
 	}{
 		{
-			name: "getting positive data",
+			name: "getting a list of tag IDs with a partially included subset of IDs associated with the device",
 			args: args{
-				ctx:    context.Background(),
-				gameID: 1,
-				tagIDs: []uint{1, 2, 3},
+				gameID:          1,
+				newTagIDs:       []uint{1, 2, 3, 4},
+				currentGameTags: []entity.GameTag{{TagID: 2}, {TagID: 3}},
 			},
-			want:    []uint{1, 2},
-			wantErr: false,
+			want: []entity.GameTag{{TagID: 1, GameID: 1}, {TagID: 4, GameID: 1}},
 		},
 		{
-			name: "getting a non-existent tag ID",
+			name: "getting a list of tag IDs with a fully included subset of IDs associated with the device",
 			args: args{
-				ctx:    context.Background(),
-				gameID: 1,
-				tagIDs: []uint{1, 2, 3, 4},
+				gameID:          1,
+				newTagIDs:       []uint{2, 3},
+				currentGameTags: []entity.GameTag{{TagID: 2}, {TagID: 3}},
 			},
-			wantErr: true,
+			want: []entity.GameTag{},
 		},
 		{
-			name: "getting a non-existent game ID",
+			name: "getting a list of tag IDs with or without an incoming subset of IDs associated with the device",
 			args: args{
-				ctx:    context.Background(),
-				gameID: 2,
-				tagIDs: []uint{1, 2, 3},
+				gameID:          1,
+				newTagIDs:       []uint{5, 6},
+				currentGameTags: []entity.GameTag{{TagID: 2}, {TagID: 3}},
 			},
-			wantErr: true,
+			want: []entity.GameTag{{TagID: 5, GameID: 1}, {TagID: 6, GameID: 1}},
+		},
+		{
+			name: "getting a list of tag IDs with a partially included subset of IDs associated with the device",
+			args: args{
+				gameID:          1,
+				newTagIDs:       []uint{1, 2, 2, 3, 4},
+				currentGameTags: []entity.GameTag{{TagID: 2}, {TagID: 3}},
+			},
+			want: []entity.GameTag{{TagID: 1, GameID: 1}, {TagID: 4, GameID: 1}},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
-			// s.GameService.GetExistByID
-			gameService.EXPECT().GetExistByID(gomock.Any(), gomock.Any()).Return(&entity.Game{ID: 1}, nil)
-
-			// s.GetByIDs
-			tagRepository.EXPECT().FindByIDs(gomock.Any(), gomock.Any()).Return([]entity.Tag{{ID: 1}, {ID: 2}, {ID: 3}}, nil).Times(1)
-
-			// s.GetByGameID
-			gameTagRepository.EXPECT().FindByGameID(gomock.Any(), gomock.Any()).Return([]entity.GameTag{{TagID: 3}}, nil)
-			tagRepository.EXPECT().FindByIDs(gomock.Any(), gomock.Any()).Return([]entity.Tag{{ID: 3}}, nil)
-
-			got, err := s.sanitizeAttachTags(tt.args.ctx, tt.args.gameID, tt.args.tagIDs)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("sanitizeAttachTags() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("sanitizeAttachTags() got = %v, want %v", got, tt.want)
+			if got := s.getGameTagsForInsert(tt.args.gameID, tt.args.newTagIDs, tt.args.currentGameTags); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("getGameTagsForInsert() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestService_sanitizeDetachTags(t *testing.T) {
+func TestService_getGameTagsForDelete(t *testing.T) {
 	t.Parallel()
 
 	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockIGameService(ctrl)
+	gameService := mocks.NewMockGameService(ctrl)
+	tagRepository := mocks.NewMockTagRepository(ctrl)
+	gameTagRepository := mocks.NewMockGameTagRepository(ctrl)
+
+	s := New(ServiceParams{
+		GameService:       gameService,
+		TagRepository:     tagRepository,
+		GameTagRepository: gameTagRepository,
+	})
+
+	type args struct {
+		newTagIDs       []uint
+		currentGameTags []entity.GameTag
+	}
+	tests := []struct {
+		name string
+		args args
+		want []entity.GameTag
+	}{
+		{
+			name: "getting a list of tag IDs with a partially included subset of IDs associated with the device",
+			args: args{
+				newTagIDs:       []uint{1, 2, 3, 4},
+				currentGameTags: []entity.GameTag{{TagID: 2}, {TagID: 3}},
+			},
+			want: []entity.GameTag{},
+		},
+		{
+			name: "getting a list of tag IDs with a fully included subset of IDs associated with the device",
+			args: args{
+				newTagIDs:       []uint{2, 3},
+				currentGameTags: []entity.GameTag{{TagID: 2}, {TagID: 3}},
+			},
+			want: []entity.GameTag{},
+		},
+		{
+			name: "getting a list of tag IDs with a partially included subset of IDs associated with the device",
+			args: args{
+				newTagIDs:       []uint{1, 4},
+				currentGameTags: []entity.GameTag{{ID: 1, TagID: 2, GameID: 1}, {ID: 1, TagID: 3, GameID: 1}},
+			},
+			want: []entity.GameTag{{ID: 1, TagID: 2, GameID: 1}, {ID: 1, TagID: 3, GameID: 1}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := s.getGameTagsForDelete(tt.args.newTagIDs, tt.args.currentGameTags); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("getGameTagsForDelete() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestService_UpdateTagsForGame(t *testing.T) {
+	t.Parallel()
+
+	ctrl := gomock.NewController(t)
+	gameService := mocks.NewMockGameService(ctrl)
 	tagRepository := mocks.NewMockTagRepository(ctrl)
 	gameTagRepository := mocks.NewMockGameTagRepository(ctrl)
 
@@ -105,64 +153,51 @@ func TestService_sanitizeDetachTags(t *testing.T) {
 
 	type args struct {
 		ctx    context.Context
-		gameID uint
+		game   *entity.Game
 		tagIDs []uint
 	}
 	tests := []struct {
 		name    string
 		args    args
-		want    []uint
+		want    []entity.Tag
 		wantErr bool
 	}{
 		{
-			name: "getting positive data",
+			name: "getting a non-existent tag ID",
 			args: args{
 				ctx:    context.Background(),
-				gameID: 1,
+				game:   &entity.Game{ID: 1},
 				tagIDs: []uint{1, 2, 3},
 			},
-			want:    []uint{3},
 			wantErr: false,
 		},
 		{
 			name: "getting a non-existent tag ID",
 			args: args{
 				ctx:    context.Background(),
-				gameID: 1,
+				game:   &entity.Game{ID: 1},
 				tagIDs: []uint{1, 2, 3, 4},
-			},
-			wantErr: true,
-		},
-		{
-			name: "getting a non-existent game ID",
-			args: args{
-				ctx:    context.Background(),
-				gameID: 2,
-				tagIDs: []uint{1, 2, 3},
 			},
 			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
-			// s.GameService.GetExistByID
-			gameService.EXPECT().GetExistByID(gomock.Any(), gomock.Any()).Return(&entity.Game{ID: 1}, nil)
-
 			// s.GetByIDs
-			tagRepository.EXPECT().FindByIDs(gomock.Any(), gomock.Any()).Return([]entity.Tag{{ID: 1}, {ID: 2}, {ID: 3}}, nil).Times(1)
+			tagRepository.EXPECT().FindByIDs(gomock.Any(), gomock.Any()).
+				Return([]entity.Tag{{ID: 1}, {ID: 2}, {ID: 3}}, nil)
 
-			// s.GetByGameID
-			gameTagRepository.EXPECT().FindByGameID(gomock.Any(), gomock.Any()).Return([]entity.GameTag{{TagID: 3}}, nil)
-			tagRepository.EXPECT().FindByIDs(gomock.Any(), gomock.Any()).Return([]entity.Tag{{ID: 3}}, nil)
+			// s.GameTagRepository.FindByGameID
+			gameTagRepository.EXPECT().FindByGameID(gomock.Any(), gomock.Any()).
+				Return([]entity.GameTag{{TagID: 3}}, nil)
 
-			got, err := s.sanitizeDetachTags(tt.args.ctx, tt.args.gameID, tt.args.tagIDs)
+			gameTagRepository.EXPECT().DeleteMultiple(gomock.Any(), gomock.Any())
+			gameTagRepository.EXPECT().CreateMultiple(gomock.Any(), gomock.Any())
+
+			err := s.UpdateTagsForGame(tt.args.ctx, tt.args.game, tt.args.tagIDs)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("sanitizeDetachTags() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("UpdateTagsForGame() error = %v, wantErr %v", err, tt.wantErr)
 				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("sanitizeDetachTags() got = %v, want %v", got, tt.want)
 			}
 		})
 	}

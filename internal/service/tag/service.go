@@ -2,8 +2,8 @@ package tag
 
 import (
 	"context"
+	"errors"
 
-	"github.com/pkg/errors"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
@@ -63,7 +63,7 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Tag, error)
 	}
 
 	if tag == nil {
-		return nil, errors.WithStack(ErrTagNotFound)
+		return nil, ErrTagNotFound
 	}
 
 	return tag, nil
@@ -82,119 +82,76 @@ func (s Service) GetByGameID(ctx context.Context, gameID uint) ([]entity.Tag, er
 	return s.GetByIDs(ctx, entity.NewGameTagArray(gameTags).IDs())
 }
 
-func (s Service) AttachTagsToGame(ctx context.Context, gameID uint, tagIDs []uint) error {
-	tagIDs, err := s.sanitizeAttachTags(ctx, gameID, tagIDs)
+func (s Service) UpdateTagsForGame(ctx context.Context, game *entity.Game, tagIDs []uint) error {
+	tags, err := s.GetByIDs(ctx, tagIDs)
 	if err != nil {
 		return err
 	}
 
-	newGameTags := make([]entity.GameTag, len(tagIDs))
-	for i := range tagIDs {
-		newGameTags[i] = entity.GameTag{
+	// checking for IDs among the tags
+	if len(tags) != len(tagIDs) {
+		return ErrInvalidTagIDs
+	}
+
+	currentGameTags, err := s.GameTagRepository.FindByGameID(ctx, game.ID)
+	if err != nil {
+		return err
+	}
+
+	err = s.GameTagRepository.DeleteMultiple(ctx, s.getGameTagsForDelete(tagIDs, currentGameTags))
+	if err != nil {
+		return err
+	}
+
+	err = s.GameTagRepository.CreateMultiple(ctx, s.getGameTagsForInsert(game.ID, tagIDs, currentGameTags))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s Service) getGameTagsForInsert(gameID uint, newTagIDs []uint, currentGameTags []entity.GameTag) []entity.GameTag {
+	gameTags := make([]entity.GameTag, len(newTagIDs))
+	for i := range newTagIDs {
+		gameTags[i] = entity.GameTag{
 			GameID: gameID,
-			TagID:  tagIDs[i],
+			TagID:  newTagIDs[i],
 		}
 	}
 
-	return s.GameTagRepository.CreateMultiple(ctx, newGameTags)
-}
-
-func (s Service) sanitizeAttachTags(ctx context.Context, gameID uint, tagIDs []uint) ([]uint, error) {
-	if len(tagIDs) == 0 {
-		return nil, nil
-	}
-
-	game, err := s.GameService.GetExistByID(ctx, gameID)
-	if err != nil {
-		return nil, err
-	}
-
-	tags, err := s.GetByIDs(ctx, tagIDs)
-	if err != nil {
-		return nil, err
-	}
-
-	// checking for IDs among the tags
-	if len(tags) != len(tagIDs) {
-		return nil, errors.WithStack(ErrInvalidTagIDs)
-	}
-
-	currentTags, err := s.GetByGameID(ctx, game.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	// deleting tag IDs that are already attached to the game
-	for i := 0; i < len(tagIDs); i++ {
+	for i := 0; i < len(gameTags); i++ {
 		var hasMatch bool
-		for j := range currentTags {
-			if tagIDs[i] == currentTags[j].ID {
+		for j := range currentGameTags {
+			if gameTags[i].TagID == currentGameTags[j].TagID {
 				hasMatch = true
 			}
 		}
 
 		if hasMatch {
-			tagIDs = append(tagIDs[:i], tagIDs[i+1:]...)
+			gameTags = append(gameTags[:i], gameTags[i+1:]...)
 			i--
 		}
 	}
 
-	return tagIDs, nil
+	return gameTags
 }
 
-func (s Service) DetachTagsFromGame(ctx context.Context, gameID uint, tagIDs []uint) error {
-	tagIDs, err := s.sanitizeDetachTags(ctx, gameID, tagIDs)
-	if err != nil {
-		return err
-	}
-
-	deletedGameTags, err := s.GameTagRepository.FindByGameIDAndTagIDs(ctx, gameID, tagIDs)
-	if err != nil {
-		return err
-	}
-
-	return s.GameTagRepository.DeleteMultiple(ctx, deletedGameTags)
-}
-
-func (s Service) sanitizeDetachTags(ctx context.Context, gameID uint, tagIDs []uint) ([]uint, error) {
-	if len(tagIDs) == 0 {
-		return nil, nil
-	}
-
-	game, err := s.GameService.GetExistByID(ctx, gameID)
-	if err != nil {
-		return nil, err
-	}
-
-	tags, err := s.GetByIDs(ctx, tagIDs)
-	if err != nil {
-		return nil, err
-	}
-
-	// checking for IDs among the tags
-	if len(tags) != len(tagIDs) {
-		return nil, errors.WithStack(ErrInvalidTagIDs)
-	}
-
-	currentTags, err := s.GetByGameID(ctx, game.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	// deleting tag IDs that are not attached to the game
-	for i := 0; i < len(tagIDs); i++ {
+func (s Service) getGameTagsForDelete(newTagIDs []uint, currentGameTags []entity.GameTag) []entity.GameTag {
+	gameTags := currentGameTags
+	for i := 0; i < len(gameTags); i++ {
 		var hasMatch bool
-		for j := range currentTags {
-			if tagIDs[i] == currentTags[j].ID {
+		for j := range newTagIDs {
+			if gameTags[i].TagID == newTagIDs[j] {
 				hasMatch = true
 			}
 		}
 
-		if !hasMatch {
-			tagIDs = append(tagIDs[:i], tagIDs[i+1:]...)
+		if hasMatch {
+			gameTags = append(gameTags[:i], gameTags[i+1:]...)
 			i--
 		}
 	}
 
-	return tagIDs, nil
+	return gameTags
 }
