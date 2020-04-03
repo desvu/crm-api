@@ -6,6 +6,7 @@ import (
 	"github.com/qilin/crm-api/internal/domain/entity"
 )
 
+//go:generate mockgen -destination=../mocks/feature_repository.go -package=mocks github.com/qilin/crm-api/internal/domain/repository FeatureRepository
 type FeatureRepository interface {
 	Create(ctx context.Context, i *entity.Feature) error
 	Update(ctx context.Context, i *entity.Feature) error

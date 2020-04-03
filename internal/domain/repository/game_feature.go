@@ -6,6 +6,7 @@ import (
 	"github.com/qilin/crm-api/internal/domain/entity"
 )
 
+//go:generate mockgen -destination=../mocks/game_feature_repository.go -package=mocks github.com/qilin/crm-api/internal/domain/repository GameFeatureRepository
 type GameFeatureRepository interface {
 	Create(ctx context.Context, i *entity.GameFeature) error
 	CreateMultiple(ctx context.Context, items []entity.GameFeature) error

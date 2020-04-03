@@ -6,6 +6,7 @@ import (
 	"github.com/qilin/crm-api/internal/domain/entity"
 )
 
+//go:generate mockgen -destination=../mocks/developer_service.go -package=mocks github.com/qilin/crm-api/internal/domain/service DeveloperService
 type DeveloperService interface {
 	Create(ctx context.Context, data *CreateDeveloperData) (*entity.Developer, error)
 	Update(ctx context.Context, data *UpdateDeveloperData) (*entity.Developer, error)

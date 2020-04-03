@@ -112,25 +112,20 @@ func (s Service) UpdateFeaturesForGame(ctx context.Context, game *entity.Game, f
 }
 
 func (s Service) getGameFeaturesForInsert(gameID uint, newFeatureIDs []uint, currentGameFeatures []entity.GameFeature) []entity.GameFeature {
-	gameFeatures := make([]entity.GameFeature, len(newFeatureIDs))
-	for i := range newFeatureIDs {
-		gameFeatures[i] = entity.GameFeature{
-			GameID:    gameID,
-			FeatureID: newFeatureIDs[i],
-		}
-	}
-
-	for i := 0; i < len(gameFeatures); i++ {
+	gameFeatures := make([]entity.GameFeature, 0)
+	for _, newFeatureID := range newFeatureIDs {
 		var hasMatch bool
-		for j := range currentGameFeatures {
-			if gameFeatures[i].FeatureID == currentGameFeatures[j].FeatureID {
+		for _, currentGameFeature := range currentGameFeatures {
+			if newFeatureID == currentGameFeature.FeatureID {
 				hasMatch = true
 			}
 		}
 
-		if hasMatch {
-			gameFeatures = append(gameFeatures[:i], gameFeatures[i+1:]...)
-			i--
+		if !hasMatch {
+			gameFeatures = append(gameFeatures, entity.GameFeature{
+				GameID:    gameID,
+				FeatureID: newFeatureID,
+			})
 		}
 	}
 
@@ -138,18 +133,21 @@ func (s Service) getGameFeaturesForInsert(gameID uint, newFeatureIDs []uint, cur
 }
 
 func (s Service) getGameFeaturesForDelete(newFeatureIDs []uint, currentGameFeatures []entity.GameFeature) []entity.GameFeature {
-	gameFeatures := currentGameFeatures
-	for i := 0; i < len(gameFeatures); i++ {
+	gameFeatures := make([]entity.GameFeature, 0)
+	for _, currentGameFeature := range currentGameFeatures {
 		var hasMatch bool
-		for j := range newFeatureIDs {
-			if gameFeatures[i].FeatureID == newFeatureIDs[j] {
+		for _, newFeatureID := range newFeatureIDs {
+			if currentGameFeature.FeatureID == newFeatureID {
 				hasMatch = true
 			}
 		}
 
-		if hasMatch {
-			gameFeatures = append(gameFeatures[:i], gameFeatures[i+1:]...)
-			i--
+		if !hasMatch {
+			gameFeatures = append(gameFeatures, entity.GameFeature{
+				ID:        currentGameFeature.ID,
+				GameID:    currentGameFeature.GameID,
+				FeatureID: currentGameFeature.FeatureID,
+			})
 		}
 	}
 

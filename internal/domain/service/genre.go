@@ -6,6 +6,7 @@ import (
 	"github.com/qilin/crm-api/internal/domain/entity"
 )
 
+//go:generate mockgen -destination=../mocks/genre_service.go -package=mocks github.com/qilin/crm-api/internal/domain/service GenreService
 type GenreService interface {
 	Create(ctx context.Context, data *CreateGenreData) (*entity.Genre, error)
 	Update(ctx context.Context, data *UpdateGenreData) (*entity.Genre, error)

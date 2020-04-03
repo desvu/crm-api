@@ -112,25 +112,20 @@ func (s Service) UpdateTagsForGame(ctx context.Context, game *entity.Game, tagID
 }
 
 func (s Service) getGameTagsForInsert(gameID uint, newTagIDs []uint, currentGameTags []entity.GameTag) []entity.GameTag {
-	gameTags := make([]entity.GameTag, len(newTagIDs))
-	for i := range newTagIDs {
-		gameTags[i] = entity.GameTag{
-			GameID: gameID,
-			TagID:  newTagIDs[i],
-		}
-	}
-
-	for i := 0; i < len(gameTags); i++ {
+	gameTags := make([]entity.GameTag, 0)
+	for _, newTagID := range newTagIDs {
 		var hasMatch bool
-		for j := range currentGameTags {
-			if gameTags[i].TagID == currentGameTags[j].TagID {
+		for _, currentGameTag := range currentGameTags {
+			if newTagID == currentGameTag.TagID {
 				hasMatch = true
 			}
 		}
 
-		if hasMatch {
-			gameTags = append(gameTags[:i], gameTags[i+1:]...)
-			i--
+		if !hasMatch {
+			gameTags = append(gameTags, entity.GameTag{
+				GameID: gameID,
+				TagID:  newTagID,
+			})
 		}
 	}
 
@@ -138,18 +133,21 @@ func (s Service) getGameTagsForInsert(gameID uint, newTagIDs []uint, currentGame
 }
 
 func (s Service) getGameTagsForDelete(newTagIDs []uint, currentGameTags []entity.GameTag) []entity.GameTag {
-	gameTags := currentGameTags
-	for i := 0; i < len(gameTags); i++ {
+	gameTags := make([]entity.GameTag, 0)
+	for _, currentGameTag := range currentGameTags {
 		var hasMatch bool
-		for j := range newTagIDs {
-			if gameTags[i].TagID == newTagIDs[j] {
+		for _, newTagID := range newTagIDs {
+			if currentGameTag.TagID == newTagID {
 				hasMatch = true
 			}
 		}
 
-		if hasMatch {
-			gameTags = append(gameTags[:i], gameTags[i+1:]...)
-			i--
+		if !hasMatch {
+			gameTags = append(gameTags, entity.GameTag{
+				ID:     currentGameTag.ID,
+				GameID: currentGameTag.GameID,
+				TagID:  currentGameTag.TagID,
+			})
 		}
 	}
 

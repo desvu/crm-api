@@ -112,25 +112,20 @@ func (s Service) UpdateDevelopersForGame(ctx context.Context, game *entity.Game,
 }
 
 func (s Service) getGameDevelopersForInsert(gameID uint, newDeveloperIDs []uint, currentGameDevelopers []entity.GameDeveloper) []entity.GameDeveloper {
-	gameDevelopers := make([]entity.GameDeveloper, len(newDeveloperIDs))
-	for i := range newDeveloperIDs {
-		gameDevelopers[i] = entity.GameDeveloper{
-			GameID:      gameID,
-			DeveloperID: newDeveloperIDs[i],
-		}
-	}
-
-	for i := 0; i < len(gameDevelopers); i++ {
+	gameDevelopers := make([]entity.GameDeveloper, 0)
+	for _, newDeveloperID := range newDeveloperIDs {
 		var hasMatch bool
-		for j := range currentGameDevelopers {
-			if gameDevelopers[i].DeveloperID == currentGameDevelopers[j].DeveloperID {
+		for _, currentGameDeveloper := range currentGameDevelopers {
+			if newDeveloperID == currentGameDeveloper.DeveloperID {
 				hasMatch = true
 			}
 		}
 
-		if hasMatch {
-			gameDevelopers = append(gameDevelopers[:i], gameDevelopers[i+1:]...)
-			i--
+		if !hasMatch {
+			gameDevelopers = append(gameDevelopers, entity.GameDeveloper{
+				GameID:      gameID,
+				DeveloperID: newDeveloperID,
+			})
 		}
 	}
 
@@ -138,18 +133,21 @@ func (s Service) getGameDevelopersForInsert(gameID uint, newDeveloperIDs []uint,
 }
 
 func (s Service) getGameDevelopersForDelete(newDeveloperIDs []uint, currentGameDevelopers []entity.GameDeveloper) []entity.GameDeveloper {
-	gameDevelopers := currentGameDevelopers
-	for i := 0; i < len(gameDevelopers); i++ {
+	gameDevelopers := make([]entity.GameDeveloper, 0)
+	for _, currentGameDeveloper := range currentGameDevelopers {
 		var hasMatch bool
-		for j := range newDeveloperIDs {
-			if gameDevelopers[i].DeveloperID == newDeveloperIDs[j] {
+		for _, newDeveloperID := range newDeveloperIDs {
+			if currentGameDeveloper.DeveloperID == newDeveloperID {
 				hasMatch = true
 			}
 		}
 
-		if hasMatch {
-			gameDevelopers = append(gameDevelopers[:i], gameDevelopers[i+1:]...)
-			i--
+		if !hasMatch {
+			gameDevelopers = append(gameDevelopers, entity.GameDeveloper{
+				ID:          currentGameDeveloper.ID,
+				GameID:      currentGameDeveloper.GameID,
+				DeveloperID: currentGameDeveloper.DeveloperID,
+			})
 		}
 	}
 

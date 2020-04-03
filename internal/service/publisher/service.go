@@ -93,17 +93,17 @@ func (s Service) UpdatePublishersForGame(ctx context.Context, game *entity.Game,
 		return ErrInvalidPublisherIDs
 	}
 
-	currentGamePublishers, err := s.GamePublisherRepository.FindByGameID(ctx, game.ID)
+	currentGamePublisher, err := s.GamePublisherRepository.FindByGameID(ctx, game.ID)
 	if err != nil {
 		return err
 	}
 
-	err = s.GamePublisherRepository.DeleteMultiple(ctx, s.getGamePublishersForDelete(publisherIDs, currentGamePublishers))
+	err = s.GamePublisherRepository.DeleteMultiple(ctx, s.getGamePublishersForDelete(publisherIDs, currentGamePublisher))
 	if err != nil {
 		return err
 	}
 
-	err = s.GamePublisherRepository.CreateMultiple(ctx, s.getGamePublishersForInsert(game.ID, publisherIDs, currentGamePublishers))
+	err = s.GamePublisherRepository.CreateMultiple(ctx, s.getGamePublishersForInsert(game.ID, publisherIDs, currentGamePublisher))
 	if err != nil {
 		return err
 	}
@@ -111,47 +111,45 @@ func (s Service) UpdatePublishersForGame(ctx context.Context, game *entity.Game,
 	return nil
 }
 
-func (s Service) getGamePublishersForInsert(gameID uint, newPublisherIDs []uint, currentGamePublishers []entity.GamePublisher) []entity.GamePublisher {
-	gamePublishers := make([]entity.GamePublisher, len(newPublisherIDs))
-	for i := range newPublisherIDs {
-		gamePublishers[i] = entity.GamePublisher{
-			GameID:      gameID,
-			PublisherID: newPublisherIDs[i],
-		}
-	}
-
-	for i := 0; i < len(gamePublishers); i++ {
+func (s Service) getGamePublishersForInsert(gameID uint, newPublisherIDs []uint, currentGamePublisher []entity.GamePublisher) []entity.GamePublisher {
+	gamePublisher := make([]entity.GamePublisher, 0)
+	for _, newPublisherID := range newPublisherIDs {
 		var hasMatch bool
-		for j := range currentGamePublishers {
-			if gamePublishers[i].PublisherID == currentGamePublishers[j].PublisherID {
+		for _, currentGamePublisher := range currentGamePublisher {
+			if newPublisherID == currentGamePublisher.PublisherID {
 				hasMatch = true
 			}
 		}
 
-		if hasMatch {
-			gamePublishers = append(gamePublishers[:i], gamePublishers[i+1:]...)
-			i--
+		if !hasMatch {
+			gamePublisher = append(gamePublisher, entity.GamePublisher{
+				GameID:      gameID,
+				PublisherID: newPublisherID,
+			})
 		}
 	}
 
-	return gamePublishers
+	return gamePublisher
 }
 
-func (s Service) getGamePublishersForDelete(newPublisherIDs []uint, currentGamePublishers []entity.GamePublisher) []entity.GamePublisher {
-	gamePublishers := currentGamePublishers
-	for i := 0; i < len(gamePublishers); i++ {
+func (s Service) getGamePublishersForDelete(newPublisherIDs []uint, currentGamePublisher []entity.GamePublisher) []entity.GamePublisher {
+	gamePublisher := make([]entity.GamePublisher, 0)
+	for _, currentGamePublisher := range currentGamePublisher {
 		var hasMatch bool
-		for j := range newPublisherIDs {
-			if gamePublishers[i].PublisherID == newPublisherIDs[j] {
+		for _, newPublisherID := range newPublisherIDs {
+			if currentGamePublisher.PublisherID == newPublisherID {
 				hasMatch = true
 			}
 		}
 
-		if hasMatch {
-			gamePublishers = append(gamePublishers[:i], gamePublishers[i+1:]...)
-			i--
+		if !hasMatch {
+			gamePublisher = append(gamePublisher, entity.GamePublisher{
+				ID:          currentGamePublisher.ID,
+				GameID:      currentGamePublisher.GameID,
+				PublisherID: currentGamePublisher.PublisherID,
+			})
 		}
 	}
 
-	return gamePublishers
+	return gamePublisher
 }

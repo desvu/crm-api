@@ -6,6 +6,7 @@ import (
 	"github.com/qilin/crm-api/internal/domain/entity"
 )
 
+//go:generate mockgen -destination=../mocks/publisher_service.go -package=mocks github.com/qilin/crm-api/internal/domain/service PublisherService
 type PublisherService interface {
 	Create(ctx context.Context, data *CreatePublisherData) (*entity.Publisher, error)
 	Update(ctx context.Context, data *UpdatePublisherData) (*entity.Publisher, error)

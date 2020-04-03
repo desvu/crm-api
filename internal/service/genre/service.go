@@ -82,7 +82,7 @@ func (s Service) GetByGameID(ctx context.Context, gameID uint) ([]entity.Genre, 
 	return s.GetByIDs(ctx, entity.NewGameGenreArray(gameGenres).IDs())
 }
 
-func (s Service) UpdateGenreForGame(ctx context.Context, game *entity.Game, genreIDs []uint) error {
+func (s Service) UpdateGenresForGame(ctx context.Context, game *entity.Game, genreIDs []uint) error {
 	genres, err := s.GetByIDs(ctx, genreIDs)
 	if err != nil {
 		return err
@@ -93,17 +93,17 @@ func (s Service) UpdateGenreForGame(ctx context.Context, game *entity.Game, genr
 		return ErrInvalidGenreIDs
 	}
 
-	currentGameGenre, err := s.GameGenreRepository.FindByGameID(ctx, game.ID)
+	currentGameGenres, err := s.GameGenreRepository.FindByGameID(ctx, game.ID)
 	if err != nil {
 		return err
 	}
 
-	err = s.GameGenreRepository.DeleteMultiple(ctx, s.getGameGenreForDelete(genreIDs, currentGameGenre))
+	err = s.GameGenreRepository.DeleteMultiple(ctx, s.getGameGenresForDelete(genreIDs, currentGameGenres))
 	if err != nil {
 		return err
 	}
 
-	err = s.GameGenreRepository.CreateMultiple(ctx, s.getGameGenreForInsert(game.ID, genreIDs, currentGameGenre))
+	err = s.GameGenreRepository.CreateMultiple(ctx, s.getGameGenresForInsert(game.ID, genreIDs, currentGameGenres))
 	if err != nil {
 		return err
 	}
@@ -111,47 +111,45 @@ func (s Service) UpdateGenreForGame(ctx context.Context, game *entity.Game, genr
 	return nil
 }
 
-func (s Service) getGameGenreForInsert(gameID uint, newGenreIDs []uint, currentGameGenre []entity.GameGenre) []entity.GameGenre {
-	gameGenre := make([]entity.GameGenre, len(newGenreIDs))
-	for i := range newGenreIDs {
-		gameGenre[i] = entity.GameGenre{
-			GameID:  gameID,
-			GenreID: newGenreIDs[i],
-		}
-	}
-
-	for i := 0; i < len(gameGenre); i++ {
+func (s Service) getGameGenresForInsert(gameID uint, newGenreIDs []uint, currentGameGenres []entity.GameGenre) []entity.GameGenre {
+	gameGenres := make([]entity.GameGenre, 0)
+	for _, newGenreID := range newGenreIDs {
 		var hasMatch bool
-		for j := range currentGameGenre {
-			if gameGenre[i].GenreID == currentGameGenre[j].GenreID {
+		for _, currentGameGenre := range currentGameGenres {
+			if newGenreID == currentGameGenre.GenreID {
 				hasMatch = true
 			}
 		}
 
-		if hasMatch {
-			gameGenre = append(gameGenre[:i], gameGenre[i+1:]...)
-			i--
+		if !hasMatch {
+			gameGenres = append(gameGenres, entity.GameGenre{
+				GameID:  gameID,
+				GenreID: newGenreID,
+			})
 		}
 	}
 
-	return gameGenre
+	return gameGenres
 }
 
-func (s Service) getGameGenreForDelete(newGenreIDs []uint, currentGameGenre []entity.GameGenre) []entity.GameGenre {
-	gameGenre := currentGameGenre
-	for i := 0; i < len(gameGenre); i++ {
+func (s Service) getGameGenresForDelete(newGenreIDs []uint, currentGameGenres []entity.GameGenre) []entity.GameGenre {
+	gameGenres := make([]entity.GameGenre, 0)
+	for _, currentGameGenre := range currentGameGenres {
 		var hasMatch bool
-		for j := range newGenreIDs {
-			if gameGenre[i].GenreID == newGenreIDs[j] {
+		for _, newGenreID := range newGenreIDs {
+			if currentGameGenre.GenreID == newGenreID {
 				hasMatch = true
 			}
 		}
 
-		if hasMatch {
-			gameGenre = append(gameGenre[:i], gameGenre[i+1:]...)
-			i--
+		if !hasMatch {
+			gameGenres = append(gameGenres, entity.GameGenre{
+				ID:      currentGameGenre.ID,
+				GameID:  currentGameGenre.GameID,
+				GenreID: currentGameGenre.GenreID,
+			})
 		}
 	}
 
-	return gameGenre
+	return gameGenres
 }
