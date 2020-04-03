@@ -17,7 +17,7 @@ type GenreService interface {
 	GetByIDs(ctx context.Context, ids []uint) ([]entity.Genre, error)
 	GetByGameID(ctx context.Context, gameID uint) ([]entity.Genre, error)
 
-	UpdateGenreForGame(ctx context.Context, game *entity.Game, genreIDs []uint) error
+	UpdateGenresForGame(ctx context.Context, game *entity.Game, genreIDs []uint) error
 }
 
 type CreateGenreData struct {

@@ -82,7 +82,7 @@ func (s Service) UpdateEx(ctx context.Context, data *service.UpdateGameExData) (
 	}
 
 	if data.Genres != nil {
-		err := s.GenreService.UpdateGenreForGame(ctx, game, *data.Genres)
+		err := s.GenreService.UpdateGenresForGame(ctx, game, *data.Genres)
 		if err != nil {
 			return nil, err
 		}
