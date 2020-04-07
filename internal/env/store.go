@@ -5,8 +5,11 @@ import (
 	"fmt"
 
 	"github.com/go-pg/pg/v9"
+	"github.com/go-pg/pg/v9/orm"
 	"github.com/go-redis/redis/v7"
 	"github.com/qilin/crm-api/internal/config"
+	"github.com/qilin/crm-api/internal/env/transaction"
+	"github.com/qilin/crm-api/pkg/context/transact"
 )
 
 type Store struct {
@@ -15,7 +18,8 @@ type Store struct {
 }
 
 type Postgres struct {
-	DB *pg.DB
+	Handler          *pg.DB
+	TransactionStore *transaction.Store
 }
 
 type Redis struct {
@@ -40,8 +44,10 @@ func newStore(ctx context.Context, conf config.Store) (*Store, error) {
 }
 
 func newPostgres(ctx context.Context, conf config.PostgresConf) (*Postgres, error) {
-	postgres := &Postgres{}
-	postgres.DB = pg.Connect(&pg.Options{
+	postgres := &Postgres{
+		TransactionStore: transaction.New(),
+	}
+	postgres.Handler = pg.Connect(&pg.Options{
 		Addr:     fmt.Sprintf("%s:%s", conf.Host, conf.Port),
 		Database: conf.Database,
 		User:     conf.User,
@@ -49,6 +55,14 @@ func newPostgres(ctx context.Context, conf config.PostgresConf) (*Postgres, erro
 	})
 
 	return postgres, nil
+}
+
+func (p Postgres) GetHandler(ctx context.Context) (orm.DB, error) {
+	if !transact.IsTransacted(ctx) {
+		return p.Handler, nil
+	}
+
+	return p.TransactionStore.GetHandler(ctx, p.Handler)
 }
 
 func newRedis(ctx context.Context, conf config.RedisConf) (*Redis, error) {

@@ -22,7 +22,7 @@ func New(ctx context.Context, cfg *config.Config) (*Env, error) {
 		return nil, err
 	}
 
-	if err = postgres.Migrate(storeEnv.Postgres.DB); err != nil {
+	if err = postgres.Migrate(storeEnv.Postgres.Handler); err != nil {
 		return nil, err
 	}
 
