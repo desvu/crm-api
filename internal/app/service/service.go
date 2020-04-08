@@ -9,6 +9,7 @@ import (
 	"github.com/qilin/crm-api/internal/service/genre"
 	"github.com/qilin/crm-api/internal/service/publisher"
 	"github.com/qilin/crm-api/internal/service/tag"
+	"github.com/qilin/crm-api/pkg/transactor"
 )
 
 type Services struct {
@@ -20,12 +21,13 @@ type Services struct {
 	GenreService     service.GenreService
 }
 
-func New(r *repository.Repositories) *Services {
+func New(r *repository.Repositories, tx *transactor.Transactor) *Services {
 	s := new(Services)
 
 	s.GameService = game.New(
 		game.ServiceParams{
 			GameRepository: r.GameRepository,
+			Transactor:     tx,
 		},
 	)
 

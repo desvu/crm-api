@@ -6,14 +6,17 @@ import (
 	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
+	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
 
 type PublisherRepository struct {
-	db *pg.DB
+	h sql.Handler
 }
 
 func New(env *env.Postgres) PublisherRepository {
-	return PublisherRepository{db: env.DB}
+	return PublisherRepository{
+		h: env.Handler,
+	}
 }
 
 func (r PublisherRepository) Create(ctx context.Context, i *entity.Publisher) error {
@@ -22,7 +25,7 @@ func (r PublisherRepository) Create(ctx context.Context, i *entity.Publisher) er
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).Insert()
+	_, err = r.h.ModelContext(ctx, model).Insert()
 	if err != nil {
 		return err
 	}
@@ -37,7 +40,7 @@ func (r PublisherRepository) Update(ctx context.Context, i *entity.Publisher) er
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).WherePK().Update()
+	_, err = r.h.ModelContext(ctx, model).WherePK().Update()
 	if err != nil {
 		return err
 	}
@@ -52,7 +55,7 @@ func (r PublisherRepository) Delete(ctx context.Context, i *entity.Publisher) er
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).WherePK().Delete()
+	_, err = r.h.ModelContext(ctx, model).WherePK().Delete()
 	if err != nil {
 		return err
 	}
@@ -64,7 +67,7 @@ func (r PublisherRepository) Delete(ctx context.Context, i *entity.Publisher) er
 func (r PublisherRepository) FindByID(ctx context.Context, id uint) (*entity.Publisher, error) {
 	model := new(model)
 
-	err := r.db.ModelContext(ctx, model).Where("id = ?", id).Select()
+	err := r.h.ModelContext(ctx, model).Where("id = ?", id).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +78,7 @@ func (r PublisherRepository) FindByID(ctx context.Context, id uint) (*entity.Pub
 func (r PublisherRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.Publisher, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
+	err := r.h.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
 	if err != nil {
 		return nil, err
 	}

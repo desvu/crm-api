@@ -1,41 +1,50 @@
-package transaction
+package transactor
 
 import (
 	"context"
-	"errors"
 	"sync"
 
-	"github.com/go-pg/pg/v9"
-	"github.com/go-pg/pg/v9/orm"
 	"github.com/qilin/crm-api/pkg/context/transact"
+	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
 
-var ErrTransactionSQLHandlerNotFound = errors.New("transaction sql handler not found")
-
 type Store struct {
-	handlers map[string]*pg.Tx
+	handlers map[string]sql.TransactionHandler
 	mx       sync.RWMutex
 }
 
-func New() *Store {
+type Handler interface {
+	sql.Handler
+	sql.TransactionBeginner
+}
+
+func newStore() *Store {
 	return &Store{
-		handlers: make(map[string]*pg.Tx),
+		handlers: make(map[string]sql.TransactionHandler),
 	}
 }
 
-func (ts *Store) GetHandler(ctx context.Context, handler *pg.DB) (orm.DB, error) {
+func (ts *Store) GetHandler(ctx context.Context, handler Handler) (sql.Handler, bool, error) {
 	if !transact.IsTransacted(ctx) {
-		return handler, ErrTransactionSQLHandlerNotFound
+		return handler, false, nil
 	}
-	return ts.addHandler(ctx, handler)
+
+	th, err := ts.getTransactHandler(ctx, handler)
+	if err != nil {
+		return nil, false, err
+	}
+
+	return th, true, nil
 }
 
-func (ts *Store) addHandler(ctx context.Context, handler *pg.DB) (*pg.Tx, error) {
+func (ts *Store) getTransactHandler(ctx context.Context, handler sql.TransactionBeginner) (sql.TransactionHandler, error) {
+	var err error
+
 	ts.mx.Lock()
 
 	storeHandler, ok := ts.handlers[transact.TransactionID(ctx)]
 	if !ok {
-		storeHandler, err := handler.Begin()
+		storeHandler, err = handler.Begin()
 		if err != nil {
 			return nil, err
 		}

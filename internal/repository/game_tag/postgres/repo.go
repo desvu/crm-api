@@ -3,17 +3,19 @@ package postgres
 import (
 	"context"
 
-	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
+	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
 
 type GameTagRepository struct {
-	db *pg.DB
+	h sql.Handler
 }
 
 func New(env *env.Postgres) GameTagRepository {
-	return GameTagRepository{db: env.DB}
+	return GameTagRepository{
+		h: env.Handler,
+	}
 }
 
 func (r GameTagRepository) Create(ctx context.Context, i *entity.GameTag) error {
@@ -22,7 +24,7 @@ func (r GameTagRepository) Create(ctx context.Context, i *entity.GameTag) error 
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).Insert()
+	_, err = r.h.ModelContext(ctx, model).Insert()
 	if err != nil {
 		return err
 	}
@@ -42,7 +44,7 @@ func (r GameTagRepository) CreateMultiple(ctx context.Context, items []entity.Ga
 		models[i] = *m
 	}
 
-	_, err := r.db.ModelContext(ctx, models).Insert()
+	_, err := r.h.ModelContext(ctx, models).Insert()
 	if err != nil {
 		return err
 	}
@@ -60,7 +62,7 @@ func (r GameTagRepository) Delete(ctx context.Context, i *entity.GameTag) error 
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).WherePK().Delete()
+	_, err = r.h.ModelContext(ctx, model).WherePK().Delete()
 	if err != nil {
 		return err
 	}
@@ -80,7 +82,7 @@ func (r GameTagRepository) DeleteMultiple(ctx context.Context, items []entity.Ga
 		models[i] = *m
 	}
 
-	_, err := r.db.ModelContext(ctx, models).Delete()
+	_, err := r.h.ModelContext(ctx, models).Delete()
 	if err != nil {
 		return err
 	}
@@ -91,7 +93,7 @@ func (r GameTagRepository) DeleteMultiple(ctx context.Context, items []entity.Ga
 func (r GameTagRepository) FindByGameID(ctx context.Context, gameID uint) ([]entity.GameTag, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).Where("game_id = ?", gameID).Select()
+	err := r.h.ModelContext(ctx, &models).Where("game_id = ?", gameID).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +109,7 @@ func (r GameTagRepository) FindByGameID(ctx context.Context, gameID uint) ([]ent
 func (r GameTagRepository) FindByTagID(ctx context.Context, tagID uint) ([]entity.GameTag, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).Where("tag_id = ?", tagID).Select()
+	err := r.h.ModelContext(ctx, &models).Where("tag_id = ?", tagID).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +125,7 @@ func (r GameTagRepository) FindByTagID(ctx context.Context, tagID uint) ([]entit
 func (r GameTagRepository) FindByGameIDAndTagIDs(ctx context.Context, gameID uint, tagIDs []uint) ([]entity.GameTag, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).
+	err := r.h.ModelContext(ctx, &models).
 		Where("game_id = ?", gameID).
 		Where("tag_id in (?)", tagIDs).
 		Select()

@@ -48,47 +48,53 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameData) (*ent
 }
 
 func (s Service) UpdateEx(ctx context.Context, data *service.UpdateGameExData) (*entity.GameEx, error) {
-	game, err := s.Update(ctx, &data.UpdateGameData)
-	if err != nil {
+	if err := s.Transactor.Transact(ctx, func(tx context.Context) error {
+		game, err := s.Update(ctx, &data.UpdateGameData)
+		if err != nil {
+			return err
+		}
+
+		if data.Tags != nil {
+			err := s.TagService.UpdateTagsForGame(tx, game, *data.Tags)
+			if err != nil {
+				return err
+			}
+		}
+
+		if data.Developers != nil {
+			err := s.DeveloperService.UpdateDevelopersForGame(tx, game, *data.Developers)
+			if err != nil {
+				return err
+			}
+		}
+
+		if data.Publishers != nil {
+			err := s.PublisherService.UpdatePublishersForGame(tx, game, *data.Publishers)
+			if err != nil {
+				return err
+			}
+		}
+
+		if data.Features != nil {
+			err := s.FeatureService.UpdateFeaturesForGame(tx, game, *data.Features)
+			if err != nil {
+				return err
+			}
+		}
+
+		if data.Genres != nil {
+			err := s.GenreService.UpdateGenresForGame(tx, game, *data.Genres)
+			if err != nil {
+				return err
+			}
+		}
+
+		return nil
+	}); err != nil {
 		return nil, err
 	}
 
-	if data.Tags != nil {
-		err := s.TagService.UpdateTagsForGame(ctx, game, *data.Tags)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if data.Developers != nil {
-		err := s.DeveloperService.UpdateDevelopersForGame(ctx, game, *data.Developers)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if data.Publishers != nil {
-		err := s.PublisherService.UpdatePublishersForGame(ctx, game, *data.Publishers)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if data.Features != nil {
-		err := s.FeatureService.UpdateFeaturesForGame(ctx, game, *data.Features)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	if data.Genres != nil {
-		err := s.GenreService.UpdateGenresForGame(ctx, game, *data.Genres)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return s.GameExRepository.FindByID(ctx, game.ID)
+	return s.GameExRepository.FindByID(ctx, data.ID)
 }
 
 func (s Service) Delete(ctx context.Context, id uint) error {

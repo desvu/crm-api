@@ -6,14 +6,17 @@ import (
 	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
+	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
 
 type GenreRepository struct {
-	db *pg.DB
+	h sql.Handler
 }
 
 func New(env *env.Postgres) GenreRepository {
-	return GenreRepository{db: env.DB}
+	return GenreRepository{
+		h: env.Handler,
+	}
 }
 
 func (r GenreRepository) Create(ctx context.Context, i *entity.Genre) error {
@@ -22,7 +25,7 @@ func (r GenreRepository) Create(ctx context.Context, i *entity.Genre) error {
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).Insert()
+	_, err = r.h.ModelContext(ctx, model).Insert()
 	if err != nil {
 		return err
 	}
@@ -37,7 +40,7 @@ func (r GenreRepository) Update(ctx context.Context, i *entity.Genre) error {
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).WherePK().Update()
+	_, err = r.h.ModelContext(ctx, model).WherePK().Update()
 	if err != nil {
 		return err
 	}
@@ -52,7 +55,7 @@ func (r GenreRepository) Delete(ctx context.Context, i *entity.Genre) error {
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).WherePK().Delete()
+	_, err = r.h.ModelContext(ctx, model).WherePK().Delete()
 	if err != nil {
 		return err
 	}
@@ -64,7 +67,7 @@ func (r GenreRepository) Delete(ctx context.Context, i *entity.Genre) error {
 func (r GenreRepository) FindByID(ctx context.Context, id uint) (*entity.Genre, error) {
 	model := new(model)
 
-	err := r.db.ModelContext(ctx, model).Where("id = ?", id).Select()
+	err := r.h.ModelContext(ctx, model).Where("id = ?", id).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +78,7 @@ func (r GenreRepository) FindByID(ctx context.Context, id uint) (*entity.Genre, 
 func (r GenreRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.Genre, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
+	err := r.h.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
 	if err != nil {
 		return nil, err
 	}

@@ -3,17 +3,19 @@ package postgres
 import (
 	"context"
 
-	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
+	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
 
 type GameDeveloperRepository struct {
-	db *pg.DB
+	h sql.Handler
 }
 
 func New(env *env.Postgres) GameDeveloperRepository {
-	return GameDeveloperRepository{db: env.DB}
+	return GameDeveloperRepository{
+		h: env.Handler,
+	}
 }
 
 func (r GameDeveloperRepository) Create(ctx context.Context, i *entity.GameDeveloper) error {
@@ -22,7 +24,7 @@ func (r GameDeveloperRepository) Create(ctx context.Context, i *entity.GameDevel
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).Insert()
+	_, err = r.h.ModelContext(ctx, model).Insert()
 	if err != nil {
 		return err
 	}
@@ -42,7 +44,7 @@ func (r GameDeveloperRepository) CreateMultiple(ctx context.Context, items []ent
 		models[i] = *m
 	}
 
-	_, err := r.db.ModelContext(ctx, models).Insert()
+	_, err := r.h.ModelContext(ctx, models).Insert()
 	if err != nil {
 		return err
 	}
@@ -60,7 +62,7 @@ func (r GameDeveloperRepository) Delete(ctx context.Context, i *entity.GameDevel
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).WherePK().Delete()
+	_, err = r.h.ModelContext(ctx, model).WherePK().Delete()
 	if err != nil {
 		return err
 	}
@@ -80,7 +82,7 @@ func (r GameDeveloperRepository) DeleteMultiple(ctx context.Context, items []ent
 		models[i] = *m
 	}
 
-	_, err := r.db.ModelContext(ctx, models).Delete()
+	_, err := r.h.ModelContext(ctx, models).Delete()
 	if err != nil {
 		return err
 	}
@@ -91,7 +93,7 @@ func (r GameDeveloperRepository) DeleteMultiple(ctx context.Context, items []ent
 func (r GameDeveloperRepository) FindByGameID(ctx context.Context, gameID uint) ([]entity.GameDeveloper, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).Where("game_id = ?", gameID).Select()
+	err := r.h.ModelContext(ctx, &models).Where("game_id = ?", gameID).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +109,7 @@ func (r GameDeveloperRepository) FindByGameID(ctx context.Context, gameID uint) 
 func (r GameDeveloperRepository) FindByDeveloperID(ctx context.Context, developerID uint) ([]entity.GameDeveloper, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).Where("developer_id = ?", developerID).Select()
+	err := r.h.ModelContext(ctx, &models).Where("developer_id = ?", developerID).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +125,7 @@ func (r GameDeveloperRepository) FindByDeveloperID(ctx context.Context, develope
 func (r GameDeveloperRepository) FindByGameIDAndDeveloperIDs(ctx context.Context, gameID uint, developerIDs []uint) ([]entity.GameDeveloper, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).
+	err := r.h.ModelContext(ctx, &models).
 		Where("game_id = ?", gameID).
 		Where("developer_id in (?)", developerIDs).
 		Select()
