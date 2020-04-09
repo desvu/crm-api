@@ -6,14 +6,17 @@ import (
 	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
+	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
 
 type GameRepository struct {
-	db *pg.DB
+	h sql.Handler
 }
 
 func New(env *env.Postgres) GameRepository {
-	return GameRepository{db: env.DB}
+	return GameRepository{
+		h: env.Handler,
+	}
 }
 
 func (r GameRepository) Create(ctx context.Context, i *entity.Game) error {
@@ -22,7 +25,7 @@ func (r GameRepository) Create(ctx context.Context, i *entity.Game) error {
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).Insert()
+	_, err = r.h.ModelContext(ctx, model).Insert()
 	if err != nil {
 		return err
 	}
@@ -37,7 +40,7 @@ func (r GameRepository) Update(ctx context.Context, i *entity.Game) error {
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).WherePK().Update()
+	_, err = r.h.ModelContext(ctx, model).WherePK().Update()
 	if err != nil {
 		return err
 	}
@@ -52,7 +55,7 @@ func (r GameRepository) Delete(ctx context.Context, i *entity.Game) error {
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).WherePK().Delete()
+	_, err = r.h.ModelContext(ctx, model).WherePK().Delete()
 	if err != nil {
 		return err
 	}
@@ -64,7 +67,7 @@ func (r GameRepository) Delete(ctx context.Context, i *entity.Game) error {
 func (r GameRepository) FindByID(ctx context.Context, id uint) (*entity.Game, error) {
 	model := new(model)
 
-	err := r.db.ModelContext(ctx, model).Where("id = ?", id).Select()
+	err := r.h.ModelContext(ctx, model).Where("id = ?", id).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +78,7 @@ func (r GameRepository) FindByID(ctx context.Context, id uint) (*entity.Game, er
 func (r GameRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.Game, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
+	err := r.h.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
 	if err != nil {
 		return nil, err
 	}

@@ -3,17 +3,19 @@ package postgres
 import (
 	"context"
 
-	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
+	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
 
 type GameGenreRepository struct {
-	db *pg.DB
+	h sql.Handler
 }
 
 func New(env *env.Postgres) GameGenreRepository {
-	return GameGenreRepository{db: env.DB}
+	return GameGenreRepository{
+		h: env.Handler,
+	}
 }
 
 func (r GameGenreRepository) Create(ctx context.Context, i *entity.GameGenre) error {
@@ -22,7 +24,7 @@ func (r GameGenreRepository) Create(ctx context.Context, i *entity.GameGenre) er
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).Insert()
+	_, err = r.h.ModelContext(ctx, model).Insert()
 	if err != nil {
 		return err
 	}
@@ -42,7 +44,7 @@ func (r GameGenreRepository) CreateMultiple(ctx context.Context, items []entity.
 		models[i] = *m
 	}
 
-	_, err := r.db.ModelContext(ctx, models).Insert()
+	_, err := r.h.ModelContext(ctx, models).Insert()
 	if err != nil {
 		return err
 	}
@@ -60,7 +62,7 @@ func (r GameGenreRepository) Delete(ctx context.Context, i *entity.GameGenre) er
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).WherePK().Delete()
+	_, err = r.h.ModelContext(ctx, model).WherePK().Delete()
 	if err != nil {
 		return err
 	}
@@ -80,7 +82,7 @@ func (r GameGenreRepository) DeleteMultiple(ctx context.Context, items []entity.
 		models[i] = *m
 	}
 
-	_, err := r.db.ModelContext(ctx, models).Delete()
+	_, err := r.h.ModelContext(ctx, models).Delete()
 	if err != nil {
 		return err
 	}
@@ -91,7 +93,7 @@ func (r GameGenreRepository) DeleteMultiple(ctx context.Context, items []entity.
 func (r GameGenreRepository) FindByGameID(ctx context.Context, gameID uint) ([]entity.GameGenre, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).Where("game_id = ?", gameID).Select()
+	err := r.h.ModelContext(ctx, &models).Where("game_id = ?", gameID).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +109,7 @@ func (r GameGenreRepository) FindByGameID(ctx context.Context, gameID uint) ([]e
 func (r GameGenreRepository) FindByGenreID(ctx context.Context, genreID uint) ([]entity.GameGenre, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).Where("genre_id = ?", genreID).Select()
+	err := r.h.ModelContext(ctx, &models).Where("genre_id = ?", genreID).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +125,7 @@ func (r GameGenreRepository) FindByGenreID(ctx context.Context, genreID uint) ([
 func (r GameGenreRepository) FindByGameIDAndGenreIDs(ctx context.Context, gameID uint, genreIDs []uint) ([]entity.GameGenre, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).
+	err := r.h.ModelContext(ctx, &models).
 		Where("game_id = ?", gameID).
 		Where("genre_id in (?)", genreIDs).
 		Select()

@@ -3,17 +3,21 @@ package postgres
 import (
 	"context"
 
+	"github.com/qilin/crm-api/pkg/repository/handler/sql"
+
 	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
 )
 
 type FeatureRepository struct {
-	db *pg.DB
+	h sql.Handler
 }
 
 func New(env *env.Postgres) FeatureRepository {
-	return FeatureRepository{db: env.DB}
+	return FeatureRepository{
+		h: env.Handler,
+	}
 }
 
 func (r FeatureRepository) Create(ctx context.Context, i *entity.Feature) error {
@@ -22,7 +26,7 @@ func (r FeatureRepository) Create(ctx context.Context, i *entity.Feature) error 
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).Insert()
+	_, err = r.h.ModelContext(ctx, model).Insert()
 	if err != nil {
 		return err
 	}
@@ -37,7 +41,7 @@ func (r FeatureRepository) Update(ctx context.Context, i *entity.Feature) error 
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).WherePK().Update()
+	_, err = r.h.ModelContext(ctx, model).WherePK().Update()
 	if err != nil {
 		return err
 	}
@@ -52,7 +56,7 @@ func (r FeatureRepository) Delete(ctx context.Context, i *entity.Feature) error 
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).WherePK().Delete()
+	_, err = r.h.ModelContext(ctx, model).WherePK().Delete()
 	if err != nil {
 		return err
 	}
@@ -64,7 +68,7 @@ func (r FeatureRepository) Delete(ctx context.Context, i *entity.Feature) error 
 func (r FeatureRepository) FindByID(ctx context.Context, id uint) (*entity.Feature, error) {
 	model := new(model)
 
-	err := r.db.ModelContext(ctx, model).Where("id = ?", id).Select()
+	err := r.h.ModelContext(ctx, model).Where("id = ?", id).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +79,7 @@ func (r FeatureRepository) FindByID(ctx context.Context, id uint) (*entity.Featu
 func (r FeatureRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.Feature, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
+	err := r.h.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
 	if err != nil {
 		return nil, err
 	}

@@ -65,7 +65,7 @@ func (r *Resolver) getGame(ctx context.Context, id string) (*Game, error) {
 	if err != nil {
 		return nil, err
 	}
-	g, err := r.games.GetByID(ctx, uint(gid))
+	g, err := r.games.GetExistByID(ctx, uint(gid))
 	if err != nil {
 		return nil, err
 	}

@@ -2,11 +2,14 @@ package env
 
 import (
 	"context"
-	"fmt"
+
+	"github.com/qilin/crm-api/pkg/transactor"
 
 	"github.com/go-pg/pg/v9"
 	"github.com/go-redis/redis/v7"
 	"github.com/qilin/crm-api/internal/config"
+	"github.com/qilin/crm-api/pkg/repository/handler/postgres"
+	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
 
 type Store struct {
@@ -15,15 +18,16 @@ type Store struct {
 }
 
 type Postgres struct {
-	DB *pg.DB
+	Handler    sql.Handler
+	Connection *pg.DB
 }
 
 type Redis struct {
 	Client *redis.Client
 }
 
-func newStore(ctx context.Context, conf config.Store) (*Store, error) {
-	postgresEnv, err := newPostgres(ctx, conf.Postgres)
+func newStore(ctx context.Context, conf config.Store, transactionStore *transactor.Store) (*Store, error) {
+	postgresEnv, err := newPostgres(conf.Postgres, transactionStore)
 	if err != nil {
 		return nil, err
 	}
@@ -39,16 +43,19 @@ func newStore(ctx context.Context, conf config.Store) (*Store, error) {
 	}, nil
 }
 
-func newPostgres(ctx context.Context, conf config.PostgresConf) (*Postgres, error) {
-	postgres := &Postgres{}
-	postgres.DB = pg.Connect(&pg.Options{
-		Addr:     fmt.Sprintf("%s:%s", conf.Host, conf.Port),
-		Database: conf.Database,
-		User:     conf.User,
-		Password: conf.Password,
-	})
-
-	return postgres, nil
+func newPostgres(conf config.PostgresConf, transactionStore *transactor.Store) (*Postgres, error) {
+	return &Postgres{
+		Handler: postgres.New(
+			postgres.Config{
+				Host:     conf.Host,
+				Port:     conf.Port,
+				Database: conf.Database,
+				User:     conf.User,
+				Password: conf.Password,
+			},
+			transactionStore,
+		),
+	}, nil
 }
 
 func newRedis(ctx context.Context, conf config.RedisConf) (*Redis, error) {

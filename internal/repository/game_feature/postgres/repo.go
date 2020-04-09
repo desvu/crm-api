@@ -3,17 +3,19 @@ package postgres
 import (
 	"context"
 
-	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
+	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
 
 type GameFeatureRepository struct {
-	db *pg.DB
+	h sql.Handler
 }
 
 func New(env *env.Postgres) GameFeatureRepository {
-	return GameFeatureRepository{db: env.DB}
+	return GameFeatureRepository{
+		h: env.Handler,
+	}
 }
 
 func (r GameFeatureRepository) Create(ctx context.Context, i *entity.GameFeature) error {
@@ -22,7 +24,7 @@ func (r GameFeatureRepository) Create(ctx context.Context, i *entity.GameFeature
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).Insert()
+	_, err = r.h.ModelContext(ctx, model).Insert()
 	if err != nil {
 		return err
 	}
@@ -42,7 +44,7 @@ func (r GameFeatureRepository) CreateMultiple(ctx context.Context, items []entit
 		models[i] = *m
 	}
 
-	_, err := r.db.ModelContext(ctx, models).Insert()
+	_, err := r.h.ModelContext(ctx, models).Insert()
 	if err != nil {
 		return err
 	}
@@ -60,7 +62,7 @@ func (r GameFeatureRepository) Delete(ctx context.Context, i *entity.GameFeature
 		return err
 	}
 
-	_, err = r.db.ModelContext(ctx, model).WherePK().Delete()
+	_, err = r.h.ModelContext(ctx, model).WherePK().Delete()
 	if err != nil {
 		return err
 	}
@@ -80,7 +82,7 @@ func (r GameFeatureRepository) DeleteMultiple(ctx context.Context, items []entit
 		models[i] = *m
 	}
 
-	_, err := r.db.ModelContext(ctx, models).Delete()
+	_, err := r.h.ModelContext(ctx, models).Delete()
 	if err != nil {
 		return err
 	}
@@ -91,7 +93,7 @@ func (r GameFeatureRepository) DeleteMultiple(ctx context.Context, items []entit
 func (r GameFeatureRepository) FindByGameID(ctx context.Context, gameID uint) ([]entity.GameFeature, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).Where("game_id = ?", gameID).Select()
+	err := r.h.ModelContext(ctx, &models).Where("game_id = ?", gameID).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +109,7 @@ func (r GameFeatureRepository) FindByGameID(ctx context.Context, gameID uint) ([
 func (r GameFeatureRepository) FindByFeatureID(ctx context.Context, featureID uint) ([]entity.GameFeature, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).Where("feature_id = ?", featureID).Select()
+	err := r.h.ModelContext(ctx, &models).Where("feature_id = ?", featureID).Select()
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +125,7 @@ func (r GameFeatureRepository) FindByFeatureID(ctx context.Context, featureID ui
 func (r GameFeatureRepository) FindByGameIDAndFeatureIDs(ctx context.Context, gameID uint, featureIDs []uint) ([]entity.GameFeature, error) {
 	var models []model
 
-	err := r.db.ModelContext(ctx, &models).
+	err := r.h.ModelContext(ctx, &models).
 		Where("game_id = ?", gameID).
 		Where("feature_id in (?)", featureIDs).
 		Select()

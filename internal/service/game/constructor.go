@@ -3,6 +3,7 @@ package game
 import (
 	"github.com/qilin/crm-api/internal/domain/repository"
 	"github.com/qilin/crm-api/internal/domain/service"
+	"github.com/qilin/crm-api/pkg/transactor"
 )
 
 type ServiceParams struct {
@@ -13,6 +14,7 @@ type ServiceParams struct {
 	GenreService     service.GenreService
 	GameRepository   repository.GameRepository
 	GameExRepository repository.GameExRepository
+	Transactor       *transactor.Transactor
 }
 
 func New(params ServiceParams) *Service {
