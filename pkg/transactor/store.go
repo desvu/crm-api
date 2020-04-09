@@ -4,9 +4,12 @@ import (
 	"context"
 	"sync"
 
+	"github.com/pkg/errors"
 	"github.com/qilin/crm-api/pkg/context/transact"
 	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
+
+var ErrTransactionHandlerNotFound = errors.New("transaction handler not found")
 
 type Store struct {
 	handlers map[string]sql.TransactionHandler
@@ -39,7 +42,6 @@ func (ts *Store) GetHandler(ctx context.Context, handler Handler) (sql.Handler, 
 
 func (ts *Store) getTransactHandler(ctx context.Context, handler sql.TransactionBeginner) (sql.TransactionHandler, error) {
 	var err error
-
 	ts.mx.Lock()
 
 	storeHandler, ok := ts.handlers[transact.TransactionID(ctx)]
@@ -60,21 +62,18 @@ func (ts *Store) Commit(ctx context.Context) error {
 	if transact.IsTransactedChild(ctx) {
 		return nil
 	}
-
 	ts.mx.Lock()
 
 	storeHandler, ok := ts.handlers[transact.TransactionID(ctx)]
 	if !ok {
 		ts.mx.Unlock()
-		return nil
+		return errors.WithStack(ErrTransactionHandlerNotFound)
 	}
-	var err error
-	err = storeHandler.Commit()
 
 	delete(ts.handlers, transact.TransactionID(ctx))
 	ts.mx.Unlock()
 
-	return err
+	return storeHandler.Commit()
 }
 
 func (ts *Store) RollBack(ctx context.Context) error {
@@ -86,12 +85,11 @@ func (ts *Store) RollBack(ctx context.Context) error {
 	storeHandler, ok := ts.handlers[transact.TransactionID(ctx)]
 	if !ok {
 		ts.mx.Unlock()
-		return nil
+		return errors.WithStack(ErrTransactionHandlerNotFound)
 	}
-	var err error
-	err = storeHandler.Rollback()
+
 	delete(ts.handlers, transact.TransactionID(ctx))
 	ts.mx.Unlock()
 
-	return err
+	return storeHandler.Rollback()
 }

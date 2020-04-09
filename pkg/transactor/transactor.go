@@ -2,13 +2,11 @@ package transactor
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"log"
-	"runtime"
-	"runtime/debug"
 
+	"github.com/pkg/errors"
 	"github.com/qilin/crm-api/pkg/context/transact"
+	"go.uber.org/zap"
 )
 
 func New() (*Transactor, *Store) {
@@ -27,21 +25,19 @@ func (h *Transactor) Transact(ctx context.Context, txFunc func(tx context.Contex
 
 	defer func() {
 		if p := recover(); p != nil {
-			debug.PrintStack()
-			_, file, line, _ := runtime.Caller(1)
-			log.Println(file, line, p)
 			err = errors.New(fmt.Sprint(p))
 		}
 		if err != nil {
 			errRB := h.TransactorStore.RollBack(tx)
 			if errRB != nil {
+				zap.Error(errRB)
 				return
 			}
 			return
 		}
 		err = h.TransactorStore.Commit(tx)
 		if err != nil {
-			log.Println(err)
+			zap.Error(err)
 			return
 		}
 

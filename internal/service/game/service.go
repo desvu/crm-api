@@ -48,42 +48,42 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameData) (*ent
 }
 
 func (s Service) UpdateEx(ctx context.Context, data *service.UpdateGameExData) (*entity.GameEx, error) {
-	if err := s.Transactor.Transact(ctx, func(tx context.Context) error {
+	if err := s.Transactor.Transact(ctx, func(ctx context.Context) error {
 		game, err := s.Update(ctx, &data.UpdateGameData)
 		if err != nil {
 			return err
 		}
 
 		if data.Tags != nil {
-			err := s.TagService.UpdateTagsForGame(tx, game, *data.Tags)
+			err := s.TagService.UpdateTagsForGame(ctx, game, *data.Tags)
 			if err != nil {
 				return err
 			}
 		}
 
 		if data.Developers != nil {
-			err := s.DeveloperService.UpdateDevelopersForGame(tx, game, *data.Developers)
+			err := s.DeveloperService.UpdateDevelopersForGame(ctx, game, *data.Developers)
 			if err != nil {
 				return err
 			}
 		}
 
 		if data.Publishers != nil {
-			err := s.PublisherService.UpdatePublishersForGame(tx, game, *data.Publishers)
+			err := s.PublisherService.UpdatePublishersForGame(ctx, game, *data.Publishers)
 			if err != nil {
 				return err
 			}
 		}
 
 		if data.Features != nil {
-			err := s.FeatureService.UpdateFeaturesForGame(tx, game, *data.Features)
+			err := s.FeatureService.UpdateFeaturesForGame(ctx, game, *data.Features)
 			if err != nil {
 				return err
 			}
 		}
 
 		if data.Genres != nil {
-			err := s.GenreService.UpdateGenresForGame(tx, game, *data.Genres)
+			err := s.GenreService.UpdateGenresForGame(ctx, game, *data.Genres)
 			if err != nil {
 				return err
 			}

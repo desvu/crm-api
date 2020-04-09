@@ -130,7 +130,7 @@ func (h *TransactionHandler) Rollback() error {
 }
 
 func (h *TransactionHandler) GetConnection() *pg.DB {
-	return h.conn
+	panic("transaction handler dont returned basic connection")
 }
 
 type Config struct {
