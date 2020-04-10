@@ -6,6 +6,6 @@ import (
 	"github.com/qilin/crm-api/internal/repository/game_developer/postgres"
 )
 
-func New(env *env.Store) repository.GameDeveloperRepository {
-	return postgres.New(env.Postgres)
+func New(env *env.Env) repository.GameDeveloperRepository {
+	return postgres.New(env.Store.Postgres)
 }

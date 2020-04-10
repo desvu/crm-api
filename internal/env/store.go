@@ -1,8 +1,6 @@
 package env
 
 import (
-	"context"
-
 	"github.com/qilin/crm-api/pkg/transactor"
 
 	"github.com/go-pg/pg/v9"
@@ -26,13 +24,13 @@ type Redis struct {
 	Client *redis.Client
 }
 
-func newStore(ctx context.Context, conf config.Store, transactionStore *transactor.Store) (*Store, error) {
+func newStore(conf config.Store, transactionStore *transactor.Store) (*Store, error) {
 	postgresEnv, err := newPostgres(conf.Postgres, transactionStore)
 	if err != nil {
 		return nil, err
 	}
 
-	redisEnv, err := newRedis(ctx, conf.Redis)
+	redisEnv, err := newRedis(conf.Redis)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +56,7 @@ func newPostgres(conf config.PostgresConf, transactionStore *transactor.Store) (
 	}, nil
 }
 
-func newRedis(ctx context.Context, conf config.RedisConf) (*Redis, error) {
+func newRedis(conf config.RedisConf) (*Redis, error) {
 	//client := redis.NewClient(&redis.Options{
 	//	Addr:     conf.Host,
 	//	Password: conf.Password,

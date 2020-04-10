@@ -6,6 +6,6 @@ import (
 	"github.com/qilin/crm-api/internal/repository/genre/postgres"
 )
 
-func New(env *env.Store) repository.GenreRepository {
-	return postgres.New(env.Postgres)
+func New(env *env.Env) repository.GenreRepository {
+	return postgres.New(env.Store.Postgres)
 }

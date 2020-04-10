@@ -1,9 +1,6 @@
 package env
 
 import (
-	"context"
-	"errors"
-
 	"github.com/qilin/crm-api/internal/config"
 	"github.com/qilin/crm-api/internal/env/migration/postgres"
 	"github.com/qilin/crm-api/pkg/transactor"
@@ -13,12 +10,13 @@ type Env struct {
 	Store *Store
 }
 
-func New(ctx context.Context, cfg *config.Config, transactionStore *transactor.Store) (*Env, error) {
+func New(transactor *transactor.Transactor) (*Env, error) {
+	cfg, err := config.New()
 	if cfg == nil {
-		return nil, errors.New("config is nil")
+		return nil, err
 	}
 
-	storeEnv, err := newStore(ctx, cfg.Store, transactionStore)
+	storeEnv, err := newStore(cfg.Store, transactor.GetStore())
 	if err != nil {
 		return nil, err
 	}

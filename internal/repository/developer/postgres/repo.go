@@ -3,11 +3,10 @@ package postgres
 import (
 	"context"
 
-	"github.com/qilin/crm-api/pkg/repository/handler/sql"
-
 	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
+	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
 
 type DeveloperRepository struct {
