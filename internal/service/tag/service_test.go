@@ -13,17 +13,6 @@ import (
 func TestService_getGameTagsForInsert(t *testing.T) {
 	t.Parallel()
 
-	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
-	tagRepository := mocks.NewMockTagRepository(ctrl)
-	gameTagRepository := mocks.NewMockGameTagRepository(ctrl)
-
-	s := New(ServiceParams{
-		GameService:       gameService,
-		TagRepository:     tagRepository,
-		GameTagRepository: gameTagRepository,
-	})
-
 	type args struct {
 		gameID          uint
 		newTagIDs       []uint
@@ -73,7 +62,7 @@ func TestService_getGameTagsForInsert(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := s.getGameTagsForInsert(tt.args.gameID, tt.args.newTagIDs, tt.args.currentGameTags); !reflect.DeepEqual(got, tt.want) {
+			if got := getGameTagsForInsert(tt.args.gameID, tt.args.newTagIDs, tt.args.currentGameTags); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getGameTagsForInsert() = %v, want %v", got, tt.want)
 			}
 		})
@@ -82,17 +71,6 @@ func TestService_getGameTagsForInsert(t *testing.T) {
 
 func TestService_getGameTagsForDelete(t *testing.T) {
 	t.Parallel()
-
-	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
-	tagRepository := mocks.NewMockTagRepository(ctrl)
-	gameTagRepository := mocks.NewMockGameTagRepository(ctrl)
-
-	s := New(ServiceParams{
-		GameService:       gameService,
-		TagRepository:     tagRepository,
-		GameTagRepository: gameTagRepository,
-	})
 
 	type args struct {
 		newTagIDs       []uint
@@ -130,7 +108,7 @@ func TestService_getGameTagsForDelete(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := s.getGameTagsForDelete(tt.args.newTagIDs, tt.args.currentGameTags); !reflect.DeepEqual(got, tt.want) {
+			if got := getGameTagsForDelete(tt.args.newTagIDs, tt.args.currentGameTags); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getGameTagsForDelete() = %v, want %v", got, tt.want)
 			}
 		})
@@ -141,12 +119,10 @@ func TestService_UpdateTagsForGame(t *testing.T) {
 	t.Parallel()
 
 	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
 	tagRepository := mocks.NewMockTagRepository(ctrl)
 	gameTagRepository := mocks.NewMockGameTagRepository(ctrl)
 
 	s := New(ServiceParams{
-		GameService:       gameService,
 		TagRepository:     tagRepository,
 		GameTagRepository: gameTagRepository,
 	})

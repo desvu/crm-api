@@ -98,12 +98,12 @@ func (s Service) UpdateTagsForGame(ctx context.Context, game *entity.Game, tagID
 		return err
 	}
 
-	err = s.GameTagRepository.DeleteMultiple(ctx, s.getGameTagsForDelete(tagIDs, currentGameTags))
+	err = s.GameTagRepository.DeleteMultiple(ctx, getGameTagsForDelete(tagIDs, currentGameTags))
 	if err != nil {
 		return err
 	}
 
-	err = s.GameTagRepository.CreateMultiple(ctx, s.getGameTagsForInsert(game.ID, tagIDs, currentGameTags))
+	err = s.GameTagRepository.CreateMultiple(ctx, getGameTagsForInsert(game.ID, tagIDs, currentGameTags))
 	if err != nil {
 		return err
 	}
@@ -111,7 +111,7 @@ func (s Service) UpdateTagsForGame(ctx context.Context, game *entity.Game, tagID
 	return nil
 }
 
-func (s Service) getGameTagsForInsert(gameID uint, newTagIDs []uint, currentGameTags []entity.GameTag) []entity.GameTag {
+func getGameTagsForInsert(gameID uint, newTagIDs []uint, currentGameTags []entity.GameTag) []entity.GameTag {
 	gameTags := make([]entity.GameTag, 0)
 	for _, newTagID := range newTagIDs {
 		var hasMatch bool
@@ -132,7 +132,7 @@ func (s Service) getGameTagsForInsert(gameID uint, newTagIDs []uint, currentGame
 	return gameTags
 }
 
-func (s Service) getGameTagsForDelete(newTagIDs []uint, currentGameTags []entity.GameTag) []entity.GameTag {
+func getGameTagsForDelete(newTagIDs []uint, currentGameTags []entity.GameTag) []entity.GameTag {
 	gameTags := make([]entity.GameTag, 0)
 	for _, currentGameTag := range currentGameTags {
 		var hasMatch bool
