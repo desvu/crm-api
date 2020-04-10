@@ -98,12 +98,12 @@ func (s Service) UpdateGenresForGame(ctx context.Context, game *entity.Game, gen
 		return err
 	}
 
-	err = s.GameGenreRepository.DeleteMultiple(ctx, s.getGameGenresForDelete(genreIDs, currentGameGenres))
+	err = s.GameGenreRepository.DeleteMultiple(ctx, getGameGenresForDelete(genreIDs, currentGameGenres))
 	if err != nil {
 		return err
 	}
 
-	err = s.GameGenreRepository.CreateMultiple(ctx, s.getGameGenresForInsert(game.ID, genreIDs, currentGameGenres))
+	err = s.GameGenreRepository.CreateMultiple(ctx, getGameGenresForInsert(game.ID, genreIDs, currentGameGenres))
 	if err != nil {
 		return err
 	}
@@ -111,7 +111,7 @@ func (s Service) UpdateGenresForGame(ctx context.Context, game *entity.Game, gen
 	return nil
 }
 
-func (s Service) getGameGenresForInsert(gameID uint, newGenreIDs []uint, currentGameGenres []entity.GameGenre) []entity.GameGenre {
+func getGameGenresForInsert(gameID uint, newGenreIDs []uint, currentGameGenres []entity.GameGenre) []entity.GameGenre {
 	gameGenres := make([]entity.GameGenre, 0)
 	for _, newGenreID := range newGenreIDs {
 		var hasMatch bool
@@ -132,7 +132,7 @@ func (s Service) getGameGenresForInsert(gameID uint, newGenreIDs []uint, current
 	return gameGenres
 }
 
-func (s Service) getGameGenresForDelete(newGenreIDs []uint, currentGameGenres []entity.GameGenre) []entity.GameGenre {
+func getGameGenresForDelete(newGenreIDs []uint, currentGameGenres []entity.GameGenre) []entity.GameGenre {
 	gameGenres := make([]entity.GameGenre, 0)
 	for _, currentGameGenre := range currentGameGenres {
 		var hasMatch bool

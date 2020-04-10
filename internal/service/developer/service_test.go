@@ -13,17 +13,6 @@ import (
 func TestService_getGameDevelopersForInsert(t *testing.T) {
 	t.Parallel()
 
-	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
-	developerRepository := mocks.NewMockDeveloperRepository(ctrl)
-	gameDeveloperRepository := mocks.NewMockGameDeveloperRepository(ctrl)
-
-	s := New(ServiceParams{
-		GameService:             gameService,
-		DeveloperRepository:     developerRepository,
-		GameDeveloperRepository: gameDeveloperRepository,
-	})
-
 	type args struct {
 		gameID                uint
 		newDeveloperIDs       []uint
@@ -73,7 +62,7 @@ func TestService_getGameDevelopersForInsert(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := s.getGameDevelopersForInsert(tt.args.gameID, tt.args.newDeveloperIDs, tt.args.currentGameDevelopers); !reflect.DeepEqual(got, tt.want) {
+			if got := getGameDevelopersForInsert(tt.args.gameID, tt.args.newDeveloperIDs, tt.args.currentGameDevelopers); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getGameDevelopersForInsert() = %v, want %v", got, tt.want)
 			}
 		})
@@ -82,17 +71,6 @@ func TestService_getGameDevelopersForInsert(t *testing.T) {
 
 func TestService_getGameDevelopersForDelete(t *testing.T) {
 	t.Parallel()
-
-	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
-	developerRepository := mocks.NewMockDeveloperRepository(ctrl)
-	gameDeveloperRepository := mocks.NewMockGameDeveloperRepository(ctrl)
-
-	s := New(ServiceParams{
-		GameService:             gameService,
-		DeveloperRepository:     developerRepository,
-		GameDeveloperRepository: gameDeveloperRepository,
-	})
 
 	type args struct {
 		newDeveloperIDs       []uint
@@ -130,7 +108,7 @@ func TestService_getGameDevelopersForDelete(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := s.getGameDevelopersForDelete(tt.args.newDeveloperIDs, tt.args.currentGameDevelopers); !reflect.DeepEqual(got, tt.want) {
+			if got := getGameDevelopersForDelete(tt.args.newDeveloperIDs, tt.args.currentGameDevelopers); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getGameDevelopersForDelete() = %v, want %v", got, tt.want)
 			}
 		})
@@ -141,12 +119,10 @@ func TestService_UpdateDevelopersForGame(t *testing.T) {
 	t.Parallel()
 
 	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
 	developerRepository := mocks.NewMockDeveloperRepository(ctrl)
 	gameDeveloperRepository := mocks.NewMockGameDeveloperRepository(ctrl)
 
 	s := New(ServiceParams{
-		GameService:             gameService,
 		DeveloperRepository:     developerRepository,
 		GameDeveloperRepository: gameDeveloperRepository,
 	})
