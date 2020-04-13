@@ -98,12 +98,12 @@ func (s Service) UpdateDevelopersForGame(ctx context.Context, game *entity.Game,
 		return err
 	}
 
-	err = s.GameDeveloperRepository.DeleteMultiple(ctx, s.getGameDevelopersForDelete(developerIDs, currentGameDevelopers))
+	err = s.GameDeveloperRepository.DeleteMultiple(ctx, getGameDevelopersForDelete(developerIDs, currentGameDevelopers))
 	if err != nil {
 		return err
 	}
 
-	err = s.GameDeveloperRepository.CreateMultiple(ctx, s.getGameDevelopersForInsert(game.ID, developerIDs, currentGameDevelopers))
+	err = s.GameDeveloperRepository.CreateMultiple(ctx, getGameDevelopersForInsert(game.ID, developerIDs, currentGameDevelopers))
 	if err != nil {
 		return err
 	}
@@ -111,7 +111,7 @@ func (s Service) UpdateDevelopersForGame(ctx context.Context, game *entity.Game,
 	return nil
 }
 
-func (s Service) getGameDevelopersForInsert(gameID uint, newDeveloperIDs []uint, currentGameDevelopers []entity.GameDeveloper) []entity.GameDeveloper {
+func getGameDevelopersForInsert(gameID uint, newDeveloperIDs []uint, currentGameDevelopers []entity.GameDeveloper) []entity.GameDeveloper {
 	gameDevelopers := make([]entity.GameDeveloper, 0)
 	for _, newDeveloperID := range newDeveloperIDs {
 		var hasMatch bool
@@ -132,7 +132,7 @@ func (s Service) getGameDevelopersForInsert(gameID uint, newDeveloperIDs []uint,
 	return gameDevelopers
 }
 
-func (s Service) getGameDevelopersForDelete(newDeveloperIDs []uint, currentGameDevelopers []entity.GameDeveloper) []entity.GameDeveloper {
+func getGameDevelopersForDelete(newDeveloperIDs []uint, currentGameDevelopers []entity.GameDeveloper) []entity.GameDeveloper {
 	gameDevelopers := make([]entity.GameDeveloper, 0)
 	for _, currentGameDeveloper := range currentGameDevelopers {
 		var hasMatch bool

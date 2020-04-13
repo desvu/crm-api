@@ -9,15 +9,18 @@ import (
 	"go.uber.org/zap"
 )
 
-func New() (*Transactor, *Store) {
-	store := newStore()
-	return &Transactor{
-		TransactorStore: store,
-	}, store
-}
-
 type Transactor struct {
 	TransactorStore *Store
+}
+
+func New() *Transactor {
+	return &Transactor{
+		TransactorStore: newStore(),
+	}
+}
+
+func (h *Transactor) GetStore() *Store {
+	return h.TransactorStore
 }
 
 func (h *Transactor) Transact(ctx context.Context, txFunc func(tx context.Context) error) (err error) {

@@ -2,6 +2,7 @@ package graphql
 
 import (
 	"github.com/qilin/crm-api/internal/domain/service"
+	"go.uber.org/fx"
 )
 
 type Resolver struct {
@@ -9,8 +10,14 @@ type Resolver struct {
 	games service.GameService
 }
 
-func NewResolver(games service.GameService) *Resolver {
-	return &Resolver{games: games}
+type Params struct {
+	fx.In
+
+	GameService service.GameService
+}
+
+func NewResolver(params Params) *Resolver {
+	return &Resolver{games: params.GameService}
 }
 
 // Mutation returns MutationResolver implementation.

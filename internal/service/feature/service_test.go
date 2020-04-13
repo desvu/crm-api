@@ -13,17 +13,6 @@ import (
 func TestService_getGameFeaturesForInsert(t *testing.T) {
 	t.Parallel()
 
-	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
-	featureRepository := mocks.NewMockFeatureRepository(ctrl)
-	gameFeatureRepository := mocks.NewMockGameFeatureRepository(ctrl)
-
-	s := New(ServiceParams{
-		GameService:           gameService,
-		FeatureRepository:     featureRepository,
-		GameFeatureRepository: gameFeatureRepository,
-	})
-
 	type args struct {
 		gameID              uint
 		newFeatureIDs       []uint
@@ -73,7 +62,7 @@ func TestService_getGameFeaturesForInsert(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := s.getGameFeaturesForInsert(tt.args.gameID, tt.args.newFeatureIDs, tt.args.currentGameFeatures); !reflect.DeepEqual(got, tt.want) {
+			if got := getGameFeaturesForInsert(tt.args.gameID, tt.args.newFeatureIDs, tt.args.currentGameFeatures); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getGameFeaturesForInsert() = %v, want %v", got, tt.want)
 			}
 		})
@@ -82,17 +71,6 @@ func TestService_getGameFeaturesForInsert(t *testing.T) {
 
 func TestService_getGameFeaturesForDelete(t *testing.T) {
 	t.Parallel()
-
-	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
-	featureRepository := mocks.NewMockFeatureRepository(ctrl)
-	gameFeatureRepository := mocks.NewMockGameFeatureRepository(ctrl)
-
-	s := New(ServiceParams{
-		GameService:           gameService,
-		FeatureRepository:     featureRepository,
-		GameFeatureRepository: gameFeatureRepository,
-	})
 
 	type args struct {
 		newFeatureIDs       []uint
@@ -130,7 +108,7 @@ func TestService_getGameFeaturesForDelete(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := s.getGameFeaturesForDelete(tt.args.newFeatureIDs, tt.args.currentGameFeatures); !reflect.DeepEqual(got, tt.want) {
+			if got := getGameFeaturesForDelete(tt.args.newFeatureIDs, tt.args.currentGameFeatures); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getGameFeaturesForDelete() = %v, want %v", got, tt.want)
 			}
 		})
@@ -141,12 +119,10 @@ func TestService_UpdateFeaturesForGame(t *testing.T) {
 	t.Parallel()
 
 	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
 	featureRepository := mocks.NewMockFeatureRepository(ctrl)
 	gameFeatureRepository := mocks.NewMockGameFeatureRepository(ctrl)
 
 	s := New(ServiceParams{
-		GameService:           gameService,
 		FeatureRepository:     featureRepository,
 		GameFeatureRepository: gameFeatureRepository,
 	})

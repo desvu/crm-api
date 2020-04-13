@@ -98,12 +98,12 @@ func (s Service) UpdateFeaturesForGame(ctx context.Context, game *entity.Game, f
 		return err
 	}
 
-	err = s.GameFeatureRepository.DeleteMultiple(ctx, s.getGameFeaturesForDelete(featureIDs, currentGameFeatures))
+	err = s.GameFeatureRepository.DeleteMultiple(ctx, getGameFeaturesForDelete(featureIDs, currentGameFeatures))
 	if err != nil {
 		return err
 	}
 
-	err = s.GameFeatureRepository.CreateMultiple(ctx, s.getGameFeaturesForInsert(game.ID, featureIDs, currentGameFeatures))
+	err = s.GameFeatureRepository.CreateMultiple(ctx, getGameFeaturesForInsert(game.ID, featureIDs, currentGameFeatures))
 	if err != nil {
 		return err
 	}
@@ -111,7 +111,7 @@ func (s Service) UpdateFeaturesForGame(ctx context.Context, game *entity.Game, f
 	return nil
 }
 
-func (s Service) getGameFeaturesForInsert(gameID uint, newFeatureIDs []uint, currentGameFeatures []entity.GameFeature) []entity.GameFeature {
+func getGameFeaturesForInsert(gameID uint, newFeatureIDs []uint, currentGameFeatures []entity.GameFeature) []entity.GameFeature {
 	gameFeatures := make([]entity.GameFeature, 0)
 	for _, newFeatureID := range newFeatureIDs {
 		var hasMatch bool
@@ -132,7 +132,7 @@ func (s Service) getGameFeaturesForInsert(gameID uint, newFeatureIDs []uint, cur
 	return gameFeatures
 }
 
-func (s Service) getGameFeaturesForDelete(newFeatureIDs []uint, currentGameFeatures []entity.GameFeature) []entity.GameFeature {
+func getGameFeaturesForDelete(newFeatureIDs []uint, currentGameFeatures []entity.GameFeature) []entity.GameFeature {
 	gameFeatures := make([]entity.GameFeature, 0)
 	for _, currentGameFeature := range currentGameFeatures {
 		var hasMatch bool

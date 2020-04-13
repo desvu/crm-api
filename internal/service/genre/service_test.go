@@ -13,17 +13,6 @@ import (
 func TestService_getGameGenresForInsert(t *testing.T) {
 	t.Parallel()
 
-	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
-	genreRepository := mocks.NewMockGenreRepository(ctrl)
-	gameGenreRepository := mocks.NewMockGameGenreRepository(ctrl)
-
-	s := New(ServiceParams{
-		GameService:         gameService,
-		GenreRepository:     genreRepository,
-		GameGenreRepository: gameGenreRepository,
-	})
-
 	type args struct {
 		gameID            uint
 		newGenreIDs       []uint
@@ -73,7 +62,7 @@ func TestService_getGameGenresForInsert(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := s.getGameGenresForInsert(tt.args.gameID, tt.args.newGenreIDs, tt.args.currentGameGenres); !reflect.DeepEqual(got, tt.want) {
+			if got := getGameGenresForInsert(tt.args.gameID, tt.args.newGenreIDs, tt.args.currentGameGenres); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getGameGenresForInsert() = %v, want %v", got, tt.want)
 			}
 		})
@@ -82,17 +71,6 @@ func TestService_getGameGenresForInsert(t *testing.T) {
 
 func TestService_getGameGenresForDelete(t *testing.T) {
 	t.Parallel()
-
-	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
-	genreRepository := mocks.NewMockGenreRepository(ctrl)
-	gameGenreRepository := mocks.NewMockGameGenreRepository(ctrl)
-
-	s := New(ServiceParams{
-		GameService:         gameService,
-		GenreRepository:     genreRepository,
-		GameGenreRepository: gameGenreRepository,
-	})
 
 	type args struct {
 		newGenreIDs       []uint
@@ -130,7 +108,7 @@ func TestService_getGameGenresForDelete(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := s.getGameGenresForDelete(tt.args.newGenreIDs, tt.args.currentGameGenres); !reflect.DeepEqual(got, tt.want) {
+			if got := getGameGenresForDelete(tt.args.newGenreIDs, tt.args.currentGameGenres); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("getGameGenresForDelete() = %v, want %v", got, tt.want)
 			}
 		})
@@ -141,12 +119,10 @@ func TestService_UpdateGenresForGame(t *testing.T) {
 	t.Parallel()
 
 	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
 	genreRepository := mocks.NewMockGenreRepository(ctrl)
 	gameGenreRepository := mocks.NewMockGameGenreRepository(ctrl)
 
 	s := New(ServiceParams{
-		GameService:         gameService,
 		GenreRepository:     genreRepository,
 		GameGenreRepository: gameGenreRepository,
 	})

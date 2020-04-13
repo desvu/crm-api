@@ -5,10 +5,13 @@ import (
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/repository"
+	"go.uber.org/fx"
 	"golang.org/x/sync/errgroup"
 )
 
 type RepositoryParams struct {
+	fx.In
+
 	GameRepository          repository.GameRepository
 	TagRepository           repository.TagRepository
 	GameTagRepository       repository.GameTagRepository

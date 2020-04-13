@@ -98,12 +98,12 @@ func (s Service) UpdatePublishersForGame(ctx context.Context, game *entity.Game,
 		return err
 	}
 
-	err = s.GamePublisherRepository.DeleteMultiple(ctx, s.getGamePublishersForDelete(publisherIDs, currentGamePublisher))
+	err = s.GamePublisherRepository.DeleteMultiple(ctx, getGamePublishersForDelete(publisherIDs, currentGamePublisher))
 	if err != nil {
 		return err
 	}
 
-	err = s.GamePublisherRepository.CreateMultiple(ctx, s.getGamePublishersForInsert(game.ID, publisherIDs, currentGamePublisher))
+	err = s.GamePublisherRepository.CreateMultiple(ctx, getGamePublishersForInsert(game.ID, publisherIDs, currentGamePublisher))
 	if err != nil {
 		return err
 	}
@@ -111,7 +111,7 @@ func (s Service) UpdatePublishersForGame(ctx context.Context, game *entity.Game,
 	return nil
 }
 
-func (s Service) getGamePublishersForInsert(gameID uint, newPublisherIDs []uint, currentGamePublisher []entity.GamePublisher) []entity.GamePublisher {
+func getGamePublishersForInsert(gameID uint, newPublisherIDs []uint, currentGamePublisher []entity.GamePublisher) []entity.GamePublisher {
 	gamePublisher := make([]entity.GamePublisher, 0)
 	for _, newPublisherID := range newPublisherIDs {
 		var hasMatch bool
@@ -132,7 +132,7 @@ func (s Service) getGamePublishersForInsert(gameID uint, newPublisherIDs []uint,
 	return gamePublisher
 }
 
-func (s Service) getGamePublishersForDelete(newPublisherIDs []uint, currentGamePublisher []entity.GamePublisher) []entity.GamePublisher {
+func getGamePublishersForDelete(newPublisherIDs []uint, currentGamePublisher []entity.GamePublisher) []entity.GamePublisher {
 	gamePublisher := make([]entity.GamePublisher, 0)
 	for _, currentGamePublisher := range currentGamePublisher {
 		var hasMatch bool
