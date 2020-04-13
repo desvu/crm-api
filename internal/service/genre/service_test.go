@@ -119,7 +119,6 @@ func TestService_UpdateGenresForGame(t *testing.T) {
 	t.Parallel()
 
 	ctrl := gomock.NewController(t)
-	gameService := mocks.NewMockGameService(ctrl)
 	genreRepository := mocks.NewMockGenreRepository(ctrl)
 	gameGenreRepository := mocks.NewMockGameGenreRepository(ctrl)
 
