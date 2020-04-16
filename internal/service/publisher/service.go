@@ -73,16 +73,16 @@ func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Publisher, 
 	return s.PublisherRepository.FindByIDs(ctx, ids)
 }
 
-func (s Service) GetByGameID(ctx context.Context, gameID uint) ([]entity.Publisher, error) {
-	gamePublishers, err := s.GamePublisherRepository.FindByGameID(ctx, gameID)
+func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Publisher, error) {
+	gamePublishers, err := s.GameRevisionPublisherRepository.FindByGameRevisionID(ctx, gameID)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.GetByIDs(ctx, entity.NewGamePublisherArray(gamePublishers).IDs())
+	return s.GetByIDs(ctx, entity.NewGameRevisionPublisherArray(gamePublishers).IDs())
 }
 
-func (s Service) UpdatePublishersForGame(ctx context.Context, game *entity.Game, publisherIDs []uint) error {
+func (s Service) UpdatePublishersForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, publisherIDs []uint) error {
 	publishers, err := s.GetByIDs(ctx, publisherIDs)
 	if err != nil {
 		return err
@@ -93,17 +93,17 @@ func (s Service) UpdatePublishersForGame(ctx context.Context, game *entity.Game,
 		return ErrInvalidPublisherIDs
 	}
 
-	currentGamePublisher, err := s.GamePublisherRepository.FindByGameID(ctx, game.ID)
+	currentGamePublisher, err := s.GameRevisionPublisherRepository.FindByGameRevisionID(ctx, gameRevision.ID)
 	if err != nil {
 		return err
 	}
 
-	err = s.GamePublisherRepository.DeleteMultiple(ctx, getGamePublishersForDelete(publisherIDs, currentGamePublisher))
+	err = s.GameRevisionPublisherRepository.DeleteMultiple(ctx, getGamePublishersForDelete(publisherIDs, currentGamePublisher))
 	if err != nil {
 		return err
 	}
 
-	err = s.GamePublisherRepository.CreateMultiple(ctx, getGamePublishersForInsert(game.ID, publisherIDs, currentGamePublisher))
+	err = s.GameRevisionPublisherRepository.CreateMultiple(ctx, getGamePublishersForInsert(gameRevision.ID, publisherIDs, currentGamePublisher))
 	if err != nil {
 		return err
 	}
@@ -111,8 +111,8 @@ func (s Service) UpdatePublishersForGame(ctx context.Context, game *entity.Game,
 	return nil
 }
 
-func getGamePublishersForInsert(gameID uint, newPublisherIDs []uint, currentGamePublisher []entity.GamePublisher) []entity.GamePublisher {
-	gamePublisher := make([]entity.GamePublisher, 0)
+func getGamePublishersForInsert(gameID uint, newPublisherIDs []uint, currentGamePublisher []entity.GameRevisionPublisher) []entity.GameRevisionPublisher {
+	gamePublisher := make([]entity.GameRevisionPublisher, 0)
 	for _, newPublisherID := range newPublisherIDs {
 		var hasMatch bool
 		for _, currentGamePublisher := range currentGamePublisher {
@@ -122,9 +122,9 @@ func getGamePublishersForInsert(gameID uint, newPublisherIDs []uint, currentGame
 		}
 
 		if !hasMatch {
-			gamePublisher = append(gamePublisher, entity.GamePublisher{
-				GameID:      gameID,
-				PublisherID: newPublisherID,
+			gamePublisher = append(gamePublisher, entity.GameRevisionPublisher{
+				GameRevisionID: gameID,
+				PublisherID:    newPublisherID,
 			})
 		}
 	}
@@ -132,8 +132,8 @@ func getGamePublishersForInsert(gameID uint, newPublisherIDs []uint, currentGame
 	return gamePublisher
 }
 
-func getGamePublishersForDelete(newPublisherIDs []uint, currentGamePublisher []entity.GamePublisher) []entity.GamePublisher {
-	gamePublisher := make([]entity.GamePublisher, 0)
+func getGamePublishersForDelete(newPublisherIDs []uint, currentGamePublisher []entity.GameRevisionPublisher) []entity.GameRevisionPublisher {
+	gamePublisher := make([]entity.GameRevisionPublisher, 0)
 	for _, currentGamePublisher := range currentGamePublisher {
 		var hasMatch bool
 		for _, newPublisherID := range newPublisherIDs {
@@ -143,10 +143,10 @@ func getGamePublishersForDelete(newPublisherIDs []uint, currentGamePublisher []e
 		}
 
 		if !hasMatch {
-			gamePublisher = append(gamePublisher, entity.GamePublisher{
-				ID:          currentGamePublisher.ID,
-				GameID:      currentGamePublisher.GameID,
-				PublisherID: currentGamePublisher.PublisherID,
+			gamePublisher = append(gamePublisher, entity.GameRevisionPublisher{
+				ID:             currentGamePublisher.ID,
+				GameRevisionID: currentGamePublisher.GameRevisionID,
+				PublisherID:    currentGamePublisher.PublisherID,
 			})
 		}
 	}

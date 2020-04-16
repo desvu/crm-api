@@ -9,8 +9,8 @@ import (
 type ServiceParams struct {
 	fx.In
 
-	DeveloperRepository     repository.DeveloperRepository
-	GameDeveloperRepository repository.GameDeveloperRepository
+	DeveloperRepository             repository.DeveloperRepository
+	GameRevisionDeveloperRepository repository.GameRevisionDeveloperRepository
 }
 
 func New(params ServiceParams) service.DeveloperService {

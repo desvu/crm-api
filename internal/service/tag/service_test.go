@@ -16,48 +16,48 @@ func TestService_getGameTagsForInsert(t *testing.T) {
 	type args struct {
 		gameID          uint
 		newTagIDs       []uint
-		currentGameTags []entity.GameTag
+		currentGameTags []entity.GameRevisionTag
 	}
 	tests := []struct {
 		name string
 		args args
-		want []entity.GameTag
+		want []entity.GameRevisionTag
 	}{
 		{
 			name: "getting a list of tag IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				gameID:          1,
 				newTagIDs:       []uint{1, 2, 3, 4},
-				currentGameTags: []entity.GameTag{{TagID: 2}, {TagID: 3}},
+				currentGameTags: []entity.GameRevisionTag{{TagID: 2}, {TagID: 3}},
 			},
-			want: []entity.GameTag{{TagID: 1, GameID: 1}, {TagID: 4, GameID: 1}},
+			want: []entity.GameRevisionTag{{TagID: 1, GameRevisionID: 1}, {TagID: 4, GameRevisionID: 1}},
 		},
 		{
 			name: "getting a list of tag IDs with a fully included subset of IDs associated with the device",
 			args: args{
 				gameID:          1,
 				newTagIDs:       []uint{2, 3},
-				currentGameTags: []entity.GameTag{{TagID: 2}, {TagID: 3}},
+				currentGameTags: []entity.GameRevisionTag{{TagID: 2}, {TagID: 3}},
 			},
-			want: []entity.GameTag{},
+			want: []entity.GameRevisionTag{},
 		},
 		{
 			name: "getting a list of tag IDs with or without an incoming subset of IDs associated with the device",
 			args: args{
 				gameID:          1,
 				newTagIDs:       []uint{5, 6},
-				currentGameTags: []entity.GameTag{{TagID: 2}, {TagID: 3}},
+				currentGameTags: []entity.GameRevisionTag{{TagID: 2}, {TagID: 3}},
 			},
-			want: []entity.GameTag{{TagID: 5, GameID: 1}, {TagID: 6, GameID: 1}},
+			want: []entity.GameRevisionTag{{TagID: 5, GameRevisionID: 1}, {TagID: 6, GameRevisionID: 1}},
 		},
 		{
 			name: "getting a list of tag IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				gameID:          1,
 				newTagIDs:       []uint{1, 2, 2, 3, 4},
-				currentGameTags: []entity.GameTag{{TagID: 2}, {TagID: 3}},
+				currentGameTags: []entity.GameRevisionTag{{TagID: 2}, {TagID: 3}},
 			},
-			want: []entity.GameTag{{TagID: 1, GameID: 1}, {TagID: 4, GameID: 1}},
+			want: []entity.GameRevisionTag{{TagID: 1, GameRevisionID: 1}, {TagID: 4, GameRevisionID: 1}},
 		},
 	}
 	for _, tt := range tests {
@@ -74,36 +74,36 @@ func TestService_getGameTagsForDelete(t *testing.T) {
 
 	type args struct {
 		newTagIDs       []uint
-		currentGameTags []entity.GameTag
+		currentGameTags []entity.GameRevisionTag
 	}
 	tests := []struct {
 		name string
 		args args
-		want []entity.GameTag
+		want []entity.GameRevisionTag
 	}{
 		{
 			name: "getting a list of tag IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				newTagIDs:       []uint{1, 2, 3, 4},
-				currentGameTags: []entity.GameTag{{TagID: 2}, {TagID: 3}},
+				currentGameTags: []entity.GameRevisionTag{{TagID: 2}, {TagID: 3}},
 			},
-			want: []entity.GameTag{},
+			want: []entity.GameRevisionTag{},
 		},
 		{
 			name: "getting a list of tag IDs with a fully included subset of IDs associated with the device",
 			args: args{
 				newTagIDs:       []uint{2, 3},
-				currentGameTags: []entity.GameTag{{TagID: 2}, {TagID: 3}},
+				currentGameTags: []entity.GameRevisionTag{{TagID: 2}, {TagID: 3}},
 			},
-			want: []entity.GameTag{},
+			want: []entity.GameRevisionTag{},
 		},
 		{
 			name: "getting a list of tag IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				newTagIDs:       []uint{1, 4},
-				currentGameTags: []entity.GameTag{{ID: 1, TagID: 2, GameID: 1}, {ID: 1, TagID: 3, GameID: 1}},
+				currentGameTags: []entity.GameRevisionTag{{ID: 1, TagID: 2, GameRevisionID: 1}, {ID: 1, TagID: 3, GameRevisionID: 1}},
 			},
-			want: []entity.GameTag{{ID: 1, TagID: 2, GameID: 1}, {ID: 1, TagID: 3, GameID: 1}},
+			want: []entity.GameRevisionTag{{ID: 1, TagID: 2, GameRevisionID: 1}, {ID: 1, TagID: 3, GameRevisionID: 1}},
 		},
 	}
 	for _, tt := range tests {
@@ -120,17 +120,17 @@ func TestService_UpdateTagsForGame(t *testing.T) {
 
 	ctrl := gomock.NewController(t)
 	tagRepository := mocks.NewMockTagRepository(ctrl)
-	gameTagRepository := mocks.NewMockGameTagRepository(ctrl)
+	gameRevisionTagRepository := mocks.NewMockGameRevisionTagRepository(ctrl)
 
 	s := New(ServiceParams{
-		TagRepository:     tagRepository,
-		GameTagRepository: gameTagRepository,
+		TagRepository:             tagRepository,
+		GameRevisionTagRepository: gameRevisionTagRepository,
 	})
 
 	type args struct {
-		ctx    context.Context
-		game   *entity.Game
-		tagIDs []uint
+		ctx          context.Context
+		gameRevision *entity.GameRevision
+		tagIDs       []uint
 	}
 	tests := []struct {
 		name    string
@@ -141,18 +141,18 @@ func TestService_UpdateTagsForGame(t *testing.T) {
 		{
 			name: "getting a non-existent tag ID",
 			args: args{
-				ctx:    context.Background(),
-				game:   &entity.Game{ID: 1},
-				tagIDs: []uint{1, 2, 3},
+				ctx:          context.Background(),
+				gameRevision: &entity.GameRevision{ID: 1},
+				tagIDs:       []uint{1, 2, 3},
 			},
 			wantErr: false,
 		},
 		{
 			name: "getting a non-existent tag ID",
 			args: args{
-				ctx:    context.Background(),
-				game:   &entity.Game{ID: 1},
-				tagIDs: []uint{1, 2, 3, 4},
+				ctx:          context.Background(),
+				gameRevision: &entity.GameRevision{ID: 1},
+				tagIDs:       []uint{1, 2, 3, 4},
 			},
 			wantErr: true,
 		},
@@ -163,16 +163,16 @@ func TestService_UpdateTagsForGame(t *testing.T) {
 			tagRepository.EXPECT().FindByIDs(gomock.Any(), gomock.Any()).
 				Return([]entity.Tag{{ID: 1}, {ID: 2}, {ID: 3}}, nil)
 
-			// s.GameTagRepository.FindByGameID
-			gameTagRepository.EXPECT().FindByGameID(gomock.Any(), gomock.Any()).
-				Return([]entity.GameTag{{TagID: 3}}, nil)
+			// s.GameRevisionTagRepository.FindByGameRevisionID
+			gameRevisionTagRepository.EXPECT().FindByGameRevisionID(gomock.Any(), gomock.Any()).
+				Return([]entity.GameRevisionTag{{TagID: 3}}, nil)
 
-			gameTagRepository.EXPECT().DeleteMultiple(gomock.Any(), gomock.Any())
-			gameTagRepository.EXPECT().CreateMultiple(gomock.Any(), gomock.Any())
+			gameRevisionTagRepository.EXPECT().DeleteMultiple(gomock.Any(), gomock.Any())
+			gameRevisionTagRepository.EXPECT().CreateMultiple(gomock.Any(), gomock.Any())
 
-			err := s.UpdateTagsForGame(tt.args.ctx, tt.args.game, tt.args.tagIDs)
+			err := s.UpdateTagsForGameRevision(tt.args.ctx, tt.args.gameRevision, tt.args.tagIDs)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("UpdateTagsForGame() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("UpdateTagsForGameRevision() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

@@ -76,6 +76,10 @@ func (r TagRepository) FindByID(ctx context.Context, id uint) (*entity.Tag, erro
 }
 
 func (r TagRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.Tag, error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+
 	var models []model
 
 	err := r.h.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()

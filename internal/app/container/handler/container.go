@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/qilin/crm-api/internal/graphql"
+	"github.com/qilin/crm-api/internal/handler/graphql"
 	"go.uber.org/fx"
 )
 

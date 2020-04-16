@@ -3,6 +3,8 @@ package postgres
 import (
 	"context"
 
+	"github.com/pkg/errors"
+
 	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
@@ -27,7 +29,7 @@ func (r GameRepository) Create(ctx context.Context, i *entity.Game) error {
 
 	_, err = r.h.ModelContext(ctx, model).Insert()
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	*i = *model.Convert()
@@ -42,7 +44,7 @@ func (r GameRepository) Update(ctx context.Context, i *entity.Game) error {
 
 	_, err = r.h.ModelContext(ctx, model).WherePK().Update()
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	*i = *model.Convert()
@@ -64,7 +66,7 @@ func (r GameRepository) Delete(ctx context.Context, i *entity.Game) error {
 	return nil
 }
 
-func (r GameRepository) FindByID(ctx context.Context, id uint) (*entity.Game, error) {
+func (r GameRepository) FindByID(ctx context.Context, id string) (*entity.Game, error) {
 	model := new(model)
 
 	err := r.h.ModelContext(ctx, model).Where("id = ?", id).Select()
@@ -75,7 +77,7 @@ func (r GameRepository) FindByID(ctx context.Context, id uint) (*entity.Game, er
 	return model.Convert(), nil
 }
 
-func (r GameRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.Game, error) {
+func (r GameRepository) FindByIDs(ctx context.Context, ids []string) ([]entity.Game, error) {
 	var models []model
 
 	err := r.h.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()

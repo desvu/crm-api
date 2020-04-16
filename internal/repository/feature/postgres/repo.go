@@ -5,7 +5,6 @@ import (
 
 	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 
-	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
 )
@@ -77,9 +76,13 @@ func (r FeatureRepository) FindByID(ctx context.Context, id uint) (*entity.Featu
 }
 
 func (r FeatureRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.Feature, error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+
 	var models []model
 
-	err := r.h.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
+	err := r.h.ModelContext(ctx, &models).WhereIn("id in (?)", ids).Select()
 	if err != nil {
 		return nil, err
 	}

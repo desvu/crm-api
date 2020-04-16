@@ -73,16 +73,16 @@ func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Genre, erro
 	return s.GenreRepository.FindByIDs(ctx, ids)
 }
 
-func (s Service) GetByGameID(ctx context.Context, gameID uint) ([]entity.Genre, error) {
-	gameGenres, err := s.GameGenreRepository.FindByGameID(ctx, gameID)
+func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Genre, error) {
+	gameGenres, err := s.GameRevisionGenreRepository.FindByGameRevisionID(ctx, gameID)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.GetByIDs(ctx, entity.NewGameGenreArray(gameGenres).IDs())
+	return s.GetByIDs(ctx, entity.NewGameRevisionGenreArray(gameGenres).IDs())
 }
 
-func (s Service) UpdateGenresForGame(ctx context.Context, game *entity.Game, genreIDs []uint) error {
+func (s Service) UpdateGenresForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, genreIDs []uint) error {
 	genres, err := s.GetByIDs(ctx, genreIDs)
 	if err != nil {
 		return err
@@ -93,17 +93,17 @@ func (s Service) UpdateGenresForGame(ctx context.Context, game *entity.Game, gen
 		return ErrInvalidGenreIDs
 	}
 
-	currentGameGenres, err := s.GameGenreRepository.FindByGameID(ctx, game.ID)
+	currentGameGenres, err := s.GameRevisionGenreRepository.FindByGameRevisionID(ctx, gameRevision.ID)
 	if err != nil {
 		return err
 	}
 
-	err = s.GameGenreRepository.DeleteMultiple(ctx, getGameGenresForDelete(genreIDs, currentGameGenres))
+	err = s.GameRevisionGenreRepository.DeleteMultiple(ctx, getGameGenresForDelete(genreIDs, currentGameGenres))
 	if err != nil {
 		return err
 	}
 
-	err = s.GameGenreRepository.CreateMultiple(ctx, getGameGenresForInsert(game.ID, genreIDs, currentGameGenres))
+	err = s.GameRevisionGenreRepository.CreateMultiple(ctx, getGameGenresForInsert(gameRevision.ID, genreIDs, currentGameGenres))
 	if err != nil {
 		return err
 	}
@@ -111,8 +111,8 @@ func (s Service) UpdateGenresForGame(ctx context.Context, game *entity.Game, gen
 	return nil
 }
 
-func getGameGenresForInsert(gameID uint, newGenreIDs []uint, currentGameGenres []entity.GameGenre) []entity.GameGenre {
-	gameGenres := make([]entity.GameGenre, 0)
+func getGameGenresForInsert(gameID uint, newGenreIDs []uint, currentGameGenres []entity.GameRevisionGenre) []entity.GameRevisionGenre {
+	gameGenres := make([]entity.GameRevisionGenre, 0)
 	for _, newGenreID := range newGenreIDs {
 		var hasMatch bool
 		for _, currentGameGenre := range currentGameGenres {
@@ -122,9 +122,9 @@ func getGameGenresForInsert(gameID uint, newGenreIDs []uint, currentGameGenres [
 		}
 
 		if !hasMatch {
-			gameGenres = append(gameGenres, entity.GameGenre{
-				GameID:  gameID,
-				GenreID: newGenreID,
+			gameGenres = append(gameGenres, entity.GameRevisionGenre{
+				GameRevisionID: gameID,
+				GenreID:        newGenreID,
 			})
 		}
 	}
@@ -132,8 +132,8 @@ func getGameGenresForInsert(gameID uint, newGenreIDs []uint, currentGameGenres [
 	return gameGenres
 }
 
-func getGameGenresForDelete(newGenreIDs []uint, currentGameGenres []entity.GameGenre) []entity.GameGenre {
-	gameGenres := make([]entity.GameGenre, 0)
+func getGameGenresForDelete(newGenreIDs []uint, currentGameGenres []entity.GameRevisionGenre) []entity.GameRevisionGenre {
+	gameGenres := make([]entity.GameRevisionGenre, 0)
 	for _, currentGameGenre := range currentGameGenres {
 		var hasMatch bool
 		for _, newGenreID := range newGenreIDs {
@@ -143,10 +143,10 @@ func getGameGenresForDelete(newGenreIDs []uint, currentGameGenres []entity.GameG
 		}
 
 		if !hasMatch {
-			gameGenres = append(gameGenres, entity.GameGenre{
-				ID:      currentGameGenre.ID,
-				GameID:  currentGameGenre.GameID,
-				GenreID: currentGameGenre.GenreID,
+			gameGenres = append(gameGenres, entity.GameRevisionGenre{
+				ID:             currentGameGenre.ID,
+				GameRevisionID: currentGameGenre.GameRevisionID,
+				GenreID:        currentGameGenre.GenreID,
 			})
 		}
 	}

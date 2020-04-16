@@ -3,7 +3,7 @@ package transact
 import (
 	"context"
 
-	"github.com/satori/uuid"
+	"github.com/google/uuid"
 )
 
 type key int
@@ -50,7 +50,7 @@ func FromContext(ctx context.Context) (*transact, bool) {
 
 func newTransact() *transact {
 	return &transact{
-		id: uuid.NewV4().String(),
+		id: uuid.New().String(),
 	}
 }
 

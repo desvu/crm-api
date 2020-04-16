@@ -3,10 +3,9 @@ type Query {
 	game(id:ID!): Game
 }
 
-
 type Mutation {
-	createGame(title:String!): Game
-	updateGame(id:ID! gameJSON:String!): Game
+	createGame(input: CreateGameInput!): Game
+	updateGame(input: UpdateGameInput!): Game
 	deleteGame(id:ID!): Boolean!
 }
 

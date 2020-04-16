@@ -87,8 +87,7 @@ func (h *Handler) Begin() (sql.TransactionHandler, error) {
 	}
 
 	return &TransactionHandler{
-		conn: h.conn,
-		tx:   tx,
+		tx: tx,
 	}, nil
 }
 
@@ -97,8 +96,7 @@ func (h *Handler) GetConnection() *pg.DB {
 }
 
 type TransactionHandler struct {
-	conn *pg.DB
-	tx   *pg.Tx
+	tx *pg.Tx
 }
 
 func (h *TransactionHandler) ModelContext(c context.Context, model ...interface{}) *orm.Query {

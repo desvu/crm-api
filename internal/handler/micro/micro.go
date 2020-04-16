@@ -2,7 +2,7 @@ package micro
 
 import (
 	"github.com/micro/go-micro/web"
-	"github.com/qilin/crm-api/internal/graphql"
+	"github.com/qilin/crm-api/internal/handler/graphql"
 	"go.uber.org/fx"
 )
 

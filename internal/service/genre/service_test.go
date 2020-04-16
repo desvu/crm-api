@@ -16,48 +16,48 @@ func TestService_getGameGenresForInsert(t *testing.T) {
 	type args struct {
 		gameID            uint
 		newGenreIDs       []uint
-		currentGameGenres []entity.GameGenre
+		currentGameGenres []entity.GameRevisionGenre
 	}
 	tests := []struct {
 		name string
 		args args
-		want []entity.GameGenre
+		want []entity.GameRevisionGenre
 	}{
 		{
 			name: "getting a list of genre IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				gameID:            1,
 				newGenreIDs:       []uint{1, 2, 3, 4},
-				currentGameGenres: []entity.GameGenre{{GenreID: 2}, {GenreID: 3}},
+				currentGameGenres: []entity.GameRevisionGenre{{GenreID: 2}, {GenreID: 3}},
 			},
-			want: []entity.GameGenre{{GenreID: 1, GameID: 1}, {GenreID: 4, GameID: 1}},
+			want: []entity.GameRevisionGenre{{GenreID: 1, GameRevisionID: 1}, {GenreID: 4, GameRevisionID: 1}},
 		},
 		{
 			name: "getting a list of genre IDs with a fully included subset of IDs associated with the device",
 			args: args{
 				gameID:            1,
 				newGenreIDs:       []uint{2, 3},
-				currentGameGenres: []entity.GameGenre{{GenreID: 2}, {GenreID: 3}},
+				currentGameGenres: []entity.GameRevisionGenre{{GenreID: 2}, {GenreID: 3}},
 			},
-			want: []entity.GameGenre{},
+			want: []entity.GameRevisionGenre{},
 		},
 		{
 			name: "getting a list of genre IDs with or without an incoming subset of IDs associated with the device",
 			args: args{
 				gameID:            1,
 				newGenreIDs:       []uint{5, 6},
-				currentGameGenres: []entity.GameGenre{{GenreID: 2}, {GenreID: 3}},
+				currentGameGenres: []entity.GameRevisionGenre{{GenreID: 2}, {GenreID: 3}},
 			},
-			want: []entity.GameGenre{{GenreID: 5, GameID: 1}, {GenreID: 6, GameID: 1}},
+			want: []entity.GameRevisionGenre{{GenreID: 5, GameRevisionID: 1}, {GenreID: 6, GameRevisionID: 1}},
 		},
 		{
 			name: "getting a list of genre IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				gameID:            1,
 				newGenreIDs:       []uint{1, 2, 2, 3, 4},
-				currentGameGenres: []entity.GameGenre{{GenreID: 2}, {GenreID: 3}},
+				currentGameGenres: []entity.GameRevisionGenre{{GenreID: 2}, {GenreID: 3}},
 			},
-			want: []entity.GameGenre{{GenreID: 1, GameID: 1}, {GenreID: 4, GameID: 1}},
+			want: []entity.GameRevisionGenre{{GenreID: 1, GameRevisionID: 1}, {GenreID: 4, GameRevisionID: 1}},
 		},
 	}
 	for _, tt := range tests {
@@ -74,36 +74,36 @@ func TestService_getGameGenresForDelete(t *testing.T) {
 
 	type args struct {
 		newGenreIDs       []uint
-		currentGameGenres []entity.GameGenre
+		currentGameGenres []entity.GameRevisionGenre
 	}
 	tests := []struct {
 		name string
 		args args
-		want []entity.GameGenre
+		want []entity.GameRevisionGenre
 	}{
 		{
 			name: "getting a list of genre IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				newGenreIDs:       []uint{1, 2, 3, 4},
-				currentGameGenres: []entity.GameGenre{{GenreID: 2}, {GenreID: 3}},
+				currentGameGenres: []entity.GameRevisionGenre{{GenreID: 2}, {GenreID: 3}},
 			},
-			want: []entity.GameGenre{},
+			want: []entity.GameRevisionGenre{},
 		},
 		{
 			name: "getting a list of genre IDs with a fully included subset of IDs associated with the device",
 			args: args{
 				newGenreIDs:       []uint{2, 3},
-				currentGameGenres: []entity.GameGenre{{GenreID: 2}, {GenreID: 3}},
+				currentGameGenres: []entity.GameRevisionGenre{{GenreID: 2}, {GenreID: 3}},
 			},
-			want: []entity.GameGenre{},
+			want: []entity.GameRevisionGenre{},
 		},
 		{
 			name: "getting a list of genre IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				newGenreIDs:       []uint{1, 4},
-				currentGameGenres: []entity.GameGenre{{ID: 1, GenreID: 2, GameID: 1}, {ID: 1, GenreID: 3, GameID: 1}},
+				currentGameGenres: []entity.GameRevisionGenre{{ID: 1, GenreID: 2, GameRevisionID: 1}, {ID: 1, GenreID: 3, GameRevisionID: 1}},
 			},
-			want: []entity.GameGenre{{ID: 1, GenreID: 2, GameID: 1}, {ID: 1, GenreID: 3, GameID: 1}},
+			want: []entity.GameRevisionGenre{{ID: 1, GenreID: 2, GameRevisionID: 1}, {ID: 1, GenreID: 3, GameRevisionID: 1}},
 		},
 	}
 	for _, tt := range tests {
@@ -120,17 +120,17 @@ func TestService_UpdateGenresForGame(t *testing.T) {
 
 	ctrl := gomock.NewController(t)
 	genreRepository := mocks.NewMockGenreRepository(ctrl)
-	gameGenreRepository := mocks.NewMockGameGenreRepository(ctrl)
+	gameRevisionGenreRepository := mocks.NewMockGameRevisionGenreRepository(ctrl)
 
 	s := New(ServiceParams{
-		GenreRepository:     genreRepository,
-		GameGenreRepository: gameGenreRepository,
+		GenreRepository:             genreRepository,
+		GameRevisionGenreRepository: gameRevisionGenreRepository,
 	})
 
 	type args struct {
-		ctx      context.Context
-		game     *entity.Game
-		genreIDs []uint
+		ctx          context.Context
+		gameRevision *entity.GameRevision
+		genreIDs     []uint
 	}
 	tests := []struct {
 		name    string
@@ -141,18 +141,18 @@ func TestService_UpdateGenresForGame(t *testing.T) {
 		{
 			name: "getting a non-existent genre ID",
 			args: args{
-				ctx:      context.Background(),
-				game:     &entity.Game{ID: 1},
-				genreIDs: []uint{1, 2, 3},
+				ctx:          context.Background(),
+				gameRevision: &entity.GameRevision{ID: 1},
+				genreIDs:     []uint{1, 2, 3},
 			},
 			wantErr: false,
 		},
 		{
 			name: "getting a non-existent genre ID",
 			args: args{
-				ctx:      context.Background(),
-				game:     &entity.Game{ID: 1},
-				genreIDs: []uint{1, 2, 3, 4},
+				ctx:          context.Background(),
+				gameRevision: &entity.GameRevision{ID: 1},
+				genreIDs:     []uint{1, 2, 3, 4},
 			},
 			wantErr: true,
 		},
@@ -163,16 +163,16 @@ func TestService_UpdateGenresForGame(t *testing.T) {
 			genreRepository.EXPECT().FindByIDs(gomock.Any(), gomock.Any()).
 				Return([]entity.Genre{{ID: 1}, {ID: 2}, {ID: 3}}, nil)
 
-			// s.GameGenreRepository.FindByGameID
-			gameGenreRepository.EXPECT().FindByGameID(gomock.Any(), gomock.Any()).
-				Return([]entity.GameGenre{{GenreID: 3}}, nil)
+			// s.GameRevisionGenreRepository.FindByGameRevisionID
+			gameRevisionGenreRepository.EXPECT().FindByGameRevisionID(gomock.Any(), gomock.Any()).
+				Return([]entity.GameRevisionGenre{{GenreID: 3}}, nil)
 
-			gameGenreRepository.EXPECT().DeleteMultiple(gomock.Any(), gomock.Any())
-			gameGenreRepository.EXPECT().CreateMultiple(gomock.Any(), gomock.Any())
+			gameRevisionGenreRepository.EXPECT().DeleteMultiple(gomock.Any(), gomock.Any())
+			gameRevisionGenreRepository.EXPECT().CreateMultiple(gomock.Any(), gomock.Any())
 
-			err := s.UpdateGenresForGame(tt.args.ctx, tt.args.game, tt.args.genreIDs)
+			err := s.UpdateGenresForGameRevision(tt.args.ctx, tt.args.gameRevision, tt.args.genreIDs)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("UpdateGenresForGame() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("UpdateGenresForGameRevision() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})
