@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
@@ -22,6 +23,34 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionDat
 
 	if revision == nil {
 		return nil, ErrGameRevisionNotFound
+	}
+
+	if data.Summary != nil {
+		revision.Summary = *data.Summary
+	}
+
+	if data.Description != nil {
+		revision.Description = *data.Description
+	}
+
+	if data.Slug != nil {
+		revision.Slug = *data.Slug
+	}
+
+	if data.License != nil {
+		revision.License = *data.License
+	}
+
+	if data.Status != nil {
+		revision.Status = *data.Status
+	}
+
+	if data.ReleaseDate != nil {
+		revision.ReleaseDate = *data.ReleaseDate
+	}
+
+	if data.Platforms != nil {
+		revision.Platforms = *data.Platforms
 	}
 
 	if err := s.Transactor.Transact(ctx, func(tx context.Context) error {
@@ -101,6 +130,7 @@ func (s Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entity
 
 	newRevision := &entity.GameRevision{
 		GameID: game.ID,
+		Status: game_revision.StatusDraft,
 	}
 
 	if err = s.GameRevisionRepository.Create(ctx, newRevision); err != nil {

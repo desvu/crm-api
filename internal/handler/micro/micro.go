@@ -2,14 +2,14 @@ package micro
 
 import (
 	"github.com/micro/go-micro/web"
-	"github.com/qilin/crm-api/internal/handler/graphql"
+	"github.com/qilin/crm-api/internal/handler/graph"
 	"go.uber.org/fx"
 )
 
 type Params struct {
 	fx.In
 
-	Handler *graphql.Resolver
+	Handler *graph.Resolver
 }
 
 func New(params Params) (web.Service, error) {
@@ -19,8 +19,8 @@ func New(params Params) (web.Service, error) {
 		web.Address(":8080"),
 	)
 
-	s.Handle("/api/graphql/client", graphql.Playground("/api/graphql"))
-	s.Handle("/api/graphql", graphql.NewHandler(params.Handler))
+	s.Handle("/api/graphql/client", graph.Playground("/api/graphql"))
+	s.Handle("/api/graphql", graph.NewHandler(params.Handler))
 
 	if err := s.Init(); err != nil {
 		return nil, err

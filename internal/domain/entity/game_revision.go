@@ -12,6 +12,7 @@ type GameRevision struct {
 	GameID      string
 	Summary     string
 	Description string
+	Slug        string
 	License     string
 	ReleaseDate time.Time
 	PublishedAt *time.Time

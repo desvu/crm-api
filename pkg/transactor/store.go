@@ -2,7 +2,6 @@ package transactor
 
 import (
 	"context"
-	"log"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -61,7 +60,6 @@ func (ts *Store) getTransactHandler(ctx context.Context, handler sql.Transaction
 
 func (ts *Store) Commit(ctx context.Context) error {
 	if transact.IsTransactedChild(ctx) {
-		log.Println(111222333)
 		return nil
 	}
 	ts.mx.Lock()
@@ -75,7 +73,6 @@ func (ts *Store) Commit(ctx context.Context) error {
 	delete(ts.handlers, transact.TransactionID(ctx))
 	ts.mx.Unlock()
 
-	log.Println(444555666)
 	return storeHandler.Commit()
 }
 

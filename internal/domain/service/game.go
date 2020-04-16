@@ -24,12 +24,13 @@ type GameService interface {
 
 type CreateGameData struct {
 	Title       string
-	Summary     string
-	Description string
-	License     string
 	Type        game.Type
-	Platforms   game.PlatformArray
-	ReleaseDate time.Time
+	Summary     *string
+	Description *string
+	Slug        *string
+	License     *string
+	Platforms   *game.PlatformArray
+	ReleaseDate *time.Time
 
 	Tags       *[]uint
 	Developers *[]uint

@@ -1,7 +1,9 @@
-package graphql
+package graph
 
 import (
 	"strconv"
+
+	"github.com/qilin/crm-api/internal/handler/graph/model"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game"
@@ -12,14 +14,14 @@ type gameConverter struct {
 
 var ISO8601Extended = "2006-01-02T15:04:05.000Z"
 
-func (c gameConverter) convertGame(g *entity.GameEx) *Game {
+func (c gameConverter) convertGame(g *entity.GameEx) *model.Game {
 	if g.Revision == nil {
 		return nil
 	}
 
-	return &Game{
+	return &model.Game{
 		ID: g.ID,
-		Revision: &Revision{
+		Revision: &model.Revision{
 			ID:          strconv.Itoa(int(g.Revision.ID)),
 			GameID:      g.Revision.GameID,
 			Summary:     g.Revision.Summary,
@@ -36,10 +38,10 @@ func (c gameConverter) convertGame(g *entity.GameEx) *Game {
 	}
 }
 
-func (c gameConverter) convertDeveloperArray(items []entity.Developer) []*Developer {
-	var result []*Developer
+func (c gameConverter) convertDeveloperArray(items []entity.Developer) []*model.Developer {
+	var result []*model.Developer
 	for _, developer := range items {
-		result = append(result, &Developer{
+		result = append(result, &model.Developer{
 			ID:   strconv.Itoa(int(developer.ID)),
 			Name: developer.Name,
 		})
@@ -48,10 +50,10 @@ func (c gameConverter) convertDeveloperArray(items []entity.Developer) []*Develo
 	return result
 }
 
-func (c gameConverter) convertPublisherArray(items []entity.Publisher) []*Publisher {
-	var result []*Publisher
+func (c gameConverter) convertPublisherArray(items []entity.Publisher) []*model.Publisher {
+	var result []*model.Publisher
 	for _, publisher := range items {
-		result = append(result, &Publisher{
+		result = append(result, &model.Publisher{
 			ID:   strconv.Itoa(int(publisher.ID)),
 			Name: publisher.Name,
 		})
@@ -60,10 +62,10 @@ func (c gameConverter) convertPublisherArray(items []entity.Publisher) []*Publis
 	return result
 }
 
-func (c gameConverter) convertTagArray(items []entity.Tag) []*Tag {
-	var result []*Tag
+func (c gameConverter) convertTagArray(items []entity.Tag) []*model.Tag {
+	var result []*model.Tag
 	for _, tag := range items {
-		result = append(result, &Tag{
+		result = append(result, &model.Tag{
 			ID:   strconv.Itoa(int(tag.ID)),
 			Name: tag.Name,
 		})
@@ -72,10 +74,10 @@ func (c gameConverter) convertTagArray(items []entity.Tag) []*Tag {
 	return result
 }
 
-func (c gameConverter) convertFeatureArray(items []entity.Feature) []*Feature {
-	var result []*Feature
+func (c gameConverter) convertFeatureArray(items []entity.Feature) []*model.Feature {
+	var result []*model.Feature
 	for _, feature := range items {
-		result = append(result, &Feature{
+		result = append(result, &model.Feature{
 			ID:   strconv.Itoa(int(feature.ID)),
 			Name: feature.Name,
 		})
@@ -84,10 +86,10 @@ func (c gameConverter) convertFeatureArray(items []entity.Feature) []*Feature {
 	return result
 }
 
-func (c gameConverter) convertGenreArray(items []entity.Genre) []*Genre {
-	var result []*Genre
+func (c gameConverter) convertGenreArray(items []entity.Genre) []*model.Genre {
+	var result []*model.Genre
 	for _, genre := range items {
-		result = append(result, &Genre{
+		result = append(result, &model.Genre{
 			ID:   strconv.Itoa(int(genre.ID)),
 			Name: genre.Name,
 		})
@@ -96,34 +98,34 @@ func (c gameConverter) convertGenreArray(items []entity.Genre) []*Genre {
 	return result
 }
 
-func (c gameConverter) convertGameType(t game.Type) GameType {
+func (c gameConverter) convertGameType(t game.Type) model.GameType {
 	switch t {
 	case game.TypeDesktop:
-		return GameTypeDesktop
+		return model.GameTypeDesktop
 	case game.TypeWeb:
-		return GameTypeWeb
+		return model.GameTypeWeb
 	}
-	return GameTypeDesktop
+	return model.GameTypeDesktop
 }
 
-func (c gameConverter) convertPlatforms(platforms ...game.Platform) []Platform {
-	var res = make([]Platform, len(platforms))
+func (c gameConverter) convertPlatforms(platforms ...game.Platform) []model.GamePlatform {
+	var res = make([]model.GamePlatform, len(platforms))
 	for i, p := range platforms {
 		res[i] = c.convertPlatform(p)
 	}
 	return res
 }
 
-func (c gameConverter) convertPlatform(p game.Platform) Platform {
+func (c gameConverter) convertPlatform(p game.Platform) model.GamePlatform {
 	switch p {
 	case game.PlatformLinux:
-		return PlatformLinux
+		return model.GamePlatformLinux
 	case game.PlatformWeb:
-		return PlatformWeb
+		return model.GamePlatformWeb
 	case game.PlatformWindows:
-		return PlatformWindows
+		return model.GamePlatformWindows
 	case game.PlatformMacOS:
-		return PlatformMacOs
+		return model.GamePlatformMacOs
 	}
-	return PlatformWindows
+	return model.GamePlatformWindows
 }

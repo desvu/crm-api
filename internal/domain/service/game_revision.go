@@ -2,8 +2,12 @@ package service
 
 import (
 	"context"
+	"time"
+
+	"github.com/qilin/crm-api/internal/domain/enum/game"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 )
 
 type GameRevisionService interface {
@@ -15,7 +19,16 @@ type GameRevisionService interface {
 }
 
 type UpdateGameRevisionData struct {
-	ID         uint
+	ID          uint
+	Summary     *string
+	Description *string
+	Slug        *string
+	License     *string
+
+	Status      *game_revision.Status
+	Platforms   *game.PlatformArray
+	ReleaseDate *time.Time
+
 	Tags       *[]uint
 	Developers *[]uint
 	Publishers *[]uint

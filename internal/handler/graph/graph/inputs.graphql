@@ -1,32 +1,34 @@
 # Create game input data
 input CreateGameInput {
 	title: String!
-	slug: String!
-	summary: String!
-	description: String!
+	slug: String
+	summary: String
+	description: String
+	type: GameType!
 	developers: [Int!]
 	publishers: [Int!]
-	releaseDate: String!
-	license: String!
-	ranking: String!
+	releaseDate: Time
+	license: String
+	ranking: String
 	genres: [Int!]
 	tags: [Int!]
 	features: [Int!]
 	localizations: [LocalizationInput!]
+	platforms: [GamePlatform!]
 }
 
 # Update game input data
 input UpdateGameInput {
 	ID: ID!
-	title: String!
-	slug: String!
-	summary: String!
-	description: String!
+	title: String
+	slug: String
+	summary: String
+	description: String
 	developers: [Int!]
 	publishers: [Int!]
-	releaseDate: String!
-	license: String!
-	ranking: String!
+	releaseDate: String
+	license: String
+	ranking: String
 	genres: [Int!]
 	tags: [Int!]
 	features: [Int!]

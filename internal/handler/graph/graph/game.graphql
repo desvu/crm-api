@@ -47,7 +47,7 @@ type Revision {
 	features: [Feature!]!
 	localizations: [Localization!]!
 
-	platforms: [Platform!]!
+	platforms: [GamePlatform!]!
 #	requirements: [SystemRequirements!]!
 
 #	media: Media!
@@ -109,15 +109,15 @@ type Publisher {
 }
 
 enum GameType {
-	Web
-	Desktop
+	web
+	desktop
 }
 
-enum Platform {
-	Linux
-	MacOS
-	Windows
-	Web
+enum GamePlatform {
+	linux
+	macOS
+	windows
+	web
 }
 
 type Localization {

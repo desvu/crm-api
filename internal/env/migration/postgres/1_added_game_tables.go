@@ -21,6 +21,7 @@ func init() {
 				status       int          not null,
 				summary      text         not null,
 				description  text         not null,
+				slug 		 text         not null,
 				license      text         not null,
 				platforms    int[]        not null,
 				release_date timestamp(0) not null,

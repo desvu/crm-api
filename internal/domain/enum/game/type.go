@@ -3,8 +3,9 @@ package game
 type Type uint8
 
 const (
-	TypeWeb     Type = 1
-	TypeDesktop Type = 2
+	TypeUndefined Type = 0
+	TypeWeb       Type = 1
+	TypeDesktop   Type = 2
 )
 
 func NewType(v uint8) Type {
@@ -19,19 +20,28 @@ func NewType(v uint8) Type {
 	return source
 }
 
+func NewTypeByString(v string) Type {
+	switch v {
+	case "web":
+		return TypeWeb
+	case "desktop":
+		return TypeDesktop
+	default:
+		return TypeUndefined
+	}
+}
+
 func (t Type) Value() uint8 {
 	return uint8(t)
 }
 
 func (t Type) String() string {
-	var str string
-
 	switch t {
 	case TypeWeb:
-		str = "web"
+		return "web"
 	case TypeDesktop:
-		str = "desktop"
+		return "desktop"
+	default:
+		return "undefined"
 	}
-
-	return str
 }

@@ -9,3 +9,4 @@ type Mutation {
 	deleteGame(id:ID!): Boolean!
 }
 
+scalar Time

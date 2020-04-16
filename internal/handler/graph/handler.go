@@ -1,9 +1,10 @@
-package graphql
+package graph
 
 import (
 	"net/http"
 
 	"github.com/99designs/gqlgen/handler"
+	"github.com/qilin/crm-api/internal/handler/graph/generated"
 )
 
 func Playground(endpoint string) http.Handler {
@@ -15,12 +16,12 @@ func NewHandler(resolver *Resolver) http.Handler {
 		handler.IntrospectionEnabled(true),
 	}
 
-	cfg := Config{
+	cfg := generated.Config{
 		Resolvers: resolver,
 	}
 
 	h := handler.GraphQL(
-		NewExecutableSchema(cfg),
+		generated.NewExecutableSchema(cfg),
 		options...,
 	)
 

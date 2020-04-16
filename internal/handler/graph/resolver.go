@@ -1,7 +1,8 @@
-package graphql
+package graph
 
 import (
 	"github.com/qilin/crm-api/internal/domain/service"
+	"github.com/qilin/crm-api/internal/handler/graph/generated"
 	"go.uber.org/fx"
 )
 
@@ -21,12 +22,12 @@ func NewResolver(params Params) *Resolver {
 }
 
 // Mutation returns MutationResolver implementation.
-func (r *Resolver) Mutation() MutationResolver {
+func (r *Resolver) Mutation() generated.MutationResolver {
 	return &mutationResolver{r}
 }
 
 // Query returns QueryResolver implementation.
-func (r *Resolver) Query() QueryResolver {
+func (r *Resolver) Query() generated.QueryResolver {
 	return &queryResolver{r}
 }
 
