@@ -124,10 +124,10 @@ func (r GameExRepository) fetchRow(ctx context.Context, item *entity.GameRevisio
 
 	return &entity.GameRevisionEx{
 		GameRevision: *item,
-		Tags:         nil,
-		Developers:   nil,
-		Publishers:   nil,
-		Features:     nil,
-		Genres:       nil,
+		Tags:         tags,
+		Developers:   developers,
+		Publishers:   publishers,
+		Features:     features,
+		Genres:       genres,
 	}, nil
 }

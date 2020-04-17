@@ -33,6 +33,7 @@ input UpdateGameInput {
 	tags: [Int!]
 	features: [Int!]
 	localizations: [LocalizationInput!]
+	platforms: [GamePlatform!]
 }
 
 input LocalizationInput {
