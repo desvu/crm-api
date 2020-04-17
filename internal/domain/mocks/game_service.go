@@ -36,10 +36,10 @@ func (m *MockGameService) EXPECT() *MockGameServiceMockRecorder {
 }
 
 // Create mocks base method
-func (m *MockGameService) Create(arg0 context.Context, arg1 *service.CreateGameData) (*entity.Game, error) {
+func (m *MockGameService) Create(arg0 context.Context, arg1 *service.CreateGameData) (*entity.GameEx, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0, arg1)
-	ret0, _ := ret[0].(*entity.Game)
+	ret0, _ := ret[0].(*entity.GameEx)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -51,7 +51,7 @@ func (mr *MockGameServiceMockRecorder) Create(arg0, arg1 interface{}) *gomock.Ca
 }
 
 // Delete mocks base method
-func (m *MockGameService) Delete(arg0 context.Context, arg1 uint) error {
+func (m *MockGameService) Delete(arg0 context.Context, arg1 string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -65,7 +65,7 @@ func (mr *MockGameServiceMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Ca
 }
 
 // GetByID mocks base method
-func (m *MockGameService) GetByID(arg0 context.Context, arg1 uint) (*entity.Game, error) {
+func (m *MockGameService) GetByID(arg0 context.Context, arg1 string) (*entity.Game, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*entity.Game)
@@ -80,7 +80,7 @@ func (mr *MockGameServiceMockRecorder) GetByID(arg0, arg1 interface{}) *gomock.C
 }
 
 // GetExistByID mocks base method
-func (m *MockGameService) GetExistByID(arg0 context.Context, arg1 uint) (*entity.Game, error) {
+func (m *MockGameService) GetExistByID(arg0 context.Context, arg1 string) (*entity.Game, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetExistByID", arg0, arg1)
 	ret0, _ := ret[0].(*entity.Game)
@@ -94,8 +94,23 @@ func (mr *MockGameServiceMockRecorder) GetExistByID(arg0, arg1 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExistByID", reflect.TypeOf((*MockGameService)(nil).GetExistByID), arg0, arg1)
 }
 
+// GetExistExByID mocks base method
+func (m *MockGameService) GetExistExByID(arg0 context.Context, arg1 string) (*entity.GameEx, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetExistExByID", arg0, arg1)
+	ret0, _ := ret[0].(*entity.GameEx)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetExistExByID indicates an expected call of GetExistExByID
+func (mr *MockGameServiceMockRecorder) GetExistExByID(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExistExByID", reflect.TypeOf((*MockGameService)(nil).GetExistExByID), arg0, arg1)
+}
+
 // Publish mocks base method
-func (m *MockGameService) Publish(arg0 context.Context, arg1 uint) error {
+func (m *MockGameService) Publish(arg0 context.Context, arg1 string) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Publish", arg0, arg1)
 	ret0, _ := ret[0].(error)
@@ -109,10 +124,10 @@ func (mr *MockGameServiceMockRecorder) Publish(arg0, arg1 interface{}) *gomock.C
 }
 
 // Update mocks base method
-func (m *MockGameService) Update(arg0 context.Context, arg1 *service.UpdateGameData) (*entity.Game, error) {
+func (m *MockGameService) Update(arg0 context.Context, arg1 *service.UpdateGameData) (*entity.GameEx, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", arg0, arg1)
-	ret0, _ := ret[0].(*entity.Game)
+	ret0, _ := ret[0].(*entity.GameEx)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -121,19 +136,4 @@ func (m *MockGameService) Update(arg0 context.Context, arg1 *service.UpdateGameD
 func (mr *MockGameServiceMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockGameService)(nil).Update), arg0, arg1)
-}
-
-// UpdateEx mocks base method
-func (m *MockGameService) UpdateEx(arg0 context.Context, arg1 *service.UpdateGameExData) (*entity.GameEx, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateEx", arg0, arg1)
-	ret0, _ := ret[0].(*entity.GameEx)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UpdateEx indicates an expected call of UpdateEx
-func (mr *MockGameServiceMockRecorder) UpdateEx(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateEx", reflect.TypeOf((*MockGameService)(nil).UpdateEx), arg0, arg1)
 }

@@ -64,19 +64,19 @@ func (mr *MockGenreServiceMockRecorder) Delete(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockGenreService)(nil).Delete), arg0, arg1)
 }
 
-// GetByGameID mocks base method
-func (m *MockGenreService) GetByGameID(arg0 context.Context, arg1 uint) ([]entity.Genre, error) {
+// GetByGameRevisionID mocks base method
+func (m *MockGenreService) GetByGameRevisionID(arg0 context.Context, arg1 uint) ([]entity.Genre, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByGameID", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetByGameRevisionID", arg0, arg1)
 	ret0, _ := ret[0].([]entity.Genre)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetByGameID indicates an expected call of GetByGameID
-func (mr *MockGenreServiceMockRecorder) GetByGameID(arg0, arg1 interface{}) *gomock.Call {
+// GetByGameRevisionID indicates an expected call of GetByGameRevisionID
+func (mr *MockGenreServiceMockRecorder) GetByGameRevisionID(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByGameID", reflect.TypeOf((*MockGenreService)(nil).GetByGameID), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByGameRevisionID", reflect.TypeOf((*MockGenreService)(nil).GetByGameRevisionID), arg0, arg1)
 }
 
 // GetByID mocks base method
@@ -139,16 +139,16 @@ func (mr *MockGenreServiceMockRecorder) Update(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockGenreService)(nil).Update), arg0, arg1)
 }
 
-// UpdateGenreForGame mocks base method
-func (m *MockGenreService) UpdateGenreForGame(arg0 context.Context, arg1 *entity.Game, arg2 []uint) error {
+// UpdateGenresForGameRevision mocks base method
+func (m *MockGenreService) UpdateGenresForGameRevision(arg0 context.Context, arg1 *entity.GameRevision, arg2 []uint) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateGenreForGame", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "UpdateGenresForGameRevision", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// UpdateGenreForGame indicates an expected call of UpdateGenreForGame
-func (mr *MockGenreServiceMockRecorder) UpdateGenreForGame(arg0, arg1, arg2 interface{}) *gomock.Call {
+// UpdateGenresForGameRevision indicates an expected call of UpdateGenresForGameRevision
+func (mr *MockGenreServiceMockRecorder) UpdateGenresForGameRevision(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateGenreForGame", reflect.TypeOf((*MockGenreService)(nil).UpdateGenreForGame), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateGenresForGameRevision", reflect.TypeOf((*MockGenreService)(nil).UpdateGenresForGameRevision), arg0, arg1, arg2)
 }

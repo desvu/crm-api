@@ -1,0 +1,12 @@
+type Query {
+	games: [Game!]!
+	game(id:ID!): Game
+}
+
+type Mutation {
+	createGame(input: CreateGameInput!): Game
+	updateGame(input: UpdateGameInput!): Game
+	deleteGame(id:ID!): Boolean!
+}
+
+scalar Time

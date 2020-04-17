@@ -15,9 +15,9 @@ type PublisherService interface {
 	GetByID(ctx context.Context, id uint) (*entity.Publisher, error)
 	GetExistByID(ctx context.Context, id uint) (*entity.Publisher, error)
 	GetByIDs(ctx context.Context, ids []uint) ([]entity.Publisher, error)
-	GetByGameID(ctx context.Context, gameID uint) ([]entity.Publisher, error)
+	GetByGameRevisionID(ctx context.Context, gameRevisionID uint) ([]entity.Publisher, error)
 
-	UpdatePublishersForGame(ctx context.Context, game *entity.Game, publisherIDs []uint) error
+	UpdatePublishersForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, publisherIDs []uint) error
 }
 
 type CreatePublisherData struct {

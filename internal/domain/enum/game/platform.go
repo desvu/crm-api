@@ -3,10 +3,11 @@ package game
 type Platform uint8
 
 const (
-	PlatformLinux   Platform = 1
-	PlatformMacOS   Platform = 2
-	PlatformWindows Platform = 3
-	PlatformWeb     Platform = 4
+	PlatformUndefined Platform = 0
+	PlatformLinux     Platform = 1
+	PlatformMacOS     Platform = 2
+	PlatformWindows   Platform = 3
+	PlatformWeb       Platform = 4
 )
 
 func NewPlatform(v uint8) Platform {
@@ -23,23 +24,36 @@ func NewPlatform(v uint8) Platform {
 	return source
 }
 
+func NewPlatformByString(v string) Platform {
+	switch v {
+	case "linux":
+		return PlatformLinux
+	case "macOS":
+		return PlatformMacOS
+	case "windows":
+		return PlatformWindows
+	case "web":
+		return PlatformWeb
+	default:
+		return PlatformUndefined
+	}
+}
+
 func (p Platform) Value() uint8 {
 	return uint8(p)
 }
 
 func (p Platform) String() string {
-	var str string
-
 	switch p {
 	case PlatformLinux:
-		str = "linux"
+		return "linux"
 	case PlatformMacOS:
-		str = "mac_os"
+		return "macOS"
 	case PlatformWindows:
-		str = "windows"
+		return "windows"
 	case PlatformWeb:
-		str = "web"
+		return "web"
+	default:
+		return "undefined"
 	}
-
-	return str
 }

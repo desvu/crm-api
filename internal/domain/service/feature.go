@@ -15,9 +15,9 @@ type FeatureService interface {
 	GetByID(ctx context.Context, id uint) (*entity.Feature, error)
 	GetExistByID(ctx context.Context, id uint) (*entity.Feature, error)
 	GetByIDs(ctx context.Context, ids []uint) ([]entity.Feature, error)
-	GetByGameID(ctx context.Context, gameID uint) ([]entity.Feature, error)
+	GetByGameRevisionID(ctx context.Context, gameRevisionID uint) ([]entity.Feature, error)
 
-	UpdateFeaturesForGame(ctx context.Context, game *entity.Game, featureIDs []uint) error
+	UpdateFeaturesForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, featureIDs []uint) error
 }
 
 type CreateFeatureData struct {

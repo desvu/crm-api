@@ -11,6 +11,6 @@ type GameRepository interface {
 	Update(ctx context.Context, i *entity.Game) error
 	Delete(ctx context.Context, i *entity.Game) error
 
-	FindByID(ctx context.Context, id uint) (*entity.Game, error)
-	FindByIDs(ctx context.Context, ids []uint) ([]entity.Game, error)
+	FindByID(ctx context.Context, id string) (*entity.Game, error)
+	FindByIDs(ctx context.Context, ids []string) ([]entity.Game, error)
 }

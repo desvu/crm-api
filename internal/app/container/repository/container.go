@@ -4,12 +4,13 @@ import (
 	"github.com/qilin/crm-api/internal/repository/developer"
 	"github.com/qilin/crm-api/internal/repository/feature"
 	"github.com/qilin/crm-api/internal/repository/game"
-	"github.com/qilin/crm-api/internal/repository/game_developer"
-	"github.com/qilin/crm-api/internal/repository/game_ex/aggregate"
-	"github.com/qilin/crm-api/internal/repository/game_feature"
-	"github.com/qilin/crm-api/internal/repository/game_genre"
-	"github.com/qilin/crm-api/internal/repository/game_publisher"
-	"github.com/qilin/crm-api/internal/repository/game_tag"
+	"github.com/qilin/crm-api/internal/repository/game_revision"
+	"github.com/qilin/crm-api/internal/repository/game_revision_developer"
+	"github.com/qilin/crm-api/internal/repository/game_revision_ex/aggregate"
+	"github.com/qilin/crm-api/internal/repository/game_revision_feature"
+	"github.com/qilin/crm-api/internal/repository/game_revision_genre"
+	"github.com/qilin/crm-api/internal/repository/game_revision_publisher"
+	"github.com/qilin/crm-api/internal/repository/game_revision_tag"
 	"github.com/qilin/crm-api/internal/repository/genre"
 	"github.com/qilin/crm-api/internal/repository/publisher"
 	"github.com/qilin/crm-api/internal/repository/tag"
@@ -24,11 +25,12 @@ func New() fx.Option {
 		genre.New,
 		publisher.New,
 		tag.New,
-		game_developer.New,
-		game_feature.New,
-		game_publisher.New,
-		game_tag.New,
-		game_genre.New,
+		game_revision_developer.New,
+		game_revision_feature.New,
+		game_revision_publisher.New,
+		game_revision_tag.New,
+		game_revision_genre.New,
 		aggregate.New,
+		game_revision.New,
 	)
 }

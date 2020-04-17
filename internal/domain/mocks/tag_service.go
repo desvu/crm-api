@@ -35,20 +35,6 @@ func (m *MockTagService) EXPECT() *MockTagServiceMockRecorder {
 	return m.recorder
 }
 
-// AttachTagsToGame mocks base method
-func (m *MockTagService) AttachTagsToGame(arg0 context.Context, arg1 uint, arg2 []uint) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AttachTagsToGame", arg0, arg1, arg2)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// AttachTagsToGame indicates an expected call of AttachTagsToGame
-func (mr *MockTagServiceMockRecorder) AttachTagsToGame(arg0, arg1, arg2 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AttachTagsToGame", reflect.TypeOf((*MockTagService)(nil).AttachTagsToGame), arg0, arg1, arg2)
-}
-
 // Create mocks base method
 func (m *MockTagService) Create(arg0 context.Context, arg1 *service.CreateTagData) (*entity.Tag, error) {
 	m.ctrl.T.Helper()
@@ -78,33 +64,19 @@ func (mr *MockTagServiceMockRecorder) Delete(arg0, arg1 interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockTagService)(nil).Delete), arg0, arg1)
 }
 
-// DetachTagsFromGame mocks base method
-func (m *MockTagService) DetachTagsFromGame(arg0 context.Context, arg1 uint, arg2 []uint) error {
+// GetByGameRevisionID mocks base method
+func (m *MockTagService) GetByGameRevisionID(arg0 context.Context, arg1 uint) ([]entity.Tag, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DetachTagsFromGame", arg0, arg1, arg2)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// DetachTagsFromGame indicates an expected call of DetachTagsFromGame
-func (mr *MockTagServiceMockRecorder) DetachTagsFromGame(arg0, arg1, arg2 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetachTagsFromGame", reflect.TypeOf((*MockTagService)(nil).DetachTagsFromGame), arg0, arg1, arg2)
-}
-
-// GetByGameID mocks base method
-func (m *MockTagService) GetByGameID(arg0 context.Context, arg1 uint) ([]entity.Tag, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByGameID", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetByGameRevisionID", arg0, arg1)
 	ret0, _ := ret[0].([]entity.Tag)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetByGameID indicates an expected call of GetByGameID
-func (mr *MockTagServiceMockRecorder) GetByGameID(arg0, arg1 interface{}) *gomock.Call {
+// GetByGameRevisionID indicates an expected call of GetByGameRevisionID
+func (mr *MockTagServiceMockRecorder) GetByGameRevisionID(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByGameID", reflect.TypeOf((*MockTagService)(nil).GetByGameID), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByGameRevisionID", reflect.TypeOf((*MockTagService)(nil).GetByGameRevisionID), arg0, arg1)
 }
 
 // GetByID mocks base method
@@ -165,4 +137,18 @@ func (m *MockTagService) Update(arg0 context.Context, arg1 *service.UpdateTagDat
 func (mr *MockTagServiceMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockTagService)(nil).Update), arg0, arg1)
+}
+
+// UpdateTagsForGameRevision mocks base method
+func (m *MockTagService) UpdateTagsForGameRevision(arg0 context.Context, arg1 *entity.GameRevision, arg2 []uint) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateTagsForGameRevision", arg0, arg1, arg2)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateTagsForGameRevision indicates an expected call of UpdateTagsForGameRevision
+func (mr *MockTagServiceMockRecorder) UpdateTagsForGameRevision(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateTagsForGameRevision", reflect.TypeOf((*MockTagService)(nil).UpdateTagsForGameRevision), arg0, arg1, arg2)
 }

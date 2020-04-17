@@ -43,7 +43,6 @@ func (h *Transactor) Transact(ctx context.Context, txFunc func(tx context.Contex
 			zap.Error(err)
 			return
 		}
-
 	}()
 
 	if transact.IsTransactedChild(ctx) {

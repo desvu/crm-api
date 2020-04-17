@@ -16,48 +16,48 @@ func TestService_getGameDevelopersForInsert(t *testing.T) {
 	type args struct {
 		gameID                uint
 		newDeveloperIDs       []uint
-		currentGameDevelopers []entity.GameDeveloper
+		currentGameDevelopers []entity.GameRevisionDeveloper
 	}
 	tests := []struct {
 		name string
 		args args
-		want []entity.GameDeveloper
+		want []entity.GameRevisionDeveloper
 	}{
 		{
 			name: "getting a list of developer IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				gameID:                1,
 				newDeveloperIDs:       []uint{1, 2, 3, 4},
-				currentGameDevelopers: []entity.GameDeveloper{{DeveloperID: 2}, {DeveloperID: 3}},
+				currentGameDevelopers: []entity.GameRevisionDeveloper{{DeveloperID: 2}, {DeveloperID: 3}},
 			},
-			want: []entity.GameDeveloper{{DeveloperID: 1, GameID: 1}, {DeveloperID: 4, GameID: 1}},
+			want: []entity.GameRevisionDeveloper{{DeveloperID: 1, GameRevisionID: 1}, {DeveloperID: 4, GameRevisionID: 1}},
 		},
 		{
 			name: "getting a list of developer IDs with a fully included subset of IDs associated with the device",
 			args: args{
 				gameID:                1,
 				newDeveloperIDs:       []uint{2, 3},
-				currentGameDevelopers: []entity.GameDeveloper{{DeveloperID: 2}, {DeveloperID: 3}},
+				currentGameDevelopers: []entity.GameRevisionDeveloper{{DeveloperID: 2}, {DeveloperID: 3}},
 			},
-			want: []entity.GameDeveloper{},
+			want: []entity.GameRevisionDeveloper{},
 		},
 		{
 			name: "getting a list of developer IDs with or without an incoming subset of IDs associated with the device",
 			args: args{
 				gameID:                1,
 				newDeveloperIDs:       []uint{5, 6},
-				currentGameDevelopers: []entity.GameDeveloper{{DeveloperID: 2}, {DeveloperID: 3}},
+				currentGameDevelopers: []entity.GameRevisionDeveloper{{DeveloperID: 2}, {DeveloperID: 3}},
 			},
-			want: []entity.GameDeveloper{{DeveloperID: 5, GameID: 1}, {DeveloperID: 6, GameID: 1}},
+			want: []entity.GameRevisionDeveloper{{DeveloperID: 5, GameRevisionID: 1}, {DeveloperID: 6, GameRevisionID: 1}},
 		},
 		{
 			name: "getting a list of developer IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				gameID:                1,
 				newDeveloperIDs:       []uint{1, 2, 2, 3, 4},
-				currentGameDevelopers: []entity.GameDeveloper{{DeveloperID: 2}, {DeveloperID: 3}},
+				currentGameDevelopers: []entity.GameRevisionDeveloper{{DeveloperID: 2}, {DeveloperID: 3}},
 			},
-			want: []entity.GameDeveloper{{DeveloperID: 1, GameID: 1}, {DeveloperID: 4, GameID: 1}},
+			want: []entity.GameRevisionDeveloper{{DeveloperID: 1, GameRevisionID: 1}, {DeveloperID: 4, GameRevisionID: 1}},
 		},
 	}
 	for _, tt := range tests {
@@ -74,36 +74,36 @@ func TestService_getGameDevelopersForDelete(t *testing.T) {
 
 	type args struct {
 		newDeveloperIDs       []uint
-		currentGameDevelopers []entity.GameDeveloper
+		currentGameDevelopers []entity.GameRevisionDeveloper
 	}
 	tests := []struct {
 		name string
 		args args
-		want []entity.GameDeveloper
+		want []entity.GameRevisionDeveloper
 	}{
 		{
 			name: "getting a list of developer IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				newDeveloperIDs:       []uint{1, 2, 3, 4},
-				currentGameDevelopers: []entity.GameDeveloper{{DeveloperID: 2}, {DeveloperID: 3}},
+				currentGameDevelopers: []entity.GameRevisionDeveloper{{DeveloperID: 2}, {DeveloperID: 3}},
 			},
-			want: []entity.GameDeveloper{},
+			want: []entity.GameRevisionDeveloper{},
 		},
 		{
 			name: "getting a list of developer IDs with a fully included subset of IDs associated with the device",
 			args: args{
 				newDeveloperIDs:       []uint{2, 3},
-				currentGameDevelopers: []entity.GameDeveloper{{DeveloperID: 2}, {DeveloperID: 3}},
+				currentGameDevelopers: []entity.GameRevisionDeveloper{{DeveloperID: 2}, {DeveloperID: 3}},
 			},
-			want: []entity.GameDeveloper{},
+			want: []entity.GameRevisionDeveloper{},
 		},
 		{
 			name: "getting a list of developer IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				newDeveloperIDs:       []uint{1, 4},
-				currentGameDevelopers: []entity.GameDeveloper{{ID: 1, DeveloperID: 2, GameID: 1}, {ID: 1, DeveloperID: 3, GameID: 1}},
+				currentGameDevelopers: []entity.GameRevisionDeveloper{{ID: 1, DeveloperID: 2, GameRevisionID: 1}, {ID: 1, DeveloperID: 3, GameRevisionID: 1}},
 			},
-			want: []entity.GameDeveloper{{ID: 1, DeveloperID: 2, GameID: 1}, {ID: 1, DeveloperID: 3, GameID: 1}},
+			want: []entity.GameRevisionDeveloper{{ID: 1, DeveloperID: 2, GameRevisionID: 1}, {ID: 1, DeveloperID: 3, GameRevisionID: 1}},
 		},
 	}
 	for _, tt := range tests {
@@ -120,16 +120,16 @@ func TestService_UpdateDevelopersForGame(t *testing.T) {
 
 	ctrl := gomock.NewController(t)
 	developerRepository := mocks.NewMockDeveloperRepository(ctrl)
-	gameDeveloperRepository := mocks.NewMockGameDeveloperRepository(ctrl)
+	gameRevisionDeveloperRepository := mocks.NewMockGameRevisionDeveloperRepository(ctrl)
 
 	s := New(ServiceParams{
-		DeveloperRepository:     developerRepository,
-		GameDeveloperRepository: gameDeveloperRepository,
+		DeveloperRepository:             developerRepository,
+		GameRevisionDeveloperRepository: gameRevisionDeveloperRepository,
 	})
 
 	type args struct {
 		ctx          context.Context
-		game         *entity.Game
+		game         *entity.GameRevision
 		developerIDs []uint
 	}
 	tests := []struct {
@@ -142,7 +142,7 @@ func TestService_UpdateDevelopersForGame(t *testing.T) {
 			name: "getting a non-existent developer ID",
 			args: args{
 				ctx:          context.Background(),
-				game:         &entity.Game{ID: 1},
+				game:         &entity.GameRevision{ID: 1},
 				developerIDs: []uint{1, 2, 3},
 			},
 			wantErr: false,
@@ -151,7 +151,7 @@ func TestService_UpdateDevelopersForGame(t *testing.T) {
 			name: "getting a non-existent developer ID",
 			args: args{
 				ctx:          context.Background(),
-				game:         &entity.Game{ID: 1},
+				game:         &entity.GameRevision{ID: 1},
 				developerIDs: []uint{1, 2, 3, 4},
 			},
 			wantErr: true,
@@ -163,16 +163,16 @@ func TestService_UpdateDevelopersForGame(t *testing.T) {
 			developerRepository.EXPECT().FindByIDs(gomock.Any(), gomock.Any()).
 				Return([]entity.Developer{{ID: 1}, {ID: 2}, {ID: 3}}, nil)
 
-			// s.GameDeveloperRepository.FindByGameID
-			gameDeveloperRepository.EXPECT().FindByGameID(gomock.Any(), gomock.Any()).
-				Return([]entity.GameDeveloper{{DeveloperID: 3}}, nil)
+			// s.GameRevisionDeveloperRepository.FindByGameRevisionID
+			gameRevisionDeveloperRepository.EXPECT().FindByGameRevisionID(gomock.Any(), gomock.Any()).
+				Return([]entity.GameRevisionDeveloper{{DeveloperID: 3}}, nil)
 
-			gameDeveloperRepository.EXPECT().DeleteMultiple(gomock.Any(), gomock.Any())
-			gameDeveloperRepository.EXPECT().CreateMultiple(gomock.Any(), gomock.Any())
+			gameRevisionDeveloperRepository.EXPECT().DeleteMultiple(gomock.Any(), gomock.Any())
+			gameRevisionDeveloperRepository.EXPECT().CreateMultiple(gomock.Any(), gomock.Any())
 
-			err := s.UpdateDevelopersForGame(tt.args.ctx, tt.args.game, tt.args.developerIDs)
+			err := s.UpdateDevelopersForGameRevision(tt.args.ctx, tt.args.game, tt.args.developerIDs)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("UpdateDevelopersForGame() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("UpdateDevelopersForGameRevision() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

@@ -64,19 +64,19 @@ func (mr *MockFeatureServiceMockRecorder) Delete(arg0, arg1 interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockFeatureService)(nil).Delete), arg0, arg1)
 }
 
-// GetByGameID mocks base method
-func (m *MockFeatureService) GetByGameID(arg0 context.Context, arg1 uint) ([]entity.Feature, error) {
+// GetByGameRevisionID mocks base method
+func (m *MockFeatureService) GetByGameRevisionID(arg0 context.Context, arg1 uint) ([]entity.Feature, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetByGameID", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetByGameRevisionID", arg0, arg1)
 	ret0, _ := ret[0].([]entity.Feature)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetByGameID indicates an expected call of GetByGameID
-func (mr *MockFeatureServiceMockRecorder) GetByGameID(arg0, arg1 interface{}) *gomock.Call {
+// GetByGameRevisionID indicates an expected call of GetByGameRevisionID
+func (mr *MockFeatureServiceMockRecorder) GetByGameRevisionID(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByGameID", reflect.TypeOf((*MockFeatureService)(nil).GetByGameID), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByGameRevisionID", reflect.TypeOf((*MockFeatureService)(nil).GetByGameRevisionID), arg0, arg1)
 }
 
 // GetByID mocks base method
@@ -139,16 +139,16 @@ func (mr *MockFeatureServiceMockRecorder) Update(arg0, arg1 interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockFeatureService)(nil).Update), arg0, arg1)
 }
 
-// UpdateFeaturesForGame mocks base method
-func (m *MockFeatureService) UpdateFeaturesForGame(arg0 context.Context, arg1 *entity.Game, arg2 []uint) error {
+// UpdateFeaturesForGameRevision mocks base method
+func (m *MockFeatureService) UpdateFeaturesForGameRevision(arg0 context.Context, arg1 *entity.GameRevision, arg2 []uint) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateFeaturesForGame", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "UpdateFeaturesForGameRevision", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// UpdateFeaturesForGame indicates an expected call of UpdateFeaturesForGame
-func (mr *MockFeatureServiceMockRecorder) UpdateFeaturesForGame(arg0, arg1, arg2 interface{}) *gomock.Call {
+// UpdateFeaturesForGameRevision indicates an expected call of UpdateFeaturesForGameRevision
+func (mr *MockFeatureServiceMockRecorder) UpdateFeaturesForGameRevision(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFeaturesForGame", reflect.TypeOf((*MockFeatureService)(nil).UpdateFeaturesForGame), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFeaturesForGameRevision", reflect.TypeOf((*MockFeatureService)(nil).UpdateFeaturesForGameRevision), arg0, arg1, arg2)
 }

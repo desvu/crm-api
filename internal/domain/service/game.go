@@ -11,34 +11,37 @@ import (
 
 //go:generate mockgen -destination=../mocks/game_service.go -package=mocks github.com/qilin/crm-api/internal/domain/service GameService
 type GameService interface {
-	Create(ctx context.Context, data *CreateGameData) (*entity.Game, error)
-	Update(ctx context.Context, data *UpdateGameData) (*entity.Game, error)
-	UpdateEx(ctx context.Context, data *UpdateGameExData) (*entity.GameEx, error)
-	Delete(ctx context.Context, id uint) error
-	Publish(ctx context.Context, id uint) error
+	Create(ctx context.Context, data *CreateGameData) (*entity.GameEx, error)
+	Update(ctx context.Context, data *UpdateGameData) (*entity.GameEx, error)
+	Delete(ctx context.Context, id string) error
+	Publish(ctx context.Context, id string) error
 
-	GetByID(ctx context.Context, id uint) (*entity.Game, error)
-	GetExistByID(ctx context.Context, id uint) (*entity.Game, error)
+	GetByID(ctx context.Context, id string) (*entity.Game, error)
+	GetExistByID(ctx context.Context, id string) (*entity.Game, error)
+
+	GetExistExByID(ctx context.Context, id string) (*entity.GameEx, error)
 }
 
 type CreateGameData struct {
 	Title       string
-	Summary     string
-	Description string
-	License     string
-	Ranking     string
 	Type        game.Type
-	Platforms   game.PlatformArray
-	ReleaseDate time.Time
+	Summary     *string
+	Description *string
+	Slug        *string
+	License     *string
+	Platforms   *game.PlatformArray
+	ReleaseDate *time.Time
+
+	Tags       *[]uint
+	Developers *[]uint
+	Publishers *[]uint
+	Features   *[]uint
+	Genres     *[]uint
 }
 
 type UpdateGameData struct {
-	ID    uint
-	Title string
-}
-
-type UpdateGameExData struct {
-	UpdateGameData
+	ID         string
+	Title      *string
 	Tags       *[]uint
 	Developers *[]uint
 	Publishers *[]uint

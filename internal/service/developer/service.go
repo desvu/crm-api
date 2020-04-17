@@ -73,16 +73,16 @@ func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Developer, 
 	return s.DeveloperRepository.FindByIDs(ctx, ids)
 }
 
-func (s Service) GetByGameID(ctx context.Context, gameID uint) ([]entity.Developer, error) {
-	gameDevelopers, err := s.GameDeveloperRepository.FindByGameID(ctx, gameID)
+func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Developer, error) {
+	gameDevelopers, err := s.GameRevisionDeveloperRepository.FindByGameRevisionID(ctx, gameID)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.GetByIDs(ctx, entity.NewGameDeveloperArray(gameDevelopers).IDs())
+	return s.GetByIDs(ctx, entity.NewGameRevisionDeveloperArray(gameDevelopers).IDs())
 }
 
-func (s Service) UpdateDevelopersForGame(ctx context.Context, game *entity.Game, developerIDs []uint) error {
+func (s Service) UpdateDevelopersForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, developerIDs []uint) error {
 	developers, err := s.GetByIDs(ctx, developerIDs)
 	if err != nil {
 		return err
@@ -93,17 +93,17 @@ func (s Service) UpdateDevelopersForGame(ctx context.Context, game *entity.Game,
 		return ErrInvalidDeveloperIDs
 	}
 
-	currentGameDevelopers, err := s.GameDeveloperRepository.FindByGameID(ctx, game.ID)
+	currentGameDevelopers, err := s.GameRevisionDeveloperRepository.FindByGameRevisionID(ctx, gameRevision.ID)
 	if err != nil {
 		return err
 	}
 
-	err = s.GameDeveloperRepository.DeleteMultiple(ctx, getGameDevelopersForDelete(developerIDs, currentGameDevelopers))
+	err = s.GameRevisionDeveloperRepository.DeleteMultiple(ctx, getGameDevelopersForDelete(developerIDs, currentGameDevelopers))
 	if err != nil {
 		return err
 	}
 
-	err = s.GameDeveloperRepository.CreateMultiple(ctx, getGameDevelopersForInsert(game.ID, developerIDs, currentGameDevelopers))
+	err = s.GameRevisionDeveloperRepository.CreateMultiple(ctx, getGameDevelopersForInsert(gameRevision.ID, developerIDs, currentGameDevelopers))
 	if err != nil {
 		return err
 	}
@@ -111,8 +111,8 @@ func (s Service) UpdateDevelopersForGame(ctx context.Context, game *entity.Game,
 	return nil
 }
 
-func getGameDevelopersForInsert(gameID uint, newDeveloperIDs []uint, currentGameDevelopers []entity.GameDeveloper) []entity.GameDeveloper {
-	gameDevelopers := make([]entity.GameDeveloper, 0)
+func getGameDevelopersForInsert(gameID uint, newDeveloperIDs []uint, currentGameDevelopers []entity.GameRevisionDeveloper) []entity.GameRevisionDeveloper {
+	gameDevelopers := make([]entity.GameRevisionDeveloper, 0)
 	for _, newDeveloperID := range newDeveloperIDs {
 		var hasMatch bool
 		for _, currentGameDeveloper := range currentGameDevelopers {
@@ -122,9 +122,9 @@ func getGameDevelopersForInsert(gameID uint, newDeveloperIDs []uint, currentGame
 		}
 
 		if !hasMatch {
-			gameDevelopers = append(gameDevelopers, entity.GameDeveloper{
-				GameID:      gameID,
-				DeveloperID: newDeveloperID,
+			gameDevelopers = append(gameDevelopers, entity.GameRevisionDeveloper{
+				GameRevisionID: gameID,
+				DeveloperID:    newDeveloperID,
 			})
 		}
 	}
@@ -132,8 +132,8 @@ func getGameDevelopersForInsert(gameID uint, newDeveloperIDs []uint, currentGame
 	return gameDevelopers
 }
 
-func getGameDevelopersForDelete(newDeveloperIDs []uint, currentGameDevelopers []entity.GameDeveloper) []entity.GameDeveloper {
-	gameDevelopers := make([]entity.GameDeveloper, 0)
+func getGameDevelopersForDelete(newDeveloperIDs []uint, currentGameDevelopers []entity.GameRevisionDeveloper) []entity.GameRevisionDeveloper {
+	gameDevelopers := make([]entity.GameRevisionDeveloper, 0)
 	for _, currentGameDeveloper := range currentGameDevelopers {
 		var hasMatch bool
 		for _, newDeveloperID := range newDeveloperIDs {
@@ -143,10 +143,10 @@ func getGameDevelopersForDelete(newDeveloperIDs []uint, currentGameDevelopers []
 		}
 
 		if !hasMatch {
-			gameDevelopers = append(gameDevelopers, entity.GameDeveloper{
-				ID:          currentGameDeveloper.ID,
-				GameID:      currentGameDeveloper.GameID,
-				DeveloperID: currentGameDeveloper.DeveloperID,
+			gameDevelopers = append(gameDevelopers, entity.GameRevisionDeveloper{
+				ID:             currentGameDeveloper.ID,
+				GameRevisionID: currentGameDeveloper.GameRevisionID,
+				DeveloperID:    currentGameDeveloper.DeveloperID,
 			})
 		}
 	}

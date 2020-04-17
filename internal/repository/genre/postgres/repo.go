@@ -3,7 +3,6 @@ package postgres
 import (
 	"context"
 
-	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
 	"github.com/qilin/crm-api/pkg/repository/handler/sql"
@@ -76,9 +75,13 @@ func (r GenreRepository) FindByID(ctx context.Context, id uint) (*entity.Genre, 
 }
 
 func (r GenreRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.Genre, error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+
 	var models []model
 
-	err := r.h.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
+	err := r.h.ModelContext(ctx, &models).WhereIn("id in (?)", ids).Select()
 	if err != nil {
 		return nil, err
 	}

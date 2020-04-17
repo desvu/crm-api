@@ -16,48 +16,48 @@ func TestService_getGameFeaturesForInsert(t *testing.T) {
 	type args struct {
 		gameID              uint
 		newFeatureIDs       []uint
-		currentGameFeatures []entity.GameFeature
+		currentGameFeatures []entity.GameRevisionFeature
 	}
 	tests := []struct {
 		name string
 		args args
-		want []entity.GameFeature
+		want []entity.GameRevisionFeature
 	}{
 		{
 			name: "getting a list of feature IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				gameID:              1,
 				newFeatureIDs:       []uint{1, 2, 3, 4},
-				currentGameFeatures: []entity.GameFeature{{FeatureID: 2}, {FeatureID: 3}},
+				currentGameFeatures: []entity.GameRevisionFeature{{FeatureID: 2}, {FeatureID: 3}},
 			},
-			want: []entity.GameFeature{{FeatureID: 1, GameID: 1}, {FeatureID: 4, GameID: 1}},
+			want: []entity.GameRevisionFeature{{FeatureID: 1, GameRevisionID: 1}, {FeatureID: 4, GameRevisionID: 1}},
 		},
 		{
 			name: "getting a list of feature IDs with a fully included subset of IDs associated with the device",
 			args: args{
 				gameID:              1,
 				newFeatureIDs:       []uint{2, 3},
-				currentGameFeatures: []entity.GameFeature{{FeatureID: 2}, {FeatureID: 3}},
+				currentGameFeatures: []entity.GameRevisionFeature{{FeatureID: 2}, {FeatureID: 3}},
 			},
-			want: []entity.GameFeature{},
+			want: []entity.GameRevisionFeature{},
 		},
 		{
 			name: "getting a list of feature IDs with or without an incoming subset of IDs associated with the device",
 			args: args{
 				gameID:              1,
 				newFeatureIDs:       []uint{5, 6},
-				currentGameFeatures: []entity.GameFeature{{FeatureID: 2}, {FeatureID: 3}},
+				currentGameFeatures: []entity.GameRevisionFeature{{FeatureID: 2}, {FeatureID: 3}},
 			},
-			want: []entity.GameFeature{{FeatureID: 5, GameID: 1}, {FeatureID: 6, GameID: 1}},
+			want: []entity.GameRevisionFeature{{FeatureID: 5, GameRevisionID: 1}, {FeatureID: 6, GameRevisionID: 1}},
 		},
 		{
 			name: "getting a list of feature IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				gameID:              1,
 				newFeatureIDs:       []uint{1, 2, 2, 3, 4},
-				currentGameFeatures: []entity.GameFeature{{FeatureID: 2}, {FeatureID: 3}},
+				currentGameFeatures: []entity.GameRevisionFeature{{FeatureID: 2}, {FeatureID: 3}},
 			},
-			want: []entity.GameFeature{{FeatureID: 1, GameID: 1}, {FeatureID: 4, GameID: 1}},
+			want: []entity.GameRevisionFeature{{FeatureID: 1, GameRevisionID: 1}, {FeatureID: 4, GameRevisionID: 1}},
 		},
 	}
 	for _, tt := range tests {
@@ -74,36 +74,36 @@ func TestService_getGameFeaturesForDelete(t *testing.T) {
 
 	type args struct {
 		newFeatureIDs       []uint
-		currentGameFeatures []entity.GameFeature
+		currentGameFeatures []entity.GameRevisionFeature
 	}
 	tests := []struct {
 		name string
 		args args
-		want []entity.GameFeature
+		want []entity.GameRevisionFeature
 	}{
 		{
 			name: "getting a list of feature IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				newFeatureIDs:       []uint{1, 2, 3, 4},
-				currentGameFeatures: []entity.GameFeature{{FeatureID: 2}, {FeatureID: 3}},
+				currentGameFeatures: []entity.GameRevisionFeature{{FeatureID: 2}, {FeatureID: 3}},
 			},
-			want: []entity.GameFeature{},
+			want: []entity.GameRevisionFeature{},
 		},
 		{
 			name: "getting a list of feature IDs with a fully included subset of IDs associated with the device",
 			args: args{
 				newFeatureIDs:       []uint{2, 3},
-				currentGameFeatures: []entity.GameFeature{{FeatureID: 2}, {FeatureID: 3}},
+				currentGameFeatures: []entity.GameRevisionFeature{{FeatureID: 2}, {FeatureID: 3}},
 			},
-			want: []entity.GameFeature{},
+			want: []entity.GameRevisionFeature{},
 		},
 		{
 			name: "getting a list of feature IDs with a partially included subset of IDs associated with the device",
 			args: args{
 				newFeatureIDs:       []uint{1, 4},
-				currentGameFeatures: []entity.GameFeature{{ID: 1, FeatureID: 2, GameID: 1}, {ID: 1, FeatureID: 3, GameID: 1}},
+				currentGameFeatures: []entity.GameRevisionFeature{{ID: 1, FeatureID: 2, GameRevisionID: 1}, {ID: 1, FeatureID: 3, GameRevisionID: 1}},
 			},
-			want: []entity.GameFeature{{ID: 1, FeatureID: 2, GameID: 1}, {ID: 1, FeatureID: 3, GameID: 1}},
+			want: []entity.GameRevisionFeature{{ID: 1, FeatureID: 2, GameRevisionID: 1}, {ID: 1, FeatureID: 3, GameRevisionID: 1}},
 		},
 	}
 	for _, tt := range tests {
@@ -120,17 +120,17 @@ func TestService_UpdateFeaturesForGame(t *testing.T) {
 
 	ctrl := gomock.NewController(t)
 	featureRepository := mocks.NewMockFeatureRepository(ctrl)
-	gameFeatureRepository := mocks.NewMockGameFeatureRepository(ctrl)
+	gameRevisionFeatureRepository := mocks.NewMockGameRevisionFeatureRepository(ctrl)
 
 	s := New(ServiceParams{
-		FeatureRepository:     featureRepository,
-		GameFeatureRepository: gameFeatureRepository,
+		FeatureRepository:             featureRepository,
+		GameRevisionFeatureRepository: gameRevisionFeatureRepository,
 	})
 
 	type args struct {
-		ctx        context.Context
-		game       *entity.Game
-		featureIDs []uint
+		ctx          context.Context
+		gameRevision *entity.GameRevision
+		featureIDs   []uint
 	}
 	tests := []struct {
 		name    string
@@ -141,18 +141,18 @@ func TestService_UpdateFeaturesForGame(t *testing.T) {
 		{
 			name: "getting a non-existent feature ID",
 			args: args{
-				ctx:        context.Background(),
-				game:       &entity.Game{ID: 1},
-				featureIDs: []uint{1, 2, 3},
+				ctx:          context.Background(),
+				gameRevision: &entity.GameRevision{ID: 1},
+				featureIDs:   []uint{1, 2, 3},
 			},
 			wantErr: false,
 		},
 		{
 			name: "getting a non-existent feature ID",
 			args: args{
-				ctx:        context.Background(),
-				game:       &entity.Game{ID: 1},
-				featureIDs: []uint{1, 2, 3, 4},
+				ctx:          context.Background(),
+				gameRevision: &entity.GameRevision{ID: 1},
+				featureIDs:   []uint{1, 2, 3, 4},
 			},
 			wantErr: true,
 		},
@@ -163,16 +163,16 @@ func TestService_UpdateFeaturesForGame(t *testing.T) {
 			featureRepository.EXPECT().FindByIDs(gomock.Any(), gomock.Any()).
 				Return([]entity.Feature{{ID: 1}, {ID: 2}, {ID: 3}}, nil)
 
-			// s.GameFeatureRepository.FindByGameID
-			gameFeatureRepository.EXPECT().FindByGameID(gomock.Any(), gomock.Any()).
-				Return([]entity.GameFeature{{FeatureID: 3}}, nil)
+			// s.GameRevisionFeatureRepository.FindByGameRevisionID
+			gameRevisionFeatureRepository.EXPECT().FindByGameRevisionID(gomock.Any(), gomock.Any()).
+				Return([]entity.GameRevisionFeature{{FeatureID: 3}}, nil)
 
-			gameFeatureRepository.EXPECT().DeleteMultiple(gomock.Any(), gomock.Any())
-			gameFeatureRepository.EXPECT().CreateMultiple(gomock.Any(), gomock.Any())
+			gameRevisionFeatureRepository.EXPECT().DeleteMultiple(gomock.Any(), gomock.Any())
+			gameRevisionFeatureRepository.EXPECT().CreateMultiple(gomock.Any(), gomock.Any())
 
-			err := s.UpdateFeaturesForGame(tt.args.ctx, tt.args.game, tt.args.featureIDs)
+			err := s.UpdateFeaturesForGameRevision(tt.args.ctx, tt.args.gameRevision, tt.args.featureIDs)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("UpdateFeaturesForGame() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("UpdateFeaturesForGameRevision() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 		})

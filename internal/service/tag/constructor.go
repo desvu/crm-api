@@ -9,8 +9,8 @@ import (
 type ServiceParams struct {
 	fx.In
 
-	TagRepository     repository.TagRepository
-	GameTagRepository repository.GameTagRepository
+	TagRepository             repository.TagRepository
+	GameRevisionTagRepository repository.GameRevisionTagRepository
 }
 
 func New(params ServiceParams) service.TagService {

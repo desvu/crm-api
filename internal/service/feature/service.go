@@ -73,16 +73,16 @@ func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Feature, er
 	return s.FeatureRepository.FindByIDs(ctx, ids)
 }
 
-func (s Service) GetByGameID(ctx context.Context, gameID uint) ([]entity.Feature, error) {
-	gameFeatures, err := s.GameFeatureRepository.FindByGameID(ctx, gameID)
+func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Feature, error) {
+	gameFeatures, err := s.GameRevisionFeatureRepository.FindByGameRevisionID(ctx, gameID)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.GetByIDs(ctx, entity.NewGameFeatureArray(gameFeatures).IDs())
+	return s.GetByIDs(ctx, entity.NewGameRevisionFeatureArray(gameFeatures).IDs())
 }
 
-func (s Service) UpdateFeaturesForGame(ctx context.Context, game *entity.Game, featureIDs []uint) error {
+func (s Service) UpdateFeaturesForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, featureIDs []uint) error {
 	features, err := s.GetByIDs(ctx, featureIDs)
 	if err != nil {
 		return err
@@ -93,17 +93,17 @@ func (s Service) UpdateFeaturesForGame(ctx context.Context, game *entity.Game, f
 		return ErrInvalidFeatureIDs
 	}
 
-	currentGameFeatures, err := s.GameFeatureRepository.FindByGameID(ctx, game.ID)
+	currentGameFeatures, err := s.GameRevisionFeatureRepository.FindByGameRevisionID(ctx, gameRevision.ID)
 	if err != nil {
 		return err
 	}
 
-	err = s.GameFeatureRepository.DeleteMultiple(ctx, getGameFeaturesForDelete(featureIDs, currentGameFeatures))
+	err = s.GameRevisionFeatureRepository.DeleteMultiple(ctx, getGameFeaturesForDelete(featureIDs, currentGameFeatures))
 	if err != nil {
 		return err
 	}
 
-	err = s.GameFeatureRepository.CreateMultiple(ctx, getGameFeaturesForInsert(game.ID, featureIDs, currentGameFeatures))
+	err = s.GameRevisionFeatureRepository.CreateMultiple(ctx, getGameFeaturesForInsert(gameRevision.ID, featureIDs, currentGameFeatures))
 	if err != nil {
 		return err
 	}
@@ -111,8 +111,8 @@ func (s Service) UpdateFeaturesForGame(ctx context.Context, game *entity.Game, f
 	return nil
 }
 
-func getGameFeaturesForInsert(gameID uint, newFeatureIDs []uint, currentGameFeatures []entity.GameFeature) []entity.GameFeature {
-	gameFeatures := make([]entity.GameFeature, 0)
+func getGameFeaturesForInsert(gameID uint, newFeatureIDs []uint, currentGameFeatures []entity.GameRevisionFeature) []entity.GameRevisionFeature {
+	gameFeatures := make([]entity.GameRevisionFeature, 0)
 	for _, newFeatureID := range newFeatureIDs {
 		var hasMatch bool
 		for _, currentGameFeature := range currentGameFeatures {
@@ -122,9 +122,9 @@ func getGameFeaturesForInsert(gameID uint, newFeatureIDs []uint, currentGameFeat
 		}
 
 		if !hasMatch {
-			gameFeatures = append(gameFeatures, entity.GameFeature{
-				GameID:    gameID,
-				FeatureID: newFeatureID,
+			gameFeatures = append(gameFeatures, entity.GameRevisionFeature{
+				GameRevisionID: gameID,
+				FeatureID:      newFeatureID,
 			})
 		}
 	}
@@ -132,8 +132,8 @@ func getGameFeaturesForInsert(gameID uint, newFeatureIDs []uint, currentGameFeat
 	return gameFeatures
 }
 
-func getGameFeaturesForDelete(newFeatureIDs []uint, currentGameFeatures []entity.GameFeature) []entity.GameFeature {
-	gameFeatures := make([]entity.GameFeature, 0)
+func getGameFeaturesForDelete(newFeatureIDs []uint, currentGameFeatures []entity.GameRevisionFeature) []entity.GameRevisionFeature {
+	gameFeatures := make([]entity.GameRevisionFeature, 0)
 	for _, currentGameFeature := range currentGameFeatures {
 		var hasMatch bool
 		for _, newFeatureID := range newFeatureIDs {
@@ -143,10 +143,10 @@ func getGameFeaturesForDelete(newFeatureIDs []uint, currentGameFeatures []entity
 		}
 
 		if !hasMatch {
-			gameFeatures = append(gameFeatures, entity.GameFeature{
-				ID:        currentGameFeature.ID,
-				GameID:    currentGameFeature.GameID,
-				FeatureID: currentGameFeature.FeatureID,
+			gameFeatures = append(gameFeatures, entity.GameRevisionFeature{
+				ID:             currentGameFeature.ID,
+				GameRevisionID: currentGameFeature.GameRevisionID,
+				FeatureID:      currentGameFeature.FeatureID,
 			})
 		}
 	}

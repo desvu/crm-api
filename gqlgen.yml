@@ -1,17 +1,18 @@
 schema:
-  - "graphql/*.graphql"
+  - internal/handler/graph/graph/*.graphql
 
 exec:
-  filename: internal/graphql/graphql.go
+  filename: internal/handler/graph/generated/generated.go
+  package: generated
 
 model:
-  filename: internal/graphql/models_gen.go
+  filename: internal/handler/graph/model/models_gen.go
+  package: model
 
 resolver:
-  filename: internal/graphql/resolver_gen.go
-  type: Resolver
+  filename: internal/handler/graph/resolver.go
 
-# autobind:
-#   - github.com/qilin/store-api/internal/db/domain/store
-#   - github.com/qilin/store-api/internal/storeapi
-
+models:
+  Time:
+    model:
+      - github.com/99designs/gqlgen/graphql.Time

@@ -12,6 +12,16 @@ func NewPlatformArray(v ...uint8) PlatformArray {
 	return source
 }
 
+func NewPlatformArrayByStrings(v ...string) PlatformArray {
+	source := make(PlatformArray, 0, len(v))
+
+	for i := range v {
+		source.Add(NewPlatformByString(v[i]))
+	}
+
+	return source
+}
+
 func (p *PlatformArray) Add(v Platform) {
 	if p == nil {
 		return

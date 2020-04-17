@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/google/uuid"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
@@ -14,79 +15,41 @@ type Service struct {
 
 var ErrGameNotFound = errors.New("game not found")
 
-func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*entity.Game, error) {
+func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*entity.GameEx, error) {
 	game := &entity.Game{
-		Title:       data.Title,
-		Summary:     data.Summary,
-		Description: data.Description,
-		License:     data.License,
-		Ranking:     data.Ranking,
-		Type:        data.Type,
-		Platforms:   data.Platforms,
-		ReleaseDate: data.ReleaseDate,
+		ID:    uuid.New().String(),
+		Title: data.Title,
+		Type:  data.Type,
 	}
 
-	if err := s.GameRepository.Create(ctx, game); err != nil {
-		return nil, err
-	}
+	var updatedRevision *entity.GameRevisionEx
+	if err := s.Transactor.Transact(ctx, func(tx context.Context) error {
+		if err := s.GameRepository.Create(tx, game); err != nil {
+			return err
+		}
 
-	return game, nil
-}
-
-func (s Service) Update(ctx context.Context, data *service.UpdateGameData) (*entity.Game, error) {
-	game, err := s.GetExistByID(ctx, data.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	game.Title = data.Title
-	if err = s.GameRepository.Update(ctx, game); err != nil {
-		return nil, err
-	}
-
-	return game, nil
-}
-
-func (s Service) UpdateEx(ctx context.Context, data *service.UpdateGameExData) (*entity.GameEx, error) {
-	if err := s.Transactor.Transact(ctx, func(ctx context.Context) error {
-		game, err := s.Update(ctx, &data.UpdateGameData)
+		revision, err := s.GameRevisionService.GetDraftByGame(tx, game)
 		if err != nil {
 			return err
 		}
 
-		if data.Tags != nil {
-			err := s.TagService.UpdateTagsForGame(ctx, game, *data.Tags)
-			if err != nil {
-				return err
-			}
-		}
+		updatedRevision, err = s.GameRevisionService.Update(tx, &service.UpdateGameRevisionData{
+			ID:          revision.ID,
+			Summary:     data.Summary,
+			Description: data.Description,
+			Slug:        data.Slug,
+			License:     data.License,
+			Tags:        data.Tags,
+			Developers:  data.Developers,
+			Publishers:  data.Publishers,
+			Features:    data.Features,
+			Genres:      data.Genres,
+			ReleaseDate: data.ReleaseDate,
+			Platforms:   data.Platforms,
+		})
 
-		if data.Developers != nil {
-			err := s.DeveloperService.UpdateDevelopersForGame(ctx, game, *data.Developers)
-			if err != nil {
-				return err
-			}
-		}
-
-		if data.Publishers != nil {
-			err := s.PublisherService.UpdatePublishersForGame(ctx, game, *data.Publishers)
-			if err != nil {
-				return err
-			}
-		}
-
-		if data.Features != nil {
-			err := s.FeatureService.UpdateFeaturesForGame(ctx, game, *data.Features)
-			if err != nil {
-				return err
-			}
-		}
-
-		if data.Genres != nil {
-			err := s.GenreService.UpdateGenresForGame(ctx, game, *data.Genres)
-			if err != nil {
-				return err
-			}
+		if err != nil {
+			return err
 		}
 
 		return nil
@@ -94,10 +57,54 @@ func (s Service) UpdateEx(ctx context.Context, data *service.UpdateGameExData) (
 		return nil, err
 	}
 
-	return s.GameExRepository.FindByID(ctx, data.ID)
+	return &entity.GameEx{
+		Game:     *game,
+		Revision: updatedRevision,
+	}, nil
 }
 
-func (s Service) Delete(ctx context.Context, id uint) error {
+func (s Service) Update(ctx context.Context, data *service.UpdateGameData) (*entity.GameEx, error) {
+	game, err := s.GetExistByID(ctx, data.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	revision, err := s.GameRevisionService.GetDraftByGame(ctx, game)
+	if err != nil {
+		return nil, err
+	}
+
+	var updatedRevision *entity.GameRevisionEx
+	if err := s.Transactor.Transact(ctx, func(ctx context.Context) error {
+		if err = s.GameRepository.Update(ctx, game); err != nil {
+			return err
+		}
+
+		updatedRevision, err = s.GameRevisionService.Update(ctx, &service.UpdateGameRevisionData{
+			ID:         revision.ID,
+			Tags:       data.Tags,
+			Developers: data.Developers,
+			Publishers: data.Publishers,
+			Features:   data.Features,
+			Genres:     data.Genres,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+
+	return &entity.GameEx{
+		Game:     *game,
+		Revision: updatedRevision,
+	}, nil
+}
+
+func (s Service) Delete(ctx context.Context, id string) error {
 	game, err := s.GetExistByID(ctx, id)
 	if err != nil {
 		return err
@@ -106,15 +113,15 @@ func (s Service) Delete(ctx context.Context, id uint) error {
 	return s.GameRepository.Delete(ctx, game)
 }
 
-func (s Service) Publish(ctx context.Context, id uint) error {
+func (s Service) Publish(ctx context.Context, id string) error {
 	panic("implement me") // TODO
 }
 
-func (s Service) GetByID(ctx context.Context, id uint) (*entity.Game, error) {
+func (s Service) GetByID(ctx context.Context, id string) (*entity.Game, error) {
 	return s.GameRepository.FindByID(ctx, id)
 }
 
-func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Game, error) {
+func (s Service) GetExistByID(ctx context.Context, id string) (*entity.Game, error) {
 	game, err := s.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -125,4 +132,25 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Game, error
 	}
 
 	return game, nil
+}
+
+func (s Service) GetExistExByID(ctx context.Context, id string) (*entity.GameEx, error) {
+	game, err := s.GetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	if game == nil {
+		return nil, ErrGameNotFound
+	}
+
+	revision, err := s.GameRevisionService.GetDraftByGame(ctx, game)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entity.GameEx{
+		Game:     *game,
+		Revision: revision,
+	}, nil
 }
