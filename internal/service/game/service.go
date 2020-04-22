@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 
+	"github.com/qilin/crm-api/internal/domain/publisher"
+
 	"github.com/google/uuid"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
@@ -53,6 +55,14 @@ func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*ent
 		}
 
 		return nil
+	}); err != nil {
+		return nil, err
+	}
+
+	if err := s.GameStorePublisher.Publish(publisher.PublishGameStoreData{
+		GameStorePublishID: 1,
+		GameID:             "123",
+		Body:               "qweqweqe",
 	}); err != nil {
 		return nil, err
 	}

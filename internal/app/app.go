@@ -3,19 +3,23 @@ package app
 import (
 	"context"
 
-	"github.com/micro/go-micro/web"
+	"github.com/qilin/crm-api/internal/handler/micro/service/subscriber/sub_game_store"
+
+	"github.com/micro/go-micro/v2"
+	"github.com/micro/go-micro/v2/web"
 	"github.com/qilin/crm-api/internal/app/container/env"
+	"github.com/qilin/crm-api/internal/app/container/event"
 	"github.com/qilin/crm-api/internal/app/container/handler"
+	"github.com/qilin/crm-api/internal/app/container/pkg"
 	"github.com/qilin/crm-api/internal/app/container/repository"
 	"github.com/qilin/crm-api/internal/app/container/service"
-	"github.com/qilin/crm-api/internal/app/container/transactor"
-	"github.com/qilin/crm-api/internal/handler/micro"
 	"go.uber.org/fx"
 )
 
 type App struct {
 	fxOptions fx.Option
-	server    web.Service
+	grpc      micro.Service
+	web       web.Service
 }
 
 func New() (*App, error) {
@@ -25,8 +29,11 @@ func New() (*App, error) {
 		env.New,
 		repository.New,
 		service.New,
-		transactor.New,
+		event.New,
+		pkg.New,
 		handler.New,
+		handler.NewGRPC,
+		handler.NewWeb,
 	)
 
 	return app, nil
@@ -43,18 +50,21 @@ func (app *App) FxProvides(ff ...func() fx.Option) {
 func (app *App) Init() error {
 	app.fxOptions = fx.Options(
 		app.fxOptions,
-		fx.NopLogger,
+		//fx.NopLogger,
 
 		fx.Invoke(
-			func(params micro.Params) (web.Service, error) {
-				var err error
-				app.server, err = micro.New(params)
-				if err != nil {
+			func(w web.Service, grpc micro.Service) (*App, error) {
+				app.web = w
+				if err := app.web.Init(); err != nil {
 					return nil, err
 				}
 
-				return app.server, nil
+				app.grpc = grpc
+				//app.grpc.Init()
+
+				return app, nil
 			},
+			sub_game_store.New,
 		),
 	)
 
@@ -67,5 +77,17 @@ func (app *App) Init() error {
 }
 
 func (app *App) Run() error {
-	return app.server.Run()
+	if err := app.grpc.Server().Init(); err != nil {
+		return err
+	}
+
+	if err := app.grpc.Server().Start(); err != nil {
+		return err
+	}
+
+	if err := app.web.Run(); err != nil {
+		return err
+	}
+
+	return nil
 }
