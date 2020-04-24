@@ -10,7 +10,7 @@ import (
 type Params struct {
 	fx.In
 
-	Handler *graph.Resolver
+	Resolver *graph.Resolver
 }
 
 func New(params Params) *echo.Echo {
@@ -24,7 +24,7 @@ func New(params Params) *echo.Echo {
 
 	// Routes
 	e.POST("/api/graphql/client", echo.WrapHandler(graph.Playground("/api/graphql")))
-	e.POST("/api/graphql", echo.WrapHandler(graph.NewHandler(params.Handler)))
+	e.POST("/api/graphql", echo.WrapHandler(graph.NewHandler(params.Resolver)))
 
 	return e
 }
