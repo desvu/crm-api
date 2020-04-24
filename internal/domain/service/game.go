@@ -17,9 +17,7 @@ type GameService interface {
 	Publish(ctx context.Context, id string) error
 
 	GetByID(ctx context.Context, id string) (*entity.Game, error)
-	GetExistByID(ctx context.Context, id string) (*entity.Game, error)
-
-	GetExistExByID(ctx context.Context, id string) (*entity.GameEx, error)
+	GetExByID(ctx context.Context, id string) (*entity.GameEx, error)
 }
 
 type CreateGameData struct {

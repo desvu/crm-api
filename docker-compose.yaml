@@ -13,6 +13,14 @@ services:
     volumes:
       - crm-postgres:/data/postgres
 
+  rabbit:
+    image: rabbitmq:alpine
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+    volumes:
+      - crm-rabbit:/var/lib/rabbitmq
+
   qilincrm:
     build: .
     image: p1hub/qilin-crm-api:latest
@@ -30,3 +38,4 @@ services:
 
 volumes:
   crm-postgres:
+  crm-rabbit:

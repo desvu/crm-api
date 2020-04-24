@@ -129,6 +129,7 @@ type UpdateGameInput struct {
 	Tags          []int                `json:"tags"`
 	Features      []int                `json:"features"`
 	Localizations []*LocalizationInput `json:"localizations"`
+	Platforms     []GamePlatform       `json:"platforms"`
 }
 
 type GamePlatform string

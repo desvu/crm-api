@@ -3,19 +3,21 @@ package app
 import (
 	"context"
 
-	"github.com/micro/go-micro/web"
+	"github.com/labstack/echo/v4"
+	"github.com/micro/go-micro/v2"
 	"github.com/qilin/crm-api/internal/app/container/env"
+	"github.com/qilin/crm-api/internal/app/container/event"
 	"github.com/qilin/crm-api/internal/app/container/handler"
+	"github.com/qilin/crm-api/internal/app/container/pkg"
 	"github.com/qilin/crm-api/internal/app/container/repository"
 	"github.com/qilin/crm-api/internal/app/container/service"
-	"github.com/qilin/crm-api/internal/app/container/transactor"
-	"github.com/qilin/crm-api/internal/handler/micro"
 	"go.uber.org/fx"
 )
 
 type App struct {
 	fxOptions fx.Option
-	server    web.Service
+	grpc      micro.Service
+	http      *echo.Echo
 }
 
 func New() (*App, error) {
@@ -25,8 +27,11 @@ func New() (*App, error) {
 		env.New,
 		repository.New,
 		service.New,
-		transactor.New,
+		event.New,
+		pkg.New,
 		handler.New,
+		handler.NewGRPC,
+		handler.NewHTTP,
 	)
 
 	return app, nil
@@ -46,14 +51,10 @@ func (app *App) Init() error {
 		fx.NopLogger,
 
 		fx.Invoke(
-			func(params micro.Params) (web.Service, error) {
-				var err error
-				app.server, err = micro.New(params)
-				if err != nil {
-					return nil, err
-				}
-
-				return app.server, nil
+			func(http *echo.Echo, grpc micro.Service) (*App, error) {
+				app.http = http
+				app.grpc = grpc
+				return app, nil
 			},
 		),
 	)
@@ -67,5 +68,17 @@ func (app *App) Init() error {
 }
 
 func (app *App) Run() error {
-	return app.server.Run()
+	if err := app.grpc.Server().Init(); err != nil {
+		return err
+	}
+
+	if err := app.grpc.Server().Start(); err != nil {
+		return err
+	}
+
+	if err := app.http.Start(":8080"); err != nil {
+		return err
+	}
+
+	return nil
 }

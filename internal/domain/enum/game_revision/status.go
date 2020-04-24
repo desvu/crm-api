@@ -3,9 +3,9 @@ package game_revision
 type Status uint8
 
 const (
-	StatusDraft     Status = 1
-	StatusSkipped   Status = 2
-	StatusPublished Status = 3
+	StatusDraft      Status = 1
+	StatusPublishing Status = 2
+	StatusPublished  Status = 3
 )
 
 func NewStatus(v uint8) Status {
@@ -13,7 +13,7 @@ func NewStatus(v uint8) Status {
 
 	switch v := Status(v); v {
 	case StatusDraft,
-		StatusSkipped,
+		StatusPublishing,
 		StatusPublished:
 		source = v
 	}
@@ -31,8 +31,8 @@ func (t Status) String() string {
 	switch t {
 	case StatusDraft:
 		str = "draft"
-	case StatusSkipped:
-		str = "skipped"
+	case StatusPublishing:
+		str = "publishing"
 	case StatusPublished:
 		str = "published"
 	}
