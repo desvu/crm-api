@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/qilin/crm-api/internal/handler/graph"
+	"github.com/qilin/crm-api/internal/handler/http"
 	"github.com/qilin/crm-api/internal/handler/micro/service"
-	"github.com/qilin/crm-api/internal/handler/micro/web"
 	"go.uber.org/fx"
 )
 
@@ -19,8 +19,8 @@ func NewGRPC() fx.Option {
 	)
 }
 
-func NewWeb() fx.Option {
+func NewHTTP() fx.Option {
 	return fx.Provide(
-		web.New,
+		http.New,
 	)
 }

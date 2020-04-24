@@ -11,16 +11,17 @@ import (
 type ServiceParams struct {
 	fx.In
 
-	GameRevisionService service.GameRevisionService
-	TagService          service.TagService
-	DeveloperService    service.DeveloperService
-	PublisherService    service.PublisherService
-	FeatureService      service.FeatureService
-	GenreService        service.GenreService
-	GameRepository      repository.GameRepository
-	GameExRepository    repository.GameRevisionExRepository
-	Transactor          *transactor.Transactor
-	GameStorePublisher  publisher.GameStorePublisher
+	GameRevisionService     service.GameRevisionService
+	GameStorePublishService service.GameStorePublishService
+	TagService              service.TagService
+	DeveloperService        service.DeveloperService
+	PublisherService        service.PublisherService
+	FeatureService          service.FeatureService
+	GenreService            service.GenreService
+	GameRepository          repository.GameRepository
+	GameExRepository        repository.GameRevisionExRepository
+	Transactor              *transactor.Transactor
+	GameStorePublisher      publisher.GameStorePublisher
 }
 
 func New(params ServiceParams) service.GameService {

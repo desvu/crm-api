@@ -3,10 +3,8 @@ package app
 import (
 	"context"
 
-	"github.com/qilin/crm-api/internal/handler/micro/service/subscriber/sub_game_store"
-
+	"github.com/labstack/echo/v4"
 	"github.com/micro/go-micro/v2"
-	"github.com/micro/go-micro/v2/web"
 	"github.com/qilin/crm-api/internal/app/container/env"
 	"github.com/qilin/crm-api/internal/app/container/event"
 	"github.com/qilin/crm-api/internal/app/container/handler"
@@ -19,7 +17,7 @@ import (
 type App struct {
 	fxOptions fx.Option
 	grpc      micro.Service
-	web       web.Service
+	http      *echo.Echo
 }
 
 func New() (*App, error) {
@@ -33,7 +31,7 @@ func New() (*App, error) {
 		pkg.New,
 		handler.New,
 		handler.NewGRPC,
-		handler.NewWeb,
+		handler.NewHTTP,
 	)
 
 	return app, nil
@@ -50,21 +48,14 @@ func (app *App) FxProvides(ff ...func() fx.Option) {
 func (app *App) Init() error {
 	app.fxOptions = fx.Options(
 		app.fxOptions,
-		//fx.NopLogger,
+		fx.NopLogger,
 
 		fx.Invoke(
-			func(w web.Service, grpc micro.Service) (*App, error) {
-				app.web = w
-				if err := app.web.Init(); err != nil {
-					return nil, err
-				}
-
+			func(http *echo.Echo, grpc micro.Service) (*App, error) {
+				app.http = http
 				app.grpc = grpc
-				//app.grpc.Init()
-
 				return app, nil
 			},
-			sub_game_store.New,
 		),
 	)
 
@@ -85,7 +76,7 @@ func (app *App) Run() error {
 		return err
 	}
 
-	if err := app.web.Run(); err != nil {
+	if err := app.http.Start(":8080"); err != nil {
 		return err
 	}
 

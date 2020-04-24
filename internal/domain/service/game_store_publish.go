@@ -9,8 +9,8 @@ import (
 )
 
 type GameStorePublishService interface {
-	Create(ctx context.Context, data *CreateGameData) (*entity.GameStorePublish, error)
-	Update(ctx context.Context, data *UpdateGameData) (*entity.GameStorePublish, error)
+	Create(ctx context.Context, data *CreateGameStorePublishData) (*entity.GameStorePublish, error)
+	Update(ctx context.Context, data *UpdateGameStorePublishData) (*entity.GameStorePublish, error)
 }
 
 type CreateGameStorePublishData struct {

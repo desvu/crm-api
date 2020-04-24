@@ -14,7 +14,7 @@ func (r *queryResolver) Games(ctx context.Context) ([]*model.Game, error) {
 
 // Game returns game type by id
 func (r *queryResolver) Game(ctx context.Context, id string) (*model.Game, error) {
-	g, err := r.gameService.GetExistExByID(ctx, id)
+	g, err := r.gameService.GetExByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -54,5 +54,10 @@ func (r *mutationResolver) UpdateGame(ctx context.Context, input model.UpdateGam
 // DeleteGame removes game from database
 func (r *mutationResolver) DeleteGame(ctx context.Context, id string) (bool, error) {
 	err := r.gameService.Delete(ctx, id)
+	return err == nil, err
+}
+
+func (r *mutationResolver) PublishGame(ctx context.Context, id string) (bool, error) {
+	err := r.gameService.Publish(ctx, id)
 	return err == nil, err
 }

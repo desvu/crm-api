@@ -72,9 +72,10 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateGame func(childComplexity int, input model.CreateGameInput) int
-		DeleteGame func(childComplexity int, id string) int
-		UpdateGame func(childComplexity int, input model.UpdateGameInput) int
+		CreateGame  func(childComplexity int, input model.CreateGameInput) int
+		DeleteGame  func(childComplexity int, id string) int
+		PublishGame func(childComplexity int, id string) int
+		UpdateGame  func(childComplexity int, input model.UpdateGameInput) int
 	}
 
 	Pricing struct {
@@ -140,6 +141,7 @@ type MutationResolver interface {
 	CreateGame(ctx context.Context, input model.CreateGameInput) (*model.Game, error)
 	UpdateGame(ctx context.Context, input model.UpdateGameInput) (*model.Game, error)
 	DeleteGame(ctx context.Context, id string) (bool, error)
+	PublishGame(ctx context.Context, id string) (bool, error)
 }
 type QueryResolver interface {
 	Games(ctx context.Context) ([]*model.Game, error)
@@ -268,6 +270,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteGame(childComplexity, args["id"].(string)), true
+
+	case "Mutation.publishGame":
+		if e.complexity.Mutation.PublishGame == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_publishGame_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.PublishGame(childComplexity, args["id"].(string)), true
 
 	case "Mutation.updateGame":
 		if e.complexity.Mutation.UpdateGame == nil {
@@ -782,6 +796,7 @@ input UpdateGameInput {
 	tags: [Int!]
 	features: [Int!]
 	localizations: [LocalizationInput!]
+	platforms: [GamePlatform!]
 }
 
 input LocalizationInput {
@@ -801,6 +816,7 @@ type Mutation {
 	createGame(input: CreateGameInput!): Game
 	updateGame(input: UpdateGameInput!): Game
 	deleteGame(id:ID!): Boolean!
+	publishGame(id:ID!): Boolean!
 }
 
 scalar Time`, BuiltIn: false},
@@ -826,6 +842,20 @@ func (ec *executionContext) field_Mutation_createGame_args(ctx context.Context, 
 }
 
 func (ec *executionContext) field_Mutation_deleteGame_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_publishGame_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -1426,6 +1456,47 @@ func (ec *executionContext) _Mutation_deleteGame(ctx context.Context, field grap
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().DeleteGame(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_publishGame(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_publishGame_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().PublishGame(rctx, args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3924,6 +3995,12 @@ func (ec *executionContext) unmarshalInputUpdateGameInput(ctx context.Context, o
 			if err != nil {
 				return it, err
 			}
+		case "platforms":
+			var err error
+			it.Platforms, err = ec.unmarshalOGamePlatform2ᚕgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGamePlatformᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -4129,6 +4206,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec._Mutation_updateGame(ctx, field)
 		case "deleteGame":
 			out.Values[i] = ec._Mutation_deleteGame(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "publishGame":
+			out.Values[i] = ec._Mutation_publishGame(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
