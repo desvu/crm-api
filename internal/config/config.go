@@ -2,15 +2,18 @@ package config
 
 import (
 	"github.com/kelseyhightower/envconfig"
+	"github.com/qilin/crm-api/internal/auth"
 )
 
 type Config struct {
 	Store Store
+	Auth  auth.Config
 }
 
 type Store struct {
 	Postgres PostgresConf
 	Redis    RedisConf
+	Rabbit   RabbitConf
 }
 
 type PostgresConf struct {
@@ -25,6 +28,10 @@ type RedisConf struct {
 	Host     string `default:"127.0.0.1:6379"`
 	Password string `default:""`
 	DB       int    `default:"0"`
+}
+
+type RabbitConf struct {
+	Url string `default:"amqp://guest:guest@localhost:5672"`
 }
 
 func New() (*Config, error) {

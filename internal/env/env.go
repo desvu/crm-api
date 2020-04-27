@@ -2,6 +2,7 @@ package env
 
 import (
 	"github.com/isayme/go-amqp-reconnect/rabbitmq"
+	"github.com/qilin/crm-api/internal/auth"
 	"github.com/qilin/crm-api/internal/config"
 	"github.com/qilin/crm-api/internal/env/migration/postgres"
 	"github.com/qilin/crm-api/pkg/transactor"
@@ -10,6 +11,7 @@ import (
 type Env struct {
 	Store  *Store
 	Rabbit *rabbitmq.Connection
+	Auth   auth.Config
 }
 
 func New(transactor *transactor.Transactor) (*Env, error) {
@@ -18,7 +20,7 @@ func New(transactor *transactor.Transactor) (*Env, error) {
 		return nil, err
 	}
 
-	rabbitEnv, err := newRabbit()
+	rabbitEnv, err := newRabbit(cfg.Store.Rabbit)
 	if err != nil {
 		return nil, err
 	}
@@ -35,5 +37,6 @@ func New(transactor *transactor.Transactor) (*Env, error) {
 	return &Env{
 		Store:  storeEnv,
 		Rabbit: rabbitEnv,
+		Auth:   cfg.Auth,
 	}, nil
 }

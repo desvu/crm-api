@@ -2,7 +2,7 @@ FROM golang:1.13-alpine AS builder
 
 RUN apk add bash ca-certificates git
 
-WORKDIR /application
+WORKDIR /app
 
 COPY go.mod.cache go.mod
 RUN go mod download
@@ -16,7 +16,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -o ./bin/crm ./cmd/main.go
 
 FROM alpine:3.9
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
-WORKDIR /application
-COPY --from=builder /application .
+WORKDIR /app
+COPY --from=builder /app/bin/crm .
 
-ENTRYPOINT /application/bin/crm
+ENTRYPOINT /app/crm

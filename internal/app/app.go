@@ -11,6 +11,8 @@ import (
 	"github.com/qilin/crm-api/internal/app/container/pkg"
 	"github.com/qilin/crm-api/internal/app/container/repository"
 	"github.com/qilin/crm-api/internal/app/container/service"
+	"github.com/qilin/crm-api/internal/auth"
+	envx "github.com/qilin/crm-api/internal/env"
 	"go.uber.org/fx"
 )
 
@@ -49,6 +51,12 @@ func (app *App) Init() error {
 	app.fxOptions = fx.Options(
 		app.fxOptions,
 		fx.NopLogger,
+
+		fx.Provide(
+			func(env *envx.Env) (*auth.Auth, error) {
+				return auth.New(&env.Auth)
+			},
+		),
 
 		fx.Invoke(
 			func(http *echo.Echo, grpc micro.Service) (*App, error) {
