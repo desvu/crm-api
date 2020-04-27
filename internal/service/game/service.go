@@ -2,20 +2,20 @@ package game
 
 import (
 	"context"
-	"errors"
 
 	"github.com/google/uuid"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 	"github.com/qilin/crm-api/internal/domain/publisher"
 	"github.com/qilin/crm-api/internal/domain/service"
+	"github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
 	ServiceParams
 }
 
-var ErrGameNotFound = errors.New("game not found")
+var ErrGameNotFound = errors.NewService(errors.ErrNotFound, "game not found")
 
 func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*entity.GameEx, error) {
 	game := &entity.Game{
@@ -157,6 +157,23 @@ func (s Service) GetExByID(ctx context.Context, id string) (*entity.GameEx, erro
 	}
 
 	revision, err := s.GameRevisionService.GetDraftByGame(ctx, game)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entity.GameEx{
+		Game:     *game,
+		Revision: revision,
+	}, nil
+}
+
+func (s Service) GetExByIDAndRevisionID(ctx context.Context, id string, revisionID uint) (*entity.GameEx, error) {
+	game, err := s.GetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	revision, err := s.GameRevisionService.GetByIDAndGameID(ctx, revisionID, game.ID)
 	if err != nil {
 		return nil, err
 	}

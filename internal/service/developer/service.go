@@ -2,18 +2,18 @@ package developer
 
 import (
 	"context"
-	"errors"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
+	"github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
 	ServiceParams
 }
 
-var ErrDeveloperNotFound = errors.New("developer not found")
-var ErrInvalidDeveloperIDs = errors.New("invalid developer ids")
+var ErrDeveloperNotFound = errors.NewService(errors.ErrNotFound, "developer not found")
+var ErrInvalidDeveloperIDs = errors.NewService(errors.ErrValidation, "invalid developer ids")
 
 func (s Service) Create(ctx context.Context, data *service.CreateDeveloperData) (*entity.Developer, error) {
 	developer := &entity.Developer{

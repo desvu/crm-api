@@ -2,18 +2,18 @@ package publisher
 
 import (
 	"context"
-	"errors"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
+	"github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
 	ServiceParams
 }
 
-var ErrPublisherNotFound = errors.New("publisher not found")
-var ErrInvalidPublisherIDs = errors.New("invalid publisher ids")
+var ErrPublisherNotFound = errors.NewService(errors.ErrNotFound, "publisher not found")
+var ErrInvalidPublisherIDs = errors.NewService(errors.ErrValidation, "invalid publisher ids")
 
 func (s Service) Create(ctx context.Context, data *service.CreatePublisherData) (*entity.Publisher, error) {
 	publisher := &entity.Publisher{

@@ -2,18 +2,18 @@ package tag
 
 import (
 	"context"
-	"errors"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
+	"github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
 	ServiceParams
 }
 
-var ErrTagNotFound = errors.New("tag not found")
-var ErrInvalidTagIDs = errors.New("invalid tag ids")
+var ErrTagNotFound = errors.NewService(errors.ErrNotFound, "tag not found")
+var ErrInvalidTagIDs = errors.NewService(errors.ErrValidation, "invalid tag ids")
 
 func (s Service) Create(ctx context.Context, data *service.CreateTagData) (*entity.Tag, error) {
 	tag := &entity.Tag{

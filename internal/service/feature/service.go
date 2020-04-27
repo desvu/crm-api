@@ -2,18 +2,18 @@ package feature
 
 import (
 	"context"
-	"errors"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
+	"github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
 	ServiceParams
 }
 
-var ErrFeatureNotFound = errors.New("feature not found")
-var ErrInvalidFeatureIDs = errors.New("invalid feature ids")
+var ErrFeatureNotFound = errors.NewService(errors.ErrNotFound, "feature not found")
+var ErrInvalidFeatureIDs = errors.NewService(errors.ErrValidation, "invalid feature ids")
 
 func (s Service) Create(ctx context.Context, data *service.CreateFeatureData) (*entity.Feature, error) {
 	feature := &entity.Feature{

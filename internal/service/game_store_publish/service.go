@@ -2,19 +2,18 @@ package game_store_publish
 
 import (
 	"context"
-	"errors"
-
-	"github.com/qilin/crm-api/internal/domain/enum/game_publish"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/game_publish"
 	"github.com/qilin/crm-api/internal/domain/service"
+	"github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
 	ServiceParams
 }
 
-var ErrGameStorePublishNotFound = errors.New("game store publish not found")
+var ErrGameStorePublishNotFound = errors.NewService(errors.ErrNotFound, "game store publish not found")
 
 func (s Service) Create(ctx context.Context, data *service.CreateGameStorePublishData) (*entity.GameStorePublish, error) {
 	gsp := &entity.GameStorePublish{
