@@ -16,16 +16,16 @@ func main() {
 
 	a, err := app.New()
 	if err != nil {
-		zap.S().Fatal(err)
+		zap.L().Fatal(err.Error())
 	}
 
 	err = a.Init()
 	if err != nil {
-		zap.S().Fatal(err)
+		zap.L().Fatal(err.Error())
 	}
 
 	err = a.Run()
 	if err != nil {
-		zap.S().Fatal(err)
+		zap.L().Fatal(err.Error())
 	}
 }

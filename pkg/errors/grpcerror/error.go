@@ -13,13 +13,11 @@ func New(err error) error {
 	switch v := e.Cause(err).(type) {
 	case errors.Error:
 		resultErr = status.Error(getCodeByType(v.Type), err.Error())
-		//zap.S().Error(v.Err)
-		//zap.S().Errorf("%+v", v.Err)
 	default:
 		resultErr = status.Error(codes.Internal, "oops, something went wrong...")
 	}
 
-	zap.S().Error(err)
+	zap.L().Error(err.Error())
 
 	return resultErr
 }

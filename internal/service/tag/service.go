@@ -3,17 +3,15 @@ package tag
 import (
 	"context"
 
+	"github.com/qilin/crm-api/internal/domain/errors"
+
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
-	"github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
 	ServiceParams
 }
-
-var ErrTagNotFound = errors.NewService(errors.ErrNotFound, "tag not found")
-var ErrInvalidTagIDs = errors.NewService(errors.ErrValidation, "invalid tag ids")
 
 func (s Service) Create(ctx context.Context, data *service.CreateTagData) (*entity.Tag, error) {
 	tag := &entity.Tag{
@@ -63,7 +61,7 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Tag, error)
 	}
 
 	if tag == nil {
-		return nil, ErrTagNotFound
+		return nil, errors.TagNotFound
 	}
 
 	return tag, nil
@@ -90,7 +88,7 @@ func (s Service) UpdateTagsForGameRevision(ctx context.Context, gameRevision *en
 
 	// checking for IDs among the tags
 	if len(tags) != len(tagIDs) {
-		return ErrInvalidTagIDs
+		return errors.InvalidTagIDs
 	}
 
 	currentGameTags, err := s.GameRevisionTagRepository.FindByGameRevisionID(ctx, gameRevision.ID)

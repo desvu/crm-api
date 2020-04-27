@@ -3,19 +3,18 @@ package game
 import (
 	"context"
 
+	"github.com/qilin/crm-api/internal/domain/errors"
+
 	"github.com/google/uuid"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 	"github.com/qilin/crm-api/internal/domain/publisher"
 	"github.com/qilin/crm-api/internal/domain/service"
-	"github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
 	ServiceParams
 }
-
-var ErrGameNotFound = errors.NewService(errors.ErrNotFound, "game not found")
 
 func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*entity.GameEx, error) {
 	game := &entity.Game{
@@ -144,7 +143,7 @@ func (s Service) GetByID(ctx context.Context, id string) (*entity.Game, error) {
 	}
 
 	if game == nil {
-		return nil, ErrGameNotFound
+		return nil, errors.GameNotFound
 	}
 
 	return game, nil

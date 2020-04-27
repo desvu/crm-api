@@ -10,5 +10,3 @@ grpcgen: ## generate protobuf files
 .PHONY: up
 up: ## build and run service in docker
 	docker-compose up --build
-
-.PHONY: gen-grpcs

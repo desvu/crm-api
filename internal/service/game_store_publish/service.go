@@ -5,15 +5,13 @@ import (
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game_publish"
+	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/domain/service"
-	"github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
 	ServiceParams
 }
-
-var ErrGameStorePublishNotFound = errors.NewService(errors.ErrNotFound, "game store publish not found")
 
 func (s Service) Create(ctx context.Context, data *service.CreateGameStorePublishData) (*entity.GameStorePublish, error) {
 	gsp := &entity.GameStorePublish{
@@ -54,7 +52,7 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.GameStorePu
 	}
 
 	if gsp == nil {
-		return nil, ErrGameStorePublishNotFound
+		return nil, errors.GameStorePublishNotFound
 	}
 
 	return gsp, nil
