@@ -5,7 +5,8 @@ import (
 )
 
 type Config struct {
-	Store Store
+	Store  Store
+	Rabbit RabbitConf
 }
 
 type Store struct {
@@ -25,6 +26,10 @@ type RedisConf struct {
 	Host     string `default:"127.0.0.1:6379"`
 	Password string `default:""`
 	DB       int    `default:"0"`
+}
+
+type RabbitConf struct {
+	Uri string `default:"amqp://guest:guest@localhost:5672"`
 }
 
 func New() (*Config, error) {
