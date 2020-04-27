@@ -18,7 +18,7 @@ func New(transactor *transactor.Transactor) (*Env, error) {
 		return nil, err
 	}
 
-	rabbitEnv, err := newRabbit()
+	rabbitEnv, err := newRabbit(cfg.Rabbit)
 	if err != nil {
 		return nil, err
 	}

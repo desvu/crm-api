@@ -23,7 +23,7 @@ func New(params Params) *echo.Echo {
 	e.Use(middleware.Recover())
 
 	// Routes
-	e.POST("/api/graphql/client", echo.WrapHandler(graph.Playground("/api/graphql")))
+	e.GET("/api/graphql/client", echo.WrapHandler(graph.Playground("/api/graphql")))
 	e.POST("/api/graphql", echo.WrapHandler(graph.NewHandler(params.Resolver)))
 
 	return e
