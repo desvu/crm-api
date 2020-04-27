@@ -2,18 +2,15 @@ package developer
 
 import (
 	"context"
-	"errors"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
 type Service struct {
 	ServiceParams
 }
-
-var ErrDeveloperNotFound = errors.New("developer not found")
-var ErrInvalidDeveloperIDs = errors.New("invalid developer ids")
 
 func (s Service) Create(ctx context.Context, data *service.CreateDeveloperData) (*entity.Developer, error) {
 	developer := &entity.Developer{
@@ -63,7 +60,7 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Developer, 
 	}
 
 	if developer == nil {
-		return nil, ErrDeveloperNotFound
+		return nil, errors.DeveloperNotFound
 	}
 
 	return developer, nil
@@ -90,7 +87,7 @@ func (s Service) UpdateDevelopersForGameRevision(ctx context.Context, gameRevisi
 
 	// checking for IDs among the developers
 	if len(developers) != len(developerIDs) {
-		return ErrInvalidDeveloperIDs
+		return errors.InvalidDeveloperIDs
 	}
 
 	currentGameDevelopers, err := s.GameRevisionDeveloperRepository.FindByGameRevisionID(ctx, gameRevision.ID)

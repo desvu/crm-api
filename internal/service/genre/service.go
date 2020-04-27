@@ -2,7 +2,8 @@ package genre
 
 import (
 	"context"
-	"errors"
+
+	"github.com/qilin/crm-api/internal/domain/errors"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
@@ -11,9 +12,6 @@ import (
 type Service struct {
 	ServiceParams
 }
-
-var ErrGenreNotFound = errors.New("genre not found")
-var ErrInvalidGenreIDs = errors.New("invalid genre ids")
 
 func (s Service) Create(ctx context.Context, data *service.CreateGenreData) (*entity.Genre, error) {
 	genre := &entity.Genre{
@@ -63,7 +61,7 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Genre, erro
 	}
 
 	if genre == nil {
-		return nil, ErrGenreNotFound
+		return nil, errors.GenreNotFound
 	}
 
 	return genre, nil
@@ -90,7 +88,7 @@ func (s Service) UpdateGenresForGameRevision(ctx context.Context, gameRevision *
 
 	// checking for IDs among the genres
 	if len(genres) != len(genreIDs) {
-		return ErrInvalidGenreIDs
+		return errors.InvalidGenreIDs
 	}
 
 	currentGameGenres, err := s.GameRevisionGenreRepository.FindByGameRevisionID(ctx, gameRevision.ID)

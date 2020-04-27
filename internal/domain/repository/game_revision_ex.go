@@ -8,4 +8,5 @@ import (
 
 type GameRevisionExRepository interface {
 	FindByID(ctx context.Context, id uint) (*entity.GameRevisionEx, error)
+	FindByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error)
 }

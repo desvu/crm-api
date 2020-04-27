@@ -2,7 +2,8 @@ package publisher
 
 import (
 	"context"
-	"errors"
+
+	"github.com/qilin/crm-api/internal/domain/errors"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
@@ -11,9 +12,6 @@ import (
 type Service struct {
 	ServiceParams
 }
-
-var ErrPublisherNotFound = errors.New("publisher not found")
-var ErrInvalidPublisherIDs = errors.New("invalid publisher ids")
 
 func (s Service) Create(ctx context.Context, data *service.CreatePublisherData) (*entity.Publisher, error) {
 	publisher := &entity.Publisher{
@@ -63,7 +61,7 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Publisher, 
 	}
 
 	if publisher == nil {
-		return nil, ErrPublisherNotFound
+		return nil, errors.PublisherNotFound
 	}
 
 	return publisher, nil
@@ -90,7 +88,7 @@ func (s Service) UpdatePublishersForGameRevision(ctx context.Context, gameRevisi
 
 	// checking for IDs among the publishers
 	if len(publishers) != len(publisherIDs) {
-		return ErrInvalidPublisherIDs
+		return errors.InvalidPublisherIDs
 	}
 
 	currentGamePublisher, err := s.GameRevisionPublisherRepository.FindByGameRevisionID(ctx, gameRevision.ID)

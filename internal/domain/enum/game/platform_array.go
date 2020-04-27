@@ -43,3 +43,12 @@ func (p PlatformArray) Values() []uint8 {
 
 	return source
 }
+
+func (p PlatformArray) Strings() []string {
+	source := make([]string, len(p))
+	for i, platform := range p {
+		source[i] = platform.String()
+	}
+
+	return source
+}

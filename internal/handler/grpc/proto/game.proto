@@ -1,0 +1,53 @@
+syntax = "proto3";
+package proto;
+
+service Game {
+    rpc GetByIDAndRevisionID(Request) returns (Response) {}
+}
+
+message Request {
+    string gameID = 1;
+    uint64 revisionID = 2;
+}
+
+message Response {
+    string ID = 1;
+    string title = 2;
+    string type = 3;
+    uint64 revisionID = 4;
+    string summary = 5;
+    string description = 6;
+    string slug = 7;
+    string license = 8;
+    repeated string platforms = 9;
+    repeated Tag tags = 10;
+    repeated Feature features = 11;
+    repeated Developer developers = 12;
+    repeated Genre genres = 13;
+    repeated Publisher publishers = 14;
+}
+
+message Tag {
+    uint64 ID = 1;
+    string name = 2;
+}
+
+message Developer {
+    uint64 ID = 1;
+    string name = 2;
+}
+
+message Feature {
+    uint64 ID = 1;
+    string name = 2;
+}
+
+message Genre {
+    uint64 ID = 1;
+    string name = 2;
+}
+
+message Publisher {
+    uint64 ID = 1;
+    string name = 2;
+}

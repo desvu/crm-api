@@ -48,6 +48,19 @@ func (r GameExRepository) FindByID(ctx context.Context, id uint) (*entity.GameRe
 	return r.fetchRow(ctx, game)
 }
 
+func (r GameExRepository) FindByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error) {
+	game, err := r.GameRevisionRepository.FindByIDAndGameID(ctx, id, gameID)
+	if err != nil {
+		return nil, err
+	}
+
+	if game == nil {
+		return nil, nil
+	}
+
+	return r.fetchRow(ctx, game)
+}
+
 func (r GameExRepository) fetchRow(ctx context.Context, item *entity.GameRevision) (*entity.GameRevisionEx, error) {
 	if item == nil {
 		return nil, nil

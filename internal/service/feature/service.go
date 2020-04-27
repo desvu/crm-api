@@ -2,18 +2,15 @@ package feature
 
 import (
 	"context"
-	"errors"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
 type Service struct {
 	ServiceParams
 }
-
-var ErrFeatureNotFound = errors.New("feature not found")
-var ErrInvalidFeatureIDs = errors.New("invalid feature ids")
 
 func (s Service) Create(ctx context.Context, data *service.CreateFeatureData) (*entity.Feature, error) {
 	feature := &entity.Feature{
@@ -63,7 +60,7 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Feature, er
 	}
 
 	if feature == nil {
-		return nil, ErrFeatureNotFound
+		return nil, errors.FeatureNotFound
 	}
 
 	return feature, nil
@@ -90,7 +87,7 @@ func (s Service) UpdateFeaturesForGameRevision(ctx context.Context, gameRevision
 
 	// checking for IDs among the features
 	if len(features) != len(featureIDs) {
-		return ErrInvalidFeatureIDs
+		return errors.InvalidFeatureIDs
 	}
 
 	currentGameFeatures, err := s.GameRevisionFeatureRepository.FindByGameRevisionID(ctx, gameRevision.ID)

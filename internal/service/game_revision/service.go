@@ -2,18 +2,16 @@ package game_revision
 
 import (
 	"context"
-	"errors"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
+	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
 type Service struct {
 	ServiceParams
 }
-
-var ErrGameRevisionNotFound = errors.New("game revision not found")
 
 func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionData) (*entity.GameRevisionEx, error) {
 	revision, err := s.GameRevisionRepository.FindByID(ctx, data.ID)
@@ -22,7 +20,7 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionDat
 	}
 
 	if revision == nil {
-		return nil, ErrGameRevisionNotFound
+		return nil, errors.GameRevisionNotFound
 	}
 
 	if data.Summary != nil {
@@ -102,17 +100,26 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionDat
 }
 
 func (s Service) GetByID(ctx context.Context, id uint) (*entity.GameRevisionEx, error) {
-	return s.GameRevisionExRepository.FindByID(ctx, id)
-}
-
-func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.GameRevisionEx, error) {
-	revision, err := s.GetByID(ctx, id)
+	revision, err := s.GameRevisionExRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
 	if revision == nil {
-		return nil, ErrGameRevisionNotFound
+		return nil, errors.GameRevisionNotFound
+	}
+
+	return revision, nil
+}
+
+func (s Service) GetByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error) {
+	revision, err := s.GameRevisionExRepository.FindByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	if revision == nil {
+		return nil, errors.GameRevisionNotFound
 	}
 
 	return revision, nil
