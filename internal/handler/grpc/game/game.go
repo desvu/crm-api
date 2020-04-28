@@ -8,9 +8,9 @@ import (
 	"github.com/qilin/crm-api/pkg/grpc/proto"
 )
 
-func (h Handler) FindGames(ctx context.Context, request *proto.FindGamesRequest) (*proto.FindGamesResponse, error) {
+func (h Handler) FindGames(request *proto.FindGamesRequest, stream proto.GameService_FindGamesServer) error {
 	// TODO
-	return &proto.FindGamesResponse{}, nil
+	return nil
 }
 
 func (h Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Request) (*proto.Response, error) {

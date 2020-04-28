@@ -6,7 +6,7 @@ service GameService {
     rpc GetByIDAndRevisionID(Request) returns (Response) {}
 
     // FindGames returns list of latest published games filtered by request parameters
-    rpc FindGames(FindGamesRequest) returns (FindGamesResponse) {}
+    rpc FindGames(FindGamesRequest) returns (stream GameResponse) {}
 }
 
 message FindGamesRequest {
@@ -15,8 +15,8 @@ message FindGamesRequest {
     string genre = 3;
 }
 
-message FindGamesResponse {
-    repeated Game games = 1;
+message GameResponse {
+    Game game = 1;
 }
 
 message Request {
