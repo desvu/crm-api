@@ -4,7 +4,7 @@ import (
 	"net"
 
 	"github.com/qilin/crm-api/internal/handler/grpc/game"
-	"github.com/qilin/crm-api/internal/handler/grpc/proto"
+	"github.com/qilin/crm-api/pkg/grpc/proto"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 )
