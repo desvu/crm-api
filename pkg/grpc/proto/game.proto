@@ -1,8 +1,22 @@
 syntax = "proto3";
 package proto;
+option go_package = "pkg/grpc/proto";
 
-service Game {
+service GameService {
     rpc GetByIDAndRevisionID(Request) returns (Response) {}
+
+    // FindGames returns list of latest published games filtered by request parameters
+    rpc FindGames(FindGamesRequest) returns (FindGamesResponse) {}
+}
+
+message FindGamesRequest {
+    string gameID = 1;
+    string slug = 2;
+    string genre = 3;
+}
+
+message FindGamesResponse {
+    repeated Game games = 1;
 }
 
 message Request {
@@ -11,6 +25,10 @@ message Request {
 }
 
 message Response {
+    Game game = 1;
+}
+
+message Game {
     string ID = 1;
     string title = 2;
     string type = 3;

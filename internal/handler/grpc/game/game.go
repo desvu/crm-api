@@ -8,13 +8,18 @@ import (
 	"github.com/qilin/crm-api/pkg/grpc/proto"
 )
 
-func (h Handler) GetByIDAndRevisionID(ctx context.Context, stream *proto.Request) (*proto.Response, error) {
-	game, err := h.GameService.GetExByIDAndRevisionID(ctx, stream.GameID, uint(stream.RevisionID))
+func (h Handler) FindGames(ctx context.Context, request *proto.FindGamesRequest) (*proto.FindGamesResponse, error) {
+	// TODO
+	return &proto.FindGamesResponse{}, nil
+}
+
+func (h Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Request) (*proto.Response, error) {
+	game, err := h.GameService.GetExByIDAndRevisionID(ctx, request.GameID, uint(request.RevisionID))
 	if err != nil {
 		return nil, grpcerror.New(err)
 	}
 
-	result := &proto.Response{
+	result := &proto.Game{
 		ID:          game.ID,
 		Title:       game.Title,
 		Type:        game.Type.String(),
@@ -61,5 +66,5 @@ func (h Handler) GetByIDAndRevisionID(ctx context.Context, stream *proto.Request
 		})
 	}
 
-	return result, nil
+	return &proto.Response{Game: result}, nil
 }
