@@ -19,6 +19,7 @@ backend:
   image: "p1hub/qilin-crm-api"
   imageTag: latest
   port: 8080
+  grpcApiPort: 5300
   ingressPort: 8080
   healthPort: 8081
   replicas: 1
