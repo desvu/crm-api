@@ -5,7 +5,7 @@ gqlgen: ## generate graphql api
 
 .PHONY: grpcgen
 grpcgen: ## generate protobuf files
-	 @protoc internal/handler/grpc/proto/game.proto --go_out=plugins=grpc:.
+	 @protoc pkg/grpc/proto/game.proto --go_out=plugins=grpc:.
 
 .PHONY: up
 up: ## build and run service in docker

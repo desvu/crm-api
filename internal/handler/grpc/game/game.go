@@ -5,7 +5,7 @@ import (
 
 	"github.com/qilin/crm-api/pkg/errors/grpcerror"
 
-	"github.com/qilin/crm-api/internal/handler/grpc/proto"
+	"github.com/qilin/crm-api/pkg/grpc/proto"
 )
 
 func (h Handler) GetByIDAndRevisionID(ctx context.Context, stream *proto.Request) (*proto.Response, error) {
