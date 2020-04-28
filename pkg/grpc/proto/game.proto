@@ -5,18 +5,14 @@ option go_package = "pkg/grpc/proto";
 service GameService {
     rpc GetByIDAndRevisionID(Request) returns (Response) {}
 
-    // FindGames returns list of latest published games filtered by request parameters
-    rpc FindGames(FindGamesRequest) returns (stream GameResponse) {}
+    // FindGames returns stream of latest published games filtered by request parameters
+    rpc FindGames(FindGamesRequest) returns (stream Game) {}
 }
 
 message FindGamesRequest {
     string gameID = 1;
     string slug = 2;
     string genre = 3;
-}
-
-message GameResponse {
-    Game game = 1;
 }
 
 message Request {
