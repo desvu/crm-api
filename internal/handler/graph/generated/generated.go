@@ -73,10 +73,11 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateGame  func(childComplexity int, input model.CreateGameInput) int
-		DeleteGame  func(childComplexity int, id string) int
-		PublishGame func(childComplexity int, id string) int
-		UpdateGame  func(childComplexity int, input model.UpdateGameInput) int
+		CreateFeature func(childComplexity int, name string, icon string) int
+		CreateGame    func(childComplexity int, input model.CreateGameInput) int
+		DeleteGame    func(childComplexity int, id string) int
+		PublishGame   func(childComplexity int, id string) int
+		UpdateGame    func(childComplexity int, input model.UpdateGameInput) int
 	}
 
 	Pricing struct {
@@ -143,6 +144,7 @@ type MutationResolver interface {
 	UpdateGame(ctx context.Context, input model.UpdateGameInput) (*model.Game, error)
 	DeleteGame(ctx context.Context, id string) (bool, error)
 	PublishGame(ctx context.Context, id string) (bool, error)
+	CreateFeature(ctx context.Context, name string, icon string) (*model.Feature, error)
 }
 type QueryResolver interface {
 	Games(ctx context.Context) ([]*model.Game, error)
@@ -254,6 +256,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Localization.Subtitles(childComplexity), true
+
+	case "Mutation.createFeature":
+		if e.complexity.Mutation.CreateFeature == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createFeature_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateFeature(childComplexity, args["name"].(string), args["icon"].(string)), true
 
 	case "Mutation.createGame":
 		if e.complexity.Mutation.CreateGame == nil {
@@ -826,6 +840,8 @@ type Mutation {
 	updateGame(input: UpdateGameInput!): Game
 	deleteGame(id:ID!): Boolean!
     publishGame(id:ID!): Boolean!
+    
+	createFeature(name: String!, icon: String!): Feature
 }
 
 scalar Time`, BuiltIn: false},
@@ -835,6 +851,28 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_createFeature_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["icon"]; ok {
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["icon"] = arg1
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_createGame_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -1554,6 +1592,44 @@ func (ec *executionContext) _Mutation_publishGame(ctx context.Context, field gra
 	res := resTmp.(bool)
 	fc.Result = res
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_createFeature(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createFeature_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateFeature(rctx, args["name"].(string), args["icon"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.Feature)
+	fc.Result = res
+	return ec.marshalOFeature2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐFeature(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Pricing_price(ctx context.Context, field graphql.CollectedField, obj *model.Pricing) (ret graphql.Marshaler) {
@@ -4262,6 +4338,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "createFeature":
+			out.Values[i] = ec._Mutation_createFeature(ctx, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5640,6 +5718,17 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalOFeature2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐFeature(ctx context.Context, sel ast.SelectionSet, v model.Feature) graphql.Marshaler {
+	return ec._Feature(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOFeature2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐFeature(ctx context.Context, sel ast.SelectionSet, v *model.Feature) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Feature(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOFloat2float64(ctx context.Context, v interface{}) (float64, error) {

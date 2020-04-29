@@ -8,17 +8,22 @@ import (
 
 type Resolver struct {
 	gameConverter
-	gameService service.GameService
+	gameService    service.GameService
+	featureService service.FeatureService
 }
 
 type Params struct {
 	fx.In
 
-	GameService service.GameService
+	FeatureService service.FeatureService
+	GameService    service.GameService
 }
 
 func NewResolver(params Params) *Resolver {
-	return &Resolver{gameService: params.GameService}
+	return &Resolver{
+		gameService:    params.GameService,
+		featureService: params.FeatureService,
+	}
 }
 
 // Mutation returns MutationResolver implementation.

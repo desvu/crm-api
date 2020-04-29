@@ -8,6 +8,8 @@ type Mutation {
 	updateGame(input: UpdateGameInput!): Game
 	deleteGame(id:ID!): Boolean!
     publishGame(id:ID!): Boolean!
+    
+	createFeature(name: String!, icon: String!): Feature
 }
 
 scalar Time
