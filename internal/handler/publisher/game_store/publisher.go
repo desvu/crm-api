@@ -57,7 +57,7 @@ func (p Publisher) Publish(data publisher.PublishGameStoreData) error {
 		RevisionID:  data.Game.Revision.ID,
 		Summary:     data.Game.Revision.Summary,
 		Description: data.Game.Revision.Description,
-		Slug:        data.Game.Revision.Slug,
+		Slug:        data.Game.Slug,
 		License:     data.Game.Revision.License,
 		Platforms:   nil,
 		ReleaseDate: data.Game.Revision.ReleaseDate,

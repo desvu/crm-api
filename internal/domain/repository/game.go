@@ -12,5 +12,6 @@ type GameRepository interface {
 	Delete(ctx context.Context, i *entity.Game) error
 
 	FindByID(ctx context.Context, id string) (*entity.Game, error)
+	FindBySlug(ctx context.Context, slug string) (*entity.Game, error)
 	FindByIDs(ctx context.Context, ids []string) ([]entity.Game, error)
 }

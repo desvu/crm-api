@@ -3,30 +3,51 @@ package game
 import (
 	"context"
 
+	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/pkg/errors/grpcerror"
 
 	"github.com/qilin/crm-api/pkg/grpc/proto"
 )
 
-func (h Handler) FindGames(request *proto.FindGamesRequest, stream proto.GameService_FindGamesServer) error {
-	// TODO
-	return nil
+func (h Handler) GetBySlug(ctx context.Context, request *proto.GetBySlugRequest) (*proto.GameResponse, error) {
+	game, err := h.GameService.GetExBySlug(ctx, request.Slug)
+	if err != nil {
+		return nil, grpcerror.New(err)
+	}
+
+	result, err := h.convertGame(game)
+	if err != nil {
+		return nil, grpcerror.New(err)
+	}
+
+	return &proto.GameResponse{Game: result}, nil
+
 }
 
-func (h Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Request) (*proto.Response, error) {
+func (h Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Request) (*proto.GameResponse, error) {
 	game, err := h.GameService.GetExByIDAndRevisionID(ctx, request.GameID, uint(request.RevisionID))
 	if err != nil {
 		return nil, grpcerror.New(err)
 	}
 
+	result, err := h.convertGame(game)
+	if err != nil {
+		return nil, grpcerror.New(err)
+	}
+
+	return &proto.GameResponse{Game: result}, nil
+}
+
+func (h Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
+
 	result := &proto.Game{
 		ID:          game.ID,
 		Title:       game.Title,
+		Slug:        game.Slug,
 		Type:        game.Type.String(),
 		RevisionID:  uint64(game.Revision.ID),
 		Summary:     game.Revision.Summary,
 		Description: game.Revision.Description,
-		Slug:        game.Revision.Slug,
 		License:     game.Revision.License,
 		Platforms:   game.Revision.Platforms.Strings(),
 	}
@@ -66,5 +87,6 @@ func (h Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Reques
 		})
 	}
 
-	return &proto.Response{Game: result}, nil
+	return result, nil
+
 }

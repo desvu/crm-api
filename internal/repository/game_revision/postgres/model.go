@@ -13,7 +13,6 @@ type model struct {
 	GameID      string     `pg:"game_id,notnull,use_zero"`
 	Summary     string     `pg:"summary,notnull,use_zero"`
 	Description string     `pg:"description,notnull,use_zero"`
-	Slug        string     `pg:"slug,notnull,use_zero"`
 	License     string     `pg:"license,notnull,use_zero"`
 	Status      uint8      `pg:"status,notnull,use_zero"`
 	Platforms   []uint8    `pg:"platforms,array,notnull,use_zero"`
@@ -29,7 +28,6 @@ func (m model) Convert() *entity.GameRevision {
 		GameID:      m.GameID,
 		Summary:     m.Summary,
 		Description: m.Description,
-		Slug:        m.Slug,
 		License:     m.License,
 		Status:      game_revision.NewStatus(m.Status),
 		Platforms:   game.NewPlatformArray(m.Platforms...),
@@ -44,7 +42,6 @@ func newModel(i *entity.GameRevision) (*model, error) {
 		GameID:      i.GameID,
 		Summary:     i.Summary,
 		Description: i.Description,
-		Slug:        i.Slug,
 		License:     i.License,
 		Status:      i.Status.Value(),
 		Platforms:   i.Platforms.Values(),

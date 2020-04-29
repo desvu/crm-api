@@ -764,7 +764,7 @@ type Localization {
 	&ast.Source{Name: "internal/handler/graph/graph/inputs.graphql", Input: `# Create game input data
 input CreateGameInput {
 	title: String!
-	slug: String
+	slug: String!
 	summary: String
 	description: String
 	type: GameType!
@@ -816,7 +816,7 @@ type Mutation {
 	createGame(input: CreateGameInput!): Game
 	updateGame(input: UpdateGameInput!): Game
 	deleteGame(id:ID!): Boolean!
-	publishGame(id:ID!): Boolean!
+    publishGame(id:ID!): Boolean!
 }
 
 scalar Time`, BuiltIn: false},
@@ -3781,7 +3781,7 @@ func (ec *executionContext) unmarshalInputCreateGameInput(ctx context.Context, o
 			}
 		case "slug":
 			var err error
-			it.Slug, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Slug, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}

@@ -81,6 +81,22 @@ func (r GameRepository) FindByID(ctx context.Context, id string) (*entity.Game, 
 	return model.Convert(), nil
 }
 
+func (r GameRepository) FindBySlug(ctx context.Context, slug string) (*entity.Game, error) {
+	model := new(model)
+
+	err := r.h.ModelContext(ctx, model).Where("slug = ?", slug).Select()
+
+	if err == pg.ErrNoRows {
+		return nil, nil
+	}
+
+	if err != nil {
+		return nil, errors.NewInternal(err)
+	}
+
+	return model.Convert(), nil
+}
+
 func (r GameRepository) FindByIDs(ctx context.Context, ids []string) ([]entity.Game, error) {
 	var models []model
 
