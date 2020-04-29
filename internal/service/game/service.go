@@ -131,7 +131,7 @@ func (s Service) Publish(ctx context.Context, id string) error {
 		return err
 	}
 
-	revisionStatus := game_revision.StatusPublishing
+	revisionStatus := game_revision.StatusPublished // TODO publishing -> published
 	_, err = s.GameRevisionService.Update(ctx, &service.UpdateGameRevisionData{
 		ID:     game.Revision.ID,
 		Status: &revisionStatus,
