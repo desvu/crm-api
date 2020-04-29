@@ -19,6 +19,10 @@ type GameService interface {
 	GetByID(ctx context.Context, id string) (*entity.Game, error)
 	GetExByID(ctx context.Context, id string) (*entity.GameEx, error)
 	GetExByIDAndRevisionID(ctx context.Context, id string, revisionID uint) (*entity.GameEx, error)
+
+	// GetExLastPublishedByID returns last published game by id
+	GetExLastPublishedByID(ctx context.Context, id string) (*entity.GameEx, error)
+
 	// GetExBySlig returns last published game by slug
 	GetExBySlug(ctx context.Context, slug string) (*entity.GameEx, error)
 }

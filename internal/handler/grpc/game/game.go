@@ -24,6 +24,21 @@ func (h Handler) GetBySlug(ctx context.Context, request *proto.GetBySlugRequest)
 
 }
 
+func (h Handler) GetByID(ctx context.Context, request *proto.GetByIDRequest) (*proto.GameResponse, error) {
+	game, err := h.GameService.GetExLastPublishedByID(ctx, request.GameID)
+	if err != nil {
+		return nil, grpcerror.New(err)
+	}
+
+	result, err := h.convertGame(game)
+	if err != nil {
+		return nil, grpcerror.New(err)
+	}
+
+	return &proto.GameResponse{Game: result}, nil
+
+}
+
 func (h Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Request) (*proto.GameResponse, error) {
 	game, err := h.GameService.GetExByIDAndRevisionID(ctx, request.GameID, uint(request.RevisionID))
 	if err != nil {

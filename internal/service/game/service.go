@@ -169,6 +169,23 @@ func (s Service) GetBySlug(ctx context.Context, slug string) (*entity.Game, erro
 	return game, nil
 }
 
+func (s Service) GetExLastPublishedByID(ctx context.Context, id string) (*entity.GameEx, error) {
+	game, err := s.GetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	revision, err := s.GameRevisionService.GetLastPublishedByGame(ctx, game)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entity.GameEx{
+		Game:     *game,
+		Revision: revision,
+	}, nil
+}
+
 func (s Service) GetExByID(ctx context.Context, id string) (*entity.GameEx, error) {
 	game, err := s.GetByID(ctx, id)
 	if err != nil {

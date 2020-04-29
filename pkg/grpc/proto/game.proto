@@ -7,10 +7,17 @@ service GameService {
 
     // GetBySlug returns latest published game by slug
     rpc GetBySlug(GetBySlugRequest) returns (GameResponse) {}
+
+    // GetByID returns latest published game by slug
+    rpc GetByID(GetByIDRequest) returns (GameResponse) {}
 }
 
 message GetBySlugRequest {
     string slug = 1;
+}
+
+message GetByIDRequest {
+    string gameID = 1;
 }
 
 message Request {
