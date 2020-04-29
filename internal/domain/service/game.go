@@ -22,14 +22,15 @@ type GameService interface {
 }
 
 type CreateGameData struct {
-	Title       string
-	Type        game.Type
-	Summary     *string
-	Description *string
-	Slug        *string
-	License     *string
-	Platforms   *game.PlatformArray
-	ReleaseDate *time.Time
+	Title              string
+	Type               game.Type
+	Summary            *string
+	Description        *string
+	Slug               *string
+	License            *string
+	Platforms          *game.PlatformArray
+	ReleaseDate        *time.Time
+	SystemRequirements []SystemRequirements
 
 	Tags       *[]uint
 	Developers *[]uint
@@ -39,11 +40,25 @@ type CreateGameData struct {
 }
 
 type UpdateGameData struct {
-	ID         string
-	Title      *string
-	Tags       *[]uint
-	Developers *[]uint
-	Publishers *[]uint
-	Features   *[]uint
-	Genres     *[]uint
+	ID                 string
+	Title              *string
+	Tags               *[]uint
+	Developers         *[]uint
+	Publishers         *[]uint
+	Features           *[]uint
+	Genres             *[]uint
+	SystemRequirements []SystemRequirements
+}
+
+type SystemRequirements struct {
+	Platform    uint
+	Minimal     *RequirementsSet
+	Recommended *RequirementsSet
+}
+
+type RequirementsSet struct {
+	CPU       string
+	GPU       string
+	DiskSpace uint
+	RAM       uint
 }

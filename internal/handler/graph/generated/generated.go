@@ -98,6 +98,13 @@ type ComplexityRoot struct {
 		Agency func(childComplexity int) int
 	}
 
+	RequirementsSet struct {
+		CPU       func(childComplexity int) int
+		DiskSpace func(childComplexity int) int
+		Gpu       func(childComplexity int) int
+		RAM       func(childComplexity int) int
+	}
+
 	Review struct {
 		Author    func(childComplexity int) int
 		PressName func(childComplexity int) int
@@ -124,11 +131,18 @@ type ComplexityRoot struct {
 		Publishers    func(childComplexity int) int
 		Ranking       func(childComplexity int) int
 		ReleaseDate   func(childComplexity int) int
+		Requirements  func(childComplexity int) int
 		Slug          func(childComplexity int) int
 		Summary       func(childComplexity int) int
 		Tags          func(childComplexity int) int
 		Title         func(childComplexity int) int
 		Type          func(childComplexity int) int
+	}
+
+	SystemRequirements struct {
+		Minimal     func(childComplexity int) int
+		Platform    func(childComplexity int) int
+		Recommended func(childComplexity int) int
 	}
 
 	Tag struct {
@@ -356,6 +370,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Rating.Agency(childComplexity), true
 
+	case "RequirementsSet.cpu":
+		if e.complexity.RequirementsSet.CPU == nil {
+			break
+		}
+
+		return e.complexity.RequirementsSet.CPU(childComplexity), true
+
+	case "RequirementsSet.diskSpace":
+		if e.complexity.RequirementsSet.DiskSpace == nil {
+			break
+		}
+
+		return e.complexity.RequirementsSet.DiskSpace(childComplexity), true
+
+	case "RequirementsSet.gpu":
+		if e.complexity.RequirementsSet.Gpu == nil {
+			break
+		}
+
+		return e.complexity.RequirementsSet.Gpu(childComplexity), true
+
+	case "RequirementsSet.ram":
+		if e.complexity.RequirementsSet.RAM == nil {
+			break
+		}
+
+		return e.complexity.RequirementsSet.RAM(childComplexity), true
+
 	case "Review.author":
 		if e.complexity.Review.Author == nil {
 			break
@@ -489,6 +531,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Revision.ReleaseDate(childComplexity), true
 
+	case "Revision.requirements":
+		if e.complexity.Revision.Requirements == nil {
+			break
+		}
+
+		return e.complexity.Revision.Requirements(childComplexity), true
+
 	case "Revision.slug":
 		if e.complexity.Revision.Slug == nil {
 			break
@@ -523,6 +572,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Revision.Type(childComplexity), true
+
+	case "SystemRequirements.minimal":
+		if e.complexity.SystemRequirements.Minimal == nil {
+			break
+		}
+
+		return e.complexity.SystemRequirements.Minimal(childComplexity), true
+
+	case "SystemRequirements.platform":
+		if e.complexity.SystemRequirements.Platform == nil {
+			break
+		}
+
+		return e.complexity.SystemRequirements.Platform(childComplexity), true
+
+	case "SystemRequirements.recommended":
+		if e.complexity.SystemRequirements.Recommended == nil {
+			break
+		}
+
+		return e.complexity.SystemRequirements.Recommended(childComplexity), true
 
 	case "Tag.id":
 		if e.complexity.Tag.ID == nil {
@@ -652,7 +722,7 @@ type Revision {
 	localizations: [Localization!]!
 
 	platforms: [GamePlatform!]!
-#	requirements: [SystemRequirements!]!
+	requirements: [SystemRequirements!]!
 
 #	media: Media!
 
@@ -733,19 +803,18 @@ type Localization {
 }
 
 
-#type SystemRequirements {
-#	platform: String!
-#	minimal: RequirementsSet
-#	recommended: RequirementsSet
-#}
+type SystemRequirements {
+	platform: Int!
+	minimal: RequirementsSet!
+	recommended: RequirementsSet!
+}
 
-#type RequirementsSet {
-#	cpu: String
-#	diskSpace: String
-#	gpu: String
-#	os: String
-#	ram: String
-#}
+type RequirementsSet {
+	cpu: String!
+	gpu: String!
+	diskSpace: Int!
+	ram: Int!
+}
 
 #type Media {
 #	screenshots: [Image!]!
@@ -778,6 +847,7 @@ input CreateGameInput {
 	features: [Int!]
 	localizations: [LocalizationInput!]
 	platforms: [GamePlatform!]
+	systemRequirements: [SystemRequirementsInput!]
 }
 
 # Update game input data
@@ -797,6 +867,7 @@ input UpdateGameInput {
 	features: [Int!]
 	localizations: [LocalizationInput!]
 	platforms: [GamePlatform!]
+	systemRequirements: [SystemRequirementsInput!]
 }
 
 input LocalizationInput {
@@ -806,7 +877,19 @@ input LocalizationInput {
 	audio: Boolean!
 	subtitles: Boolean!
 }
-`, BuiltIn: false},
+
+input SystemRequirementsInput {
+	platform: Int!
+	minimal: RequirementsSetInput!
+	recommended: RequirementsSetInput!
+}
+
+input RequirementsSetInput {
+	cpu: String!
+	gpu: String!
+	diskSpace: Int!
+	ram: Int!
+}`, BuiltIn: false},
 	&ast.Source{Name: "internal/handler/graph/graph/root.graphql", Input: `type Query {
 	games: [Game!]!
 	game(id:ID!): Game
@@ -816,7 +899,7 @@ type Mutation {
 	createGame(input: CreateGameInput!): Game
 	updateGame(input: UpdateGameInput!): Game
 	deleteGame(id:ID!): Boolean!
-	publishGame(id:ID!): Boolean!
+    publishGame(id:ID!): Boolean!
 }
 
 scalar Time`, BuiltIn: false},
@@ -1849,6 +1932,142 @@ func (ec *executionContext) _Rating_agency(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _RequirementsSet_cpu(ctx context.Context, field graphql.CollectedField, obj *model.RequirementsSet) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "RequirementsSet",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CPU, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RequirementsSet_gpu(ctx context.Context, field graphql.CollectedField, obj *model.RequirementsSet) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "RequirementsSet",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Gpu, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RequirementsSet_diskSpace(ctx context.Context, field graphql.CollectedField, obj *model.RequirementsSet) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "RequirementsSet",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DiskSpace, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _RequirementsSet_ram(ctx context.Context, field graphql.CollectedField, obj *model.RequirementsSet) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "RequirementsSet",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RAM, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Review_url(ctx context.Context, field graphql.CollectedField, obj *model.Review) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -2642,6 +2861,142 @@ func (ec *executionContext) _Revision_platforms(ctx context.Context, field graph
 	res := resTmp.([]model.GamePlatform)
 	fc.Result = res
 	return ec.marshalNGamePlatform2ᚕgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGamePlatformᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Revision_requirements(ctx context.Context, field graphql.CollectedField, obj *model.Revision) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Revision",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Requirements, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.SystemRequirements)
+	fc.Result = res
+	return ec.marshalNSystemRequirements2ᚕᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐSystemRequirementsᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SystemRequirements_platform(ctx context.Context, field graphql.CollectedField, obj *model.SystemRequirements) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "SystemRequirements",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Platform, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SystemRequirements_minimal(ctx context.Context, field graphql.CollectedField, obj *model.SystemRequirements) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "SystemRequirements",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Minimal, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.RequirementsSet)
+	fc.Result = res
+	return ec.marshalNRequirementsSet2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐRequirementsSet(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _SystemRequirements_recommended(ctx context.Context, field graphql.CollectedField, obj *model.SystemRequirements) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "SystemRequirements",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Recommended, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.RequirementsSet)
+	fc.Result = res
+	return ec.marshalNRequirementsSet2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐRequirementsSet(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Tag_id(ctx context.Context, field graphql.CollectedField, obj *model.Tag) (ret graphql.Marshaler) {
@@ -3863,6 +4218,12 @@ func (ec *executionContext) unmarshalInputCreateGameInput(ctx context.Context, o
 			if err != nil {
 				return it, err
 			}
+		case "systemRequirements":
+			var err error
+			it.SystemRequirements, err = ec.unmarshalOSystemRequirementsInput2ᚕᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐSystemRequirementsInputᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -3896,6 +4257,72 @@ func (ec *executionContext) unmarshalInputLocalizationInput(ctx context.Context,
 		case "subtitles":
 			var err error
 			it.Subtitles, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputRequirementsSetInput(ctx context.Context, obj interface{}) (model.RequirementsSetInput, error) {
+	var it model.RequirementsSetInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "cpu":
+			var err error
+			it.CPU, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "gpu":
+			var err error
+			it.Gpu, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "diskSpace":
+			var err error
+			it.DiskSpace, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ram":
+			var err error
+			it.RAM, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputSystemRequirementsInput(ctx context.Context, obj interface{}) (model.SystemRequirementsInput, error) {
+	var it model.SystemRequirementsInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "platform":
+			var err error
+			it.Platform, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "minimal":
+			var err error
+			it.Minimal, err = ec.unmarshalNRequirementsSetInput2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐRequirementsSetInput(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "recommended":
+			var err error
+			it.Recommended, err = ec.unmarshalNRequirementsSetInput2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐRequirementsSetInput(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3998,6 +4425,12 @@ func (ec *executionContext) unmarshalInputUpdateGameInput(ctx context.Context, o
 		case "platforms":
 			var err error
 			it.Platforms, err = ec.unmarshalOGamePlatform2ᚕgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGamePlatformᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "systemRequirements":
+			var err error
+			it.SystemRequirements, err = ec.unmarshalOSystemRequirementsInput2ᚕᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐSystemRequirementsInputᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4367,6 +4800,48 @@ func (ec *executionContext) _Rating(ctx context.Context, sel ast.SelectionSet, o
 	return out
 }
 
+var requirementsSetImplementors = []string{"RequirementsSet"}
+
+func (ec *executionContext) _RequirementsSet(ctx context.Context, sel ast.SelectionSet, obj *model.RequirementsSet) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, requirementsSetImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("RequirementsSet")
+		case "cpu":
+			out.Values[i] = ec._RequirementsSet_cpu(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "gpu":
+			out.Values[i] = ec._RequirementsSet_gpu(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "diskSpace":
+			out.Values[i] = ec._RequirementsSet_diskSpace(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "ram":
+			out.Values[i] = ec._RequirementsSet_ram(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var reviewImplementors = []string{"Review"}
 
 func (ec *executionContext) _Review(ctx context.Context, sel ast.SelectionSet, obj *model.Review) graphql.Marshaler {
@@ -4518,6 +4993,48 @@ func (ec *executionContext) _Revision(ctx context.Context, sel ast.SelectionSet,
 			}
 		case "platforms":
 			out.Values[i] = ec._Revision_platforms(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "requirements":
+			out.Values[i] = ec._Revision_requirements(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var systemRequirementsImplementors = []string{"SystemRequirements"}
+
+func (ec *executionContext) _SystemRequirements(ctx context.Context, sel ast.SelectionSet, obj *model.SystemRequirements) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, systemRequirementsImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SystemRequirements")
+		case "platform":
+			out.Values[i] = ec._SystemRequirements_platform(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "minimal":
+			out.Values[i] = ec._SystemRequirements_minimal(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "recommended":
+			out.Values[i] = ec._SystemRequirements_recommended(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -5248,6 +5765,32 @@ func (ec *executionContext) marshalNPublisher2ᚖgithubᚗcomᚋqilinᚋcrmᚑap
 	return ec._Publisher(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNRequirementsSet2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐRequirementsSet(ctx context.Context, sel ast.SelectionSet, v model.RequirementsSet) graphql.Marshaler {
+	return ec._RequirementsSet(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNRequirementsSet2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐRequirementsSet(ctx context.Context, sel ast.SelectionSet, v *model.RequirementsSet) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._RequirementsSet(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNRequirementsSetInput2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐRequirementsSetInput(ctx context.Context, v interface{}) (model.RequirementsSetInput, error) {
+	return ec.unmarshalInputRequirementsSetInput(ctx, v)
+}
+
+func (ec *executionContext) unmarshalNRequirementsSetInput2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐRequirementsSetInput(ctx context.Context, v interface{}) (*model.RequirementsSetInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalNRequirementsSetInput2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐRequirementsSetInput(ctx, v)
+	return &res, err
+}
+
 func (ec *executionContext) marshalNReview2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐReview(ctx context.Context, sel ast.SelectionSet, v model.Review) graphql.Marshaler {
 	return ec._Review(ctx, sel, &v)
 }
@@ -5288,6 +5831,69 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNSystemRequirements2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐSystemRequirements(ctx context.Context, sel ast.SelectionSet, v model.SystemRequirements) graphql.Marshaler {
+	return ec._SystemRequirements(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNSystemRequirements2ᚕᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐSystemRequirementsᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.SystemRequirements) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNSystemRequirements2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐSystemRequirements(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNSystemRequirements2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐSystemRequirements(ctx context.Context, sel ast.SelectionSet, v *model.SystemRequirements) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._SystemRequirements(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNSystemRequirementsInput2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐSystemRequirementsInput(ctx context.Context, v interface{}) (model.SystemRequirementsInput, error) {
+	return ec.unmarshalInputSystemRequirementsInput(ctx, v)
+}
+
+func (ec *executionContext) unmarshalNSystemRequirementsInput2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐSystemRequirementsInput(ctx context.Context, v interface{}) (*model.SystemRequirementsInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalNSystemRequirementsInput2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐSystemRequirementsInput(ctx, v)
+	return &res, err
 }
 
 func (ec *executionContext) marshalNTag2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐTag(ctx context.Context, sel ast.SelectionSet, v model.Tag) graphql.Marshaler {
@@ -5824,6 +6430,26 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	return ec.marshalOString2string(ctx, sel, *v)
+}
+
+func (ec *executionContext) unmarshalOSystemRequirementsInput2ᚕᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐSystemRequirementsInputᚄ(ctx context.Context, v interface{}) ([]*model.SystemRequirementsInput, error) {
+	var vSlice []interface{}
+	if v != nil {
+		if tmp1, ok := v.([]interface{}); ok {
+			vSlice = tmp1
+		} else {
+			vSlice = []interface{}{v}
+		}
+	}
+	var err error
+	res := make([]*model.SystemRequirementsInput, len(vSlice))
+	for i := range vSlice {
+		res[i], err = ec.unmarshalNSystemRequirementsInput2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐSystemRequirementsInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
 }
 
 func (ec *executionContext) unmarshalOTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {

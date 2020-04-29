@@ -48,7 +48,7 @@ type Revision {
 	localizations: [Localization!]!
 
 	platforms: [GamePlatform!]!
-#	requirements: [SystemRequirements!]!
+	requirements: [SystemRequirements!]!
 
 #	media: Media!
 
@@ -129,19 +129,18 @@ type Localization {
 }
 
 
-#type SystemRequirements {
-#	platform: String!
-#	minimal: RequirementsSet
-#	recommended: RequirementsSet
-#}
+type SystemRequirements {
+	platform: Int!
+	minimal: RequirementsSet!
+	recommended: RequirementsSet!
+}
 
-#type RequirementsSet {
-#	cpu: String
-#	diskSpace: String
-#	gpu: String
-#	os: String
-#	ram: String
-#}
+type RequirementsSet {
+	cpu: String!
+	gpu: String!
+	diskSpace: Int!
+	ram: Int!
+}
 
 #type Media {
 #	screenshots: [Image!]!

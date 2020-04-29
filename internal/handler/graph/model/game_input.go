@@ -61,6 +61,33 @@ func (i CreateGameInput) Convert() (*service.CreateGameData, error) {
 		data.Genres = &genreIDs
 	}
 
+	if len(i.SystemRequirements) > 0 {
+		var systemRequirements []service.SystemRequirements
+		for _, req := range i.SystemRequirements {
+			r := service.SystemRequirements{
+				Platform: uint(req.Platform),
+			}
+			if req.Minimal != nil {
+				r.Minimal = &service.RequirementsSet{
+					CPU:       r.Minimal.CPU,
+					GPU:       r.Minimal.GPU,
+					DiskSpace: r.Minimal.DiskSpace,
+					RAM:       r.Minimal.RAM,
+				}
+			}
+			if req.Recommended != nil {
+				r.Minimal = &service.RequirementsSet{
+					CPU:       r.Recommended.CPU,
+					GPU:       r.Recommended.GPU,
+					DiskSpace: r.Recommended.DiskSpace,
+					RAM:       r.Recommended.RAM,
+				}
+			}
+			systemRequirements = append(systemRequirements, r)
+		}
+		data.SystemRequirements = systemRequirements
+	}
+
 	return data, nil
 }
 
@@ -108,6 +135,33 @@ func (i UpdateGameInput) Convert() (*service.UpdateGameData, error) {
 			genreIDs = append(genreIDs, uint(genreID))
 		}
 		data.Genres = &genreIDs
+	}
+
+	if len(i.SystemRequirements) > 0 {
+		var systemRequirements []service.SystemRequirements
+		for _, req := range i.SystemRequirements {
+			r := service.SystemRequirements{
+				Platform: uint(req.Platform),
+			}
+			if req.Minimal != nil {
+				r.Minimal = &service.RequirementsSet{
+					CPU:       r.Minimal.CPU,
+					GPU:       r.Minimal.GPU,
+					DiskSpace: r.Minimal.DiskSpace,
+					RAM:       r.Minimal.RAM,
+				}
+			}
+			if req.Recommended != nil {
+				r.Minimal = &service.RequirementsSet{
+					CPU:       r.Recommended.CPU,
+					GPU:       r.Recommended.GPU,
+					DiskSpace: r.Recommended.DiskSpace,
+					RAM:       r.Recommended.RAM,
+				}
+			}
+			systemRequirements = append(systemRequirements, r)
+		}
+		data.SystemRequirements = systemRequirements
 	}
 
 	return data, nil

@@ -10,21 +10,22 @@ import (
 )
 
 type CreateGameInput struct {
-	Title         string               `json:"title"`
-	Slug          *string              `json:"slug"`
-	Summary       *string              `json:"summary"`
-	Description   *string              `json:"description"`
-	Type          GameType             `json:"type"`
-	Developers    []int                `json:"developers"`
-	Publishers    []int                `json:"publishers"`
-	ReleaseDate   *time.Time           `json:"releaseDate"`
-	License       *string              `json:"license"`
-	Ranking       *string              `json:"ranking"`
-	Genres        []int                `json:"genres"`
-	Tags          []int                `json:"tags"`
-	Features      []int                `json:"features"`
-	Localizations []*LocalizationInput `json:"localizations"`
-	Platforms     []GamePlatform       `json:"platforms"`
+	Title              string                     `json:"title"`
+	Slug               *string                    `json:"slug"`
+	Summary            *string                    `json:"summary"`
+	Description        *string                    `json:"description"`
+	Type               GameType                   `json:"type"`
+	Developers         []int                      `json:"developers"`
+	Publishers         []int                      `json:"publishers"`
+	ReleaseDate        *time.Time                 `json:"releaseDate"`
+	License            *string                    `json:"license"`
+	Ranking            *string                    `json:"ranking"`
+	Genres             []int                      `json:"genres"`
+	Tags               []int                      `json:"tags"`
+	Features           []int                      `json:"features"`
+	Localizations      []*LocalizationInput       `json:"localizations"`
+	Platforms          []GamePlatform             `json:"platforms"`
+	SystemRequirements []*SystemRequirementsInput `json:"systemRequirements"`
 }
 
 type Developer struct {
@@ -76,6 +77,20 @@ type Rating struct {
 	Agency string `json:"agency"`
 }
 
+type RequirementsSet struct {
+	CPU       string `json:"cpu"`
+	Gpu       string `json:"gpu"`
+	DiskSpace int    `json:"diskSpace"`
+	RAM       int    `json:"ram"`
+}
+
+type RequirementsSetInput struct {
+	CPU       string `json:"cpu"`
+	Gpu       string `json:"gpu"`
+	DiskSpace int    `json:"diskSpace"`
+	RAM       int    `json:"ram"`
+}
+
 type Review struct {
 	URL       *string `json:"url"`
 	Score     *int    `json:"score"`
@@ -90,23 +105,36 @@ type Reviews struct {
 }
 
 type Revision struct {
-	ID            string          `json:"id"`
-	GameID        string          `json:"gameID"`
-	Slug          string          `json:"slug"`
-	Title         string          `json:"title"`
-	Summary       string          `json:"summary"`
-	Type          GameType        `json:"type"`
-	Description   string          `json:"description"`
-	Developers    []*Developer    `json:"developers"`
-	Publishers    []*Publisher    `json:"publishers"`
-	ReleaseDate   string          `json:"releaseDate"`
-	License       string          `json:"license"`
-	Ranking       string          `json:"ranking"`
-	Genres        []*Genre        `json:"genres"`
-	Tags          []*Tag          `json:"tags"`
-	Features      []*Feature      `json:"features"`
-	Localizations []*Localization `json:"localizations"`
-	Platforms     []GamePlatform  `json:"platforms"`
+	ID            string                `json:"id"`
+	GameID        string                `json:"gameID"`
+	Slug          string                `json:"slug"`
+	Title         string                `json:"title"`
+	Summary       string                `json:"summary"`
+	Type          GameType              `json:"type"`
+	Description   string                `json:"description"`
+	Developers    []*Developer          `json:"developers"`
+	Publishers    []*Publisher          `json:"publishers"`
+	ReleaseDate   string                `json:"releaseDate"`
+	License       string                `json:"license"`
+	Ranking       string                `json:"ranking"`
+	Genres        []*Genre              `json:"genres"`
+	Tags          []*Tag                `json:"tags"`
+	Features      []*Feature            `json:"features"`
+	Localizations []*Localization       `json:"localizations"`
+	Platforms     []GamePlatform        `json:"platforms"`
+	Requirements  []*SystemRequirements `json:"requirements"`
+}
+
+type SystemRequirements struct {
+	Platform    int              `json:"platform"`
+	Minimal     *RequirementsSet `json:"minimal"`
+	Recommended *RequirementsSet `json:"recommended"`
+}
+
+type SystemRequirementsInput struct {
+	Platform    int                   `json:"platform"`
+	Minimal     *RequirementsSetInput `json:"minimal"`
+	Recommended *RequirementsSetInput `json:"recommended"`
 }
 
 type Tag struct {
@@ -115,21 +143,22 @@ type Tag struct {
 }
 
 type UpdateGameInput struct {
-	ID            string               `json:"ID"`
-	Title         *string              `json:"title"`
-	Slug          *string              `json:"slug"`
-	Summary       *string              `json:"summary"`
-	Description   *string              `json:"description"`
-	Developers    []int                `json:"developers"`
-	Publishers    []int                `json:"publishers"`
-	ReleaseDate   *string              `json:"releaseDate"`
-	License       *string              `json:"license"`
-	Ranking       *string              `json:"ranking"`
-	Genres        []int                `json:"genres"`
-	Tags          []int                `json:"tags"`
-	Features      []int                `json:"features"`
-	Localizations []*LocalizationInput `json:"localizations"`
-	Platforms     []GamePlatform       `json:"platforms"`
+	ID                 string                     `json:"ID"`
+	Title              *string                    `json:"title"`
+	Slug               *string                    `json:"slug"`
+	Summary            *string                    `json:"summary"`
+	Description        *string                    `json:"description"`
+	Developers         []int                      `json:"developers"`
+	Publishers         []int                      `json:"publishers"`
+	ReleaseDate        *string                    `json:"releaseDate"`
+	License            *string                    `json:"license"`
+	Ranking            *string                    `json:"ranking"`
+	Genres             []int                      `json:"genres"`
+	Tags               []int                      `json:"tags"`
+	Features           []int                      `json:"features"`
+	Localizations      []*LocalizationInput       `json:"localizations"`
+	Platforms          []GamePlatform             `json:"platforms"`
+	SystemRequirements []*SystemRequirementsInput `json:"systemRequirements"`
 }
 
 type GamePlatform string
