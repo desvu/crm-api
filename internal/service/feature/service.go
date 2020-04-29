@@ -15,6 +15,7 @@ type Service struct {
 func (s Service) Create(ctx context.Context, data *service.CreateFeatureData) (*entity.Feature, error) {
 	feature := &entity.Feature{
 		Name: data.Name,
+		Icon: data.Icon,
 	}
 
 	if err := s.FeatureRepository.Create(ctx, feature); err != nil {
@@ -30,11 +31,11 @@ func (s Service) Update(ctx context.Context, data *service.UpdateFeatureData) (*
 		return nil, err
 	}
 
-	if feature.Name != data.Name {
-		feature.Name = data.Name
-		if err = s.FeatureRepository.Update(ctx, feature); err != nil {
-			return nil, err
-		}
+	feature.Name = data.Name
+	feature.Icon = data.Icon
+
+	if err = s.FeatureRepository.Update(ctx, feature); err != nil {
+		return nil, err
 	}
 
 	return feature, nil

@@ -80,6 +80,7 @@ func (c gameConverter) convertFeatureArray(items []entity.Feature) []*model.Feat
 		result = append(result, &model.Feature{
 			ID:   strconv.Itoa(int(feature.ID)),
 			Name: feature.Name,
+			Icon: feature.Icon.String(),
 		})
 	}
 

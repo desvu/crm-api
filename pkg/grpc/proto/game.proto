@@ -59,6 +59,7 @@ message Developer {
 message Feature {
     uint64 ID = 1;
     string name = 2;
+    string icon = 3;
 }
 
 message Genre {

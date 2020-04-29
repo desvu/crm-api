@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/game"
 )
 
 //go:generate mockgen -destination=../mocks/feature_service.go -package=mocks github.com/qilin/crm-api/internal/domain/service FeatureService
@@ -22,9 +23,11 @@ type FeatureService interface {
 
 type CreateFeatureData struct {
 	Name string
+	Icon game.Icon
 }
 
 type UpdateFeatureData struct {
 	ID   uint
 	Name string
+	Icon game.Icon
 }
