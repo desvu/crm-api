@@ -22,18 +22,19 @@ func (c gameConverter) convertGame(g *entity.GameEx) *model.Game {
 	return &model.Game{
 		ID: g.ID,
 		Revision: &model.Revision{
-			ID:          strconv.Itoa(int(g.Revision.ID)),
-			GameID:      g.Revision.GameID,
-			Summary:     g.Revision.Summary,
-			Description: g.Revision.Description,
-			License:     g.Revision.License,
-			Developers:  c.convertDeveloperArray(g.Revision.Developers),
-			Publishers:  c.convertPublisherArray(g.Revision.Publishers),
-			Genres:      c.convertGenreArray(g.Revision.Genres),
-			Tags:        c.convertTagArray(g.Revision.Tags),
-			Features:    c.convertFeatureArray(g.Revision.Features),
-			Platforms:   c.convertPlatforms(g.Revision.Platforms...),
-			ReleaseDate: g.Revision.ReleaseDate.Format(ISO8601Extended),
+			ID:           strconv.Itoa(int(g.Revision.ID)),
+			GameID:       g.Revision.GameID,
+			Summary:      g.Revision.Summary,
+			Description:  g.Revision.Description,
+			License:      g.Revision.License,
+			Developers:   c.convertDeveloperArray(g.Revision.Developers),
+			Publishers:   c.convertPublisherArray(g.Revision.Publishers),
+			Genres:       c.convertGenreArray(g.Revision.Genres),
+			Tags:         c.convertTagArray(g.Revision.Tags),
+			Features:     c.convertFeatureArray(g.Revision.Features),
+			Platforms:    c.convertPlatforms(g.Revision.Platforms...),
+			ReleaseDate:  g.Revision.ReleaseDate.Format(ISO8601Extended),
+			Requirements: c.convertRequirements(g.Revision.SystemRequirements),
 		},
 	}
 }
@@ -128,4 +129,26 @@ func (c gameConverter) convertPlatform(p game.Platform) model.GamePlatform {
 		return model.GamePlatformMacOs
 	}
 	return model.GamePlatformWindows
+}
+
+func (c gameConverter) convertRequirements(s []entity.SystemRequirements) []*model.SystemRequirements {
+	a := []*model.SystemRequirements{}
+	for _, i := range s {
+		a = append(a, &model.SystemRequirements{
+			Platform: c.convertPlatform(i.Platform),
+			Minimal: &model.RequirementsSet{
+				CPU:       i.Minimal.CPU,
+				Gpu:       i.Minimal.GPU,
+				DiskSpace: int(i.Minimal.DiskSpace),
+				RAM:       int(i.Minimal.RAM),
+			},
+			Recommended: &model.RequirementsSet{
+				CPU:       i.Recommended.CPU,
+				Gpu:       i.Recommended.GPU,
+				DiskSpace: int(i.Recommended.DiskSpace),
+				RAM:       int(i.Recommended.RAM),
+			},
+		})
+	}
+	return a
 }

@@ -804,7 +804,7 @@ type Localization {
 
 
 type SystemRequirements {
-	platform: Int!
+	platform: GamePlatform!
 	minimal: RequirementsSet!
 	recommended: RequirementsSet!
 }
@@ -879,7 +879,7 @@ input LocalizationInput {
 }
 
 input SystemRequirementsInput {
-	platform: Int!
+	platform: GamePlatform!
 	minimal: RequirementsSetInput!
 	recommended: RequirementsSetInput!
 }
@@ -2926,9 +2926,9 @@ func (ec *executionContext) _SystemRequirements_platform(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(model.GamePlatform)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNGamePlatform2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGamePlatform(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _SystemRequirements_minimal(ctx context.Context, field graphql.CollectedField, obj *model.SystemRequirements) (ret graphql.Marshaler) {
@@ -4310,7 +4310,7 @@ func (ec *executionContext) unmarshalInputSystemRequirementsInput(ctx context.Co
 		switch k {
 		case "platform":
 			var err error
-			it.Platform, err = ec.unmarshalNInt2int(ctx, v)
+			it.Platform, err = ec.unmarshalNGamePlatform2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGamePlatform(ctx, v)
 			if err != nil {
 				return it, err
 			}

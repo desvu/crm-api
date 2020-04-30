@@ -130,7 +130,7 @@ type Localization {
 
 
 type SystemRequirements {
-	platform: Int!
+	platform: GamePlatform!
 	minimal: RequirementsSet!
 	recommended: RequirementsSet!
 }

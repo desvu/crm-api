@@ -1,7 +1,9 @@
 package entity
 
+import "github.com/qilin/crm-api/internal/domain/enum/game"
+
 type SystemRequirements struct {
-	Platform    uint
+	Platform    game.Platform
 	Minimal     *RequirementsSet
 	Recommended *RequirementsSet
 }

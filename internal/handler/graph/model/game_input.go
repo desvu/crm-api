@@ -65,27 +65,27 @@ func (i CreateGameInput) Convert() (*service.CreateGameData, error) {
 		var systemRequirements []service.SystemRequirements
 		for _, req := range i.SystemRequirements {
 			r := service.SystemRequirements{
-				Platform: uint(req.Platform),
+				Platform: game.NewPlatformByString(req.Platform.String()),
 			}
 			if req.Minimal != nil {
 				r.Minimal = &service.RequirementsSet{
-					CPU:       r.Minimal.CPU,
-					GPU:       r.Minimal.GPU,
-					DiskSpace: r.Minimal.DiskSpace,
-					RAM:       r.Minimal.RAM,
+					CPU:       req.Minimal.CPU,
+					GPU:       req.Minimal.Gpu,
+					DiskSpace: uint(req.Minimal.DiskSpace),
+					RAM:       uint(req.Minimal.RAM),
 				}
 			}
 			if req.Recommended != nil {
-				r.Minimal = &service.RequirementsSet{
-					CPU:       r.Recommended.CPU,
-					GPU:       r.Recommended.GPU,
-					DiskSpace: r.Recommended.DiskSpace,
-					RAM:       r.Recommended.RAM,
+				r.Recommended = &service.RequirementsSet{
+					CPU:       req.Recommended.CPU,
+					GPU:       req.Recommended.Gpu,
+					DiskSpace: uint(req.Recommended.DiskSpace),
+					RAM:       uint(req.Recommended.RAM),
 				}
 			}
 			systemRequirements = append(systemRequirements, r)
 		}
-		data.SystemRequirements = systemRequirements
+		data.SystemRequirements = &systemRequirements
 	}
 
 	return data, nil
@@ -141,7 +141,7 @@ func (i UpdateGameInput) Convert() (*service.UpdateGameData, error) {
 		var systemRequirements []service.SystemRequirements
 		for _, req := range i.SystemRequirements {
 			r := service.SystemRequirements{
-				Platform: uint(req.Platform),
+				Platform: game.NewPlatformByString(req.Platform.String()),
 			}
 			if req.Minimal != nil {
 				r.Minimal = &service.RequirementsSet{
@@ -152,7 +152,7 @@ func (i UpdateGameInput) Convert() (*service.UpdateGameData, error) {
 				}
 			}
 			if req.Recommended != nil {
-				r.Minimal = &service.RequirementsSet{
+				r.Recommended = &service.RequirementsSet{
 					CPU:       r.Recommended.CPU,
 					GPU:       r.Recommended.GPU,
 					DiskSpace: r.Recommended.DiskSpace,
@@ -161,7 +161,7 @@ func (i UpdateGameInput) Convert() (*service.UpdateGameData, error) {
 			}
 			systemRequirements = append(systemRequirements, r)
 		}
-		data.SystemRequirements = systemRequirements
+		data.SystemRequirements = &systemRequirements
 	}
 
 	return data, nil

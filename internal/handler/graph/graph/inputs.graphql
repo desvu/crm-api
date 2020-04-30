@@ -47,7 +47,7 @@ input LocalizationInput {
 }
 
 input SystemRequirementsInput {
-	platform: Int!
+	platform: GamePlatform!
 	minimal: RequirementsSetInput!
 	recommended: RequirementsSetInput!
 }

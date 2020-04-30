@@ -126,13 +126,13 @@ type Revision struct {
 }
 
 type SystemRequirements struct {
-	Platform    int              `json:"platform"`
+	Platform    GamePlatform     `json:"platform"`
 	Minimal     *RequirementsSet `json:"minimal"`
 	Recommended *RequirementsSet `json:"recommended"`
 }
 
 type SystemRequirementsInput struct {
-	Platform    int                   `json:"platform"`
+	Platform    GamePlatform          `json:"platform"`
 	Minimal     *RequirementsSetInput `json:"minimal"`
 	Recommended *RequirementsSetInput `json:"recommended"`
 }

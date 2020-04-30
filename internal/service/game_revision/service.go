@@ -51,6 +51,28 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionDat
 		revision.Platforms = *data.Platforms
 	}
 
+	if data.SystemRequirements != nil {
+		var sra []entity.SystemRequirements
+		for _, sr := range *data.SystemRequirements {
+			sra = append(sra, entity.SystemRequirements{
+				Platform: sr.Platform,
+				Minimal: &entity.RequirementsSet{
+					CPU:       sr.Minimal.CPU,
+					GPU:       sr.Minimal.GPU,
+					DiskSpace: sr.Minimal.DiskSpace,
+					RAM:       sr.Minimal.RAM,
+				},
+				Recommended: &entity.RequirementsSet{
+					CPU:       sr.Recommended.CPU,
+					GPU:       sr.Recommended.GPU,
+					DiskSpace: sr.Recommended.DiskSpace,
+					RAM:       sr.Recommended.RAM,
+				},
+			})
+		}
+		revision.SystemRequirements = sra
+	}
+
 	if err := s.Transactor.Transact(ctx, func(tx context.Context) error {
 		if err = s.GameRevisionRepository.Update(tx, revision); err != nil {
 			return err
@@ -136,8 +158,9 @@ func (s Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entity
 	}
 
 	newRevision := &entity.GameRevision{
-		GameID: game.ID,
-		Status: game_revision.StatusDraft,
+		GameID:             game.ID,
+		Status:             game_revision.StatusDraft,
+		SystemRequirements: []entity.SystemRequirements{},
 	}
 
 	if err = s.GameRevisionRepository.Create(ctx, newRevision); err != nil {

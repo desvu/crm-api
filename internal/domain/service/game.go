@@ -30,7 +30,7 @@ type CreateGameData struct {
 	License            *string
 	Platforms          *game.PlatformArray
 	ReleaseDate        *time.Time
-	SystemRequirements []SystemRequirements
+	SystemRequirements *[]SystemRequirements
 
 	Tags       *[]uint
 	Developers *[]uint
@@ -47,11 +47,11 @@ type UpdateGameData struct {
 	Publishers         *[]uint
 	Features           *[]uint
 	Genres             *[]uint
-	SystemRequirements []SystemRequirements
+	SystemRequirements *[]SystemRequirements
 }
 
 type SystemRequirements struct {
-	Platform    uint
+	Platform    game.Platform
 	Minimal     *RequirementsSet
 	Recommended *RequirementsSet
 }

@@ -25,9 +25,10 @@ type UpdateGameRevisionData struct {
 	Slug        *string
 	License     *string
 
-	Status      *game_revision.Status
-	Platforms   *game.PlatformArray
-	ReleaseDate *time.Time
+	Status             *game_revision.Status
+	Platforms          *game.PlatformArray
+	ReleaseDate        *time.Time
+	SystemRequirements *[]SystemRequirements
 
 	Tags       *[]uint
 	Developers *[]uint

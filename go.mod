@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/99designs/gqlgen v0.11.3
+	github.com/davecgh/go-spew v1.1.1
 	github.com/go-pg/migrations/v7 v7.1.9
 	github.com/go-pg/pg/v9 v9.1.5
 	github.com/go-redis/redis/v7 v7.2.0
