@@ -3,25 +3,66 @@ package game
 import (
 	"context"
 
+	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/pkg/errors/grpcerror"
 
 	"github.com/qilin/crm-api/pkg/grpc/proto"
 )
 
-func (h Handler) GetByIDAndRevisionID(ctx context.Context, stream *proto.Request) (*proto.Response, error) {
-	game, err := h.GameService.GetExByIDAndRevisionID(ctx, stream.GameID, uint(stream.RevisionID))
+func (h Handler) GetBySlug(ctx context.Context, request *proto.GetBySlugRequest) (*proto.GameResponse, error) {
+	game, err := h.GameService.GetExBySlug(ctx, request.Slug)
 	if err != nil {
 		return nil, grpcerror.New(err)
 	}
 
-	result := &proto.Response{
+	result, err := h.convertGame(game)
+	if err != nil {
+		return nil, grpcerror.New(err)
+	}
+
+	return &proto.GameResponse{Game: result}, nil
+
+}
+
+func (h Handler) GetByID(ctx context.Context, request *proto.GetByIDRequest) (*proto.GameResponse, error) {
+	game, err := h.GameService.GetExLastPublishedByID(ctx, request.GameID)
+	if err != nil {
+		return nil, grpcerror.New(err)
+	}
+
+	result, err := h.convertGame(game)
+	if err != nil {
+		return nil, grpcerror.New(err)
+	}
+
+	return &proto.GameResponse{Game: result}, nil
+
+}
+
+func (h Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Request) (*proto.GameResponse, error) {
+	game, err := h.GameService.GetExByIDAndRevisionID(ctx, request.GameID, uint(request.RevisionID))
+	if err != nil {
+		return nil, grpcerror.New(err)
+	}
+
+	result, err := h.convertGame(game)
+	if err != nil {
+		return nil, grpcerror.New(err)
+	}
+
+	return &proto.GameResponse{Game: result}, nil
+}
+
+func (h Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
+
+	result := &proto.Game{
 		ID:          game.ID,
 		Title:       game.Title,
+		Slug:        game.Slug,
 		Type:        game.Type.String(),
 		RevisionID:  uint64(game.Revision.ID),
 		Summary:     game.Revision.Summary,
 		Description: game.Revision.Description,
-		Slug:        game.Revision.Slug,
 		License:     game.Revision.License,
 		Platforms:   game.Revision.Platforms.Strings(),
 	}
@@ -58,6 +99,7 @@ func (h Handler) GetByIDAndRevisionID(ctx context.Context, stream *proto.Request
 		result.Features = append(result.Features, &proto.Feature{
 			ID:   uint64(item.ID),
 			Name: item.Name,
+			Icon: item.Icon.String(),
 		})
 	}
 
@@ -86,4 +128,5 @@ func (h Handler) GetByIDAndRevisionID(ctx context.Context, stream *proto.Request
 	}
 
 	return result, nil
+
 }

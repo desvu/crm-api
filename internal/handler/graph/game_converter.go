@@ -78,13 +78,18 @@ func (c gameConverter) convertTagArray(items []entity.Tag) []*model.Tag {
 func (c gameConverter) convertFeatureArray(items []entity.Feature) []*model.Feature {
 	var result []*model.Feature
 	for _, feature := range items {
-		result = append(result, &model.Feature{
-			ID:   strconv.Itoa(int(feature.ID)),
-			Name: feature.Name,
-		})
+		result = append(result, c.convertFeature(feature))
 	}
 
 	return result
+}
+
+func (c gameConverter) convertFeature(feature entity.Feature) *model.Feature {
+	return &model.Feature{
+		ID:   strconv.Itoa(int(feature.ID)),
+		Name: feature.Name,
+		Icon: feature.Icon.String(),
+	}
 }
 
 func (c gameConverter) convertGenreArray(items []entity.Genre) []*model.Genre {

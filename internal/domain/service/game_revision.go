@@ -16,13 +16,13 @@ type GameRevisionService interface {
 	GetByID(ctx context.Context, id uint) (*entity.GameRevisionEx, error)
 	GetByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error)
 	GetDraftByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error)
+	GetLastPublishedByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error)
 }
 
 type UpdateGameRevisionData struct {
 	ID          uint
 	Summary     *string
 	Description *string
-	Slug        *string
 	License     *string
 
 	Status             *game_revision.Status

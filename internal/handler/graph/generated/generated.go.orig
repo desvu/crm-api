@@ -923,8 +923,11 @@ type Mutation {
 	updateGame(input: UpdateGameInput!): Game
 	deleteGame(id:ID!): Boolean!
     publishGame(id:ID!): Boolean!
+<<<<<<< HEAD
+=======
     
 	createFeature(name: String!, icon: String!): Feature
+>>>>>>> master
 }
 
 scalar Time`, BuiltIn: false},

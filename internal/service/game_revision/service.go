@@ -33,10 +33,6 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionDat
 		revision.Description = *data.Description
 	}
 
-	if data.Slug != nil {
-		revision.Slug = *data.Slug
-	}
-
 	if data.License != nil {
 		revision.License = *data.License
 	}
@@ -152,6 +148,19 @@ func (s Service) GetByIDAndGameID(ctx context.Context, id uint, gameID string) (
 	}
 
 	return revision, nil
+}
+
+func (s Service) GetLastPublishedByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error) {
+	revision, err := s.GameRevisionRepository.FindLastPublishedByGameID(ctx, game.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	if revision == nil {
+		return nil, errors.GameRevisionNotFound
+	}
+
+	return s.GameRevisionExRepository.FindByID(ctx, revision.ID)
 }
 
 func (s Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error) {

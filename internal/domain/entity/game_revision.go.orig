@@ -8,14 +8,25 @@ import (
 )
 
 type GameRevision struct {
+<<<<<<< HEAD
 	ID                 uint
 	GameID             string
 	Summary            string
 	Description        string
+	Slug               string
 	License            string
 	ReleaseDate        time.Time
 	PublishedAt        *time.Time
 	SystemRequirements []SystemRequirements
+=======
+	ID          uint
+	GameID      string
+	Summary     string
+	Description string
+	License     string
+	ReleaseDate time.Time
+	PublishedAt *time.Time
+>>>>>>> master
 
 	Status    game_revision.Status
 	Platforms game.PlatformArray

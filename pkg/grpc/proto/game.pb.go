@@ -24,6 +24,84 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+type GetBySlugRequest struct {
+	Slug                 string   `protobuf:"bytes,1,opt,name=slug,proto3" json:"slug,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetBySlugRequest) Reset()         { *m = GetBySlugRequest{} }
+func (m *GetBySlugRequest) String() string { return proto.CompactTextString(m) }
+func (*GetBySlugRequest) ProtoMessage()    {}
+func (*GetBySlugRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_07bb4d05826a653a, []int{0}
+}
+
+func (m *GetBySlugRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetBySlugRequest.Unmarshal(m, b)
+}
+func (m *GetBySlugRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetBySlugRequest.Marshal(b, m, deterministic)
+}
+func (m *GetBySlugRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetBySlugRequest.Merge(m, src)
+}
+func (m *GetBySlugRequest) XXX_Size() int {
+	return xxx_messageInfo_GetBySlugRequest.Size(m)
+}
+func (m *GetBySlugRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetBySlugRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetBySlugRequest proto.InternalMessageInfo
+
+func (m *GetBySlugRequest) GetSlug() string {
+	if m != nil {
+		return m.Slug
+	}
+	return ""
+}
+
+type GetByIDRequest struct {
+	GameID               string   `protobuf:"bytes,1,opt,name=gameID,proto3" json:"gameID,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetByIDRequest) Reset()         { *m = GetByIDRequest{} }
+func (m *GetByIDRequest) String() string { return proto.CompactTextString(m) }
+func (*GetByIDRequest) ProtoMessage()    {}
+func (*GetByIDRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_07bb4d05826a653a, []int{1}
+}
+
+func (m *GetByIDRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetByIDRequest.Unmarshal(m, b)
+}
+func (m *GetByIDRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetByIDRequest.Marshal(b, m, deterministic)
+}
+func (m *GetByIDRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetByIDRequest.Merge(m, src)
+}
+func (m *GetByIDRequest) XXX_Size() int {
+	return xxx_messageInfo_GetByIDRequest.Size(m)
+}
+func (m *GetByIDRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetByIDRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetByIDRequest proto.InternalMessageInfo
+
+func (m *GetByIDRequest) GetGameID() string {
+	if m != nil {
+		return m.GameID
+	}
+	return ""
+}
+
 type Request struct {
 	GameID               string   `protobuf:"bytes,1,opt,name=gameID,proto3" json:"gameID,omitempty"`
 	RevisionID           uint64   `protobuf:"varint,2,opt,name=revisionID,proto3" json:"revisionID,omitempty"`
@@ -36,7 +114,7 @@ func (m *Request) Reset()         { *m = Request{} }
 func (m *Request) String() string { return proto.CompactTextString(m) }
 func (*Request) ProtoMessage()    {}
 func (*Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_07bb4d05826a653a, []int{0}
+	return fileDescriptor_07bb4d05826a653a, []int{2}
 }
 
 func (m *Request) XXX_Unmarshal(b []byte) error {
@@ -71,7 +149,46 @@ func (m *Request) GetRevisionID() uint64 {
 	return 0
 }
 
-type Response struct {
+type GameResponse struct {
+	Game                 *Game    `protobuf:"bytes,1,opt,name=game,proto3" json:"game,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GameResponse) Reset()         { *m = GameResponse{} }
+func (m *GameResponse) String() string { return proto.CompactTextString(m) }
+func (*GameResponse) ProtoMessage()    {}
+func (*GameResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_07bb4d05826a653a, []int{3}
+}
+
+func (m *GameResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GameResponse.Unmarshal(m, b)
+}
+func (m *GameResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GameResponse.Marshal(b, m, deterministic)
+}
+func (m *GameResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GameResponse.Merge(m, src)
+}
+func (m *GameResponse) XXX_Size() int {
+	return xxx_messageInfo_GameResponse.Size(m)
+}
+func (m *GameResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GameResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GameResponse proto.InternalMessageInfo
+
+func (m *GameResponse) GetGame() *Game {
+	if m != nil {
+		return m.Game
+	}
+	return nil
+}
+
+type Game struct {
 	ID                   string                `protobuf:"bytes,1,opt,name=ID,json=iD,proto3" json:"ID,omitempty"`
 	Title                string                `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
 	Type                 string                `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
@@ -92,130 +209,130 @@ type Response struct {
 	XXX_sizecache        int32                 `json:"-"`
 }
 
-func (m *Response) Reset()         { *m = Response{} }
-func (m *Response) String() string { return proto.CompactTextString(m) }
-func (*Response) ProtoMessage()    {}
-func (*Response) Descriptor() ([]byte, []int) {
-	return fileDescriptor_07bb4d05826a653a, []int{1}
+func (m *Game) Reset()         { *m = Game{} }
+func (m *Game) String() string { return proto.CompactTextString(m) }
+func (*Game) ProtoMessage()    {}
+func (*Game) Descriptor() ([]byte, []int) {
+	return fileDescriptor_07bb4d05826a653a, []int{4}
 }
 
-func (m *Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Response.Unmarshal(m, b)
+func (m *Game) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Game.Unmarshal(m, b)
 }
-func (m *Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Response.Marshal(b, m, deterministic)
+func (m *Game) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Game.Marshal(b, m, deterministic)
 }
-func (m *Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Response.Merge(m, src)
+func (m *Game) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Game.Merge(m, src)
 }
-func (m *Response) XXX_Size() int {
-	return xxx_messageInfo_Response.Size(m)
+func (m *Game) XXX_Size() int {
+	return xxx_messageInfo_Game.Size(m)
 }
-func (m *Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_Response.DiscardUnknown(m)
+func (m *Game) XXX_DiscardUnknown() {
+	xxx_messageInfo_Game.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Response proto.InternalMessageInfo
+var xxx_messageInfo_Game proto.InternalMessageInfo
 
-func (m *Response) GetID() string {
+func (m *Game) GetID() string {
 	if m != nil {
 		return m.ID
 	}
 	return ""
 }
 
-func (m *Response) GetTitle() string {
+func (m *Game) GetTitle() string {
 	if m != nil {
 		return m.Title
 	}
 	return ""
 }
 
-func (m *Response) GetType() string {
+func (m *Game) GetType() string {
 	if m != nil {
 		return m.Type
 	}
 	return ""
 }
 
-func (m *Response) GetRevisionID() uint64 {
+func (m *Game) GetRevisionID() uint64 {
 	if m != nil {
 		return m.RevisionID
 	}
 	return 0
 }
 
-func (m *Response) GetSummary() string {
+func (m *Game) GetSummary() string {
 	if m != nil {
 		return m.Summary
 	}
 	return ""
 }
 
-func (m *Response) GetDescription() string {
+func (m *Game) GetDescription() string {
 	if m != nil {
 		return m.Description
 	}
 	return ""
 }
 
-func (m *Response) GetSlug() string {
+func (m *Game) GetSlug() string {
 	if m != nil {
 		return m.Slug
 	}
 	return ""
 }
 
-func (m *Response) GetLicense() string {
+func (m *Game) GetLicense() string {
 	if m != nil {
 		return m.License
 	}
 	return ""
 }
 
-func (m *Response) GetPlatforms() []string {
+func (m *Game) GetPlatforms() []string {
 	if m != nil {
 		return m.Platforms
 	}
 	return nil
 }
 
-func (m *Response) GetTags() []*Tag {
+func (m *Game) GetTags() []*Tag {
 	if m != nil {
 		return m.Tags
 	}
 	return nil
 }
 
-func (m *Response) GetFeatures() []*Feature {
+func (m *Game) GetFeatures() []*Feature {
 	if m != nil {
 		return m.Features
 	}
 	return nil
 }
 
-func (m *Response) GetDevelopers() []*Developer {
+func (m *Game) GetDevelopers() []*Developer {
 	if m != nil {
 		return m.Developers
 	}
 	return nil
 }
 
-func (m *Response) GetGenres() []*Genre {
+func (m *Game) GetGenres() []*Genre {
 	if m != nil {
 		return m.Genres
 	}
 	return nil
 }
 
-func (m *Response) GetPublishers() []*Publisher {
+func (m *Game) GetPublishers() []*Publisher {
 	if m != nil {
 		return m.Publishers
 	}
 	return nil
 }
 
-func (m *Response) GetSystemRequirements() []*SystemRequirements {
+func (m *Game) GetSystemRequirements() []*SystemRequirements {
 	if m != nil {
 		return m.SystemRequirements
 	}
@@ -234,7 +351,7 @@ func (m *Tag) Reset()         { *m = Tag{} }
 func (m *Tag) String() string { return proto.CompactTextString(m) }
 func (*Tag) ProtoMessage()    {}
 func (*Tag) Descriptor() ([]byte, []int) {
-	return fileDescriptor_07bb4d05826a653a, []int{2}
+	return fileDescriptor_07bb4d05826a653a, []int{5}
 }
 
 func (m *Tag) XXX_Unmarshal(b []byte) error {
@@ -281,7 +398,7 @@ func (m *Developer) Reset()         { *m = Developer{} }
 func (m *Developer) String() string { return proto.CompactTextString(m) }
 func (*Developer) ProtoMessage()    {}
 func (*Developer) Descriptor() ([]byte, []int) {
-	return fileDescriptor_07bb4d05826a653a, []int{3}
+	return fileDescriptor_07bb4d05826a653a, []int{6}
 }
 
 func (m *Developer) XXX_Unmarshal(b []byte) error {
@@ -319,6 +436,7 @@ func (m *Developer) GetName() string {
 type Feature struct {
 	ID                   uint64   `protobuf:"varint,1,opt,name=ID,json=iD,proto3" json:"ID,omitempty"`
 	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Icon                 string   `protobuf:"bytes,3,opt,name=icon,proto3" json:"icon,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -328,7 +446,7 @@ func (m *Feature) Reset()         { *m = Feature{} }
 func (m *Feature) String() string { return proto.CompactTextString(m) }
 func (*Feature) ProtoMessage()    {}
 func (*Feature) Descriptor() ([]byte, []int) {
-	return fileDescriptor_07bb4d05826a653a, []int{4}
+	return fileDescriptor_07bb4d05826a653a, []int{7}
 }
 
 func (m *Feature) XXX_Unmarshal(b []byte) error {
@@ -363,6 +481,13 @@ func (m *Feature) GetName() string {
 	return ""
 }
 
+func (m *Feature) GetIcon() string {
+	if m != nil {
+		return m.Icon
+	}
+	return ""
+}
+
 type Genre struct {
 	ID                   uint64   `protobuf:"varint,1,opt,name=ID,json=iD,proto3" json:"ID,omitempty"`
 	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -375,7 +500,7 @@ func (m *Genre) Reset()         { *m = Genre{} }
 func (m *Genre) String() string { return proto.CompactTextString(m) }
 func (*Genre) ProtoMessage()    {}
 func (*Genre) Descriptor() ([]byte, []int) {
-	return fileDescriptor_07bb4d05826a653a, []int{5}
+	return fileDescriptor_07bb4d05826a653a, []int{8}
 }
 
 func (m *Genre) XXX_Unmarshal(b []byte) error {
@@ -422,7 +547,7 @@ func (m *Publisher) Reset()         { *m = Publisher{} }
 func (m *Publisher) String() string { return proto.CompactTextString(m) }
 func (*Publisher) ProtoMessage()    {}
 func (*Publisher) Descriptor() ([]byte, []int) {
-	return fileDescriptor_07bb4d05826a653a, []int{6}
+	return fileDescriptor_07bb4d05826a653a, []int{9}
 }
 
 func (m *Publisher) XXX_Unmarshal(b []byte) error {
@@ -470,7 +595,7 @@ func (m *SystemRequirements) Reset()         { *m = SystemRequirements{} }
 func (m *SystemRequirements) String() string { return proto.CompactTextString(m) }
 func (*SystemRequirements) ProtoMessage()    {}
 func (*SystemRequirements) Descriptor() ([]byte, []int) {
-	return fileDescriptor_07bb4d05826a653a, []int{7}
+	return fileDescriptor_07bb4d05826a653a, []int{10}
 }
 
 func (m *SystemRequirements) XXX_Unmarshal(b []byte) error {
@@ -526,7 +651,7 @@ func (m *RequirementsSet) Reset()         { *m = RequirementsSet{} }
 func (m *RequirementsSet) String() string { return proto.CompactTextString(m) }
 func (*RequirementsSet) ProtoMessage()    {}
 func (*RequirementsSet) Descriptor() ([]byte, []int) {
-	return fileDescriptor_07bb4d05826a653a, []int{8}
+	return fileDescriptor_07bb4d05826a653a, []int{11}
 }
 
 func (m *RequirementsSet) XXX_Unmarshal(b []byte) error {
@@ -576,8 +701,11 @@ func (m *RequirementsSet) GetRAM() uint32 {
 }
 
 func init() {
+	proto.RegisterType((*GetBySlugRequest)(nil), "proto.GetBySlugRequest")
+	proto.RegisterType((*GetByIDRequest)(nil), "proto.GetByIDRequest")
 	proto.RegisterType((*Request)(nil), "proto.Request")
-	proto.RegisterType((*Response)(nil), "proto.Response")
+	proto.RegisterType((*GameResponse)(nil), "proto.GameResponse")
+	proto.RegisterType((*Game)(nil), "proto.Game")
 	proto.RegisterType((*Tag)(nil), "proto.Tag")
 	proto.RegisterType((*Developer)(nil), "proto.Developer")
 	proto.RegisterType((*Feature)(nil), "proto.Feature")
@@ -592,42 +720,48 @@ func init() {
 }
 
 var fileDescriptor_07bb4d05826a653a = []byte{
-	// 557 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x54, 0xdd, 0x6a, 0xdb, 0x4c,
-	0x10, 0xfd, 0x1c, 0xc9, 0x3f, 0x1a, 0x27, 0x4e, 0x58, 0x42, 0xd8, 0x84, 0x8f, 0x60, 0x44, 0x2f,
-	0xdc, 0x96, 0xc6, 0xc1, 0xbd, 0x69, 0x2f, 0xdd, 0x8a, 0x1a, 0x5f, 0x04, 0xcc, 0x3a, 0x7e, 0x00,
-	0x45, 0x9a, 0xa8, 0x4b, 0xb4, 0x92, 0xaa, 0x5d, 0x07, 0xfc, 0x10, 0x7d, 0x83, 0x3e, 0x6c, 0xd9,
-	0xd5, 0x4a, 0x51, 0x9d, 0x16, 0x7c, 0xe5, 0x99, 0x33, 0xe7, 0x9c, 0x59, 0x0d, 0x33, 0x86, 0xcb,
-	0xe2, 0x29, 0x99, 0x26, 0x65, 0x11, 0x4d, 0x8b, 0x32, 0x57, 0xf9, 0x34, 0x09, 0x05, 0xde, 0x98,
-	0x90, 0x74, 0xcd, 0x8f, 0x3f, 0x87, 0x3e, 0xc3, 0x1f, 0x5b, 0x94, 0x8a, 0x5c, 0x40, 0x4f, 0xd7,
-	0x97, 0x01, 0xed, 0x8c, 0x3b, 0x13, 0x8f, 0xd9, 0x8c, 0x5c, 0x03, 0x94, 0xf8, 0xcc, 0x25, 0xcf,
-	0xb3, 0x65, 0x40, 0x8f, 0xc6, 0x9d, 0x89, 0xcb, 0x5a, 0x88, 0xff, 0xd3, 0x85, 0x01, 0x43, 0x59,
-	0xe4, 0x99, 0x44, 0x32, 0x82, 0xa3, 0xc6, 0xe0, 0x88, 0x07, 0xe4, 0x1c, 0xba, 0x8a, 0xab, 0x14,
-	0x8d, 0xce, 0x63, 0x55, 0x42, 0x08, 0xb8, 0x6a, 0x57, 0x20, 0x75, 0x0c, 0x68, 0xe2, 0xbd, 0x36,
-	0xee, 0x7e, 0x1b, 0x42, 0xa1, 0x2f, 0xb7, 0x42, 0x84, 0xe5, 0x8e, 0x76, 0x8d, 0xac, 0x4e, 0xc9,
-	0x18, 0x86, 0x31, 0xca, 0xa8, 0xe4, 0x85, 0xe2, 0x79, 0x46, 0x7b, 0xa6, 0xda, 0x86, 0x74, 0x3f,
-	0x99, 0x6e, 0x13, 0xda, 0xaf, 0xfa, 0xe9, 0x58, 0xfb, 0xa5, 0x3c, 0xc2, 0x4c, 0x22, 0x1d, 0x54,
-	0x7e, 0x36, 0x25, 0xff, 0x83, 0x57, 0xa4, 0xa1, 0x7a, 0xcc, 0x4b, 0x21, 0xa9, 0x37, 0x76, 0x26,
-	0x1e, 0x7b, 0x01, 0xc8, 0x35, 0xb8, 0x2a, 0x4c, 0x24, 0x85, 0xb1, 0x33, 0x19, 0xce, 0xa0, 0x1a,
-	0xe7, 0xcd, 0x7d, 0x98, 0x30, 0x83, 0x93, 0x77, 0x30, 0x78, 0xc4, 0x50, 0x6d, 0x4b, 0x94, 0x74,
-	0x68, 0x38, 0x23, 0xcb, 0xf9, 0x56, 0xc1, 0xac, 0xa9, 0x93, 0x5b, 0x80, 0x18, 0x9f, 0x31, 0xcd,
-	0x0b, 0x2c, 0x25, 0x3d, 0x36, 0xec, 0x33, 0xcb, 0x0e, 0xea, 0x02, 0x6b, 0x71, 0xc8, 0x1b, 0xe8,
-	0x25, 0x98, 0x69, 0xef, 0x13, 0xc3, 0x3e, 0xb6, 0xec, 0x85, 0x06, 0x99, 0xad, 0x69, 0xdf, 0x62,
-	0xfb, 0x90, 0x72, 0xf9, 0x5d, 0xfb, 0x8e, 0xfe, 0xf0, 0x5d, 0xd5, 0x05, 0xd6, 0xe2, 0x90, 0x25,
-	0x10, 0xb9, 0x93, 0x0a, 0x85, 0xde, 0x06, 0x5e, 0xa2, 0xc0, 0x4c, 0x49, 0x7a, 0x6a, 0x94, 0x97,
-	0x56, 0xb9, 0x7e, 0x45, 0x60, 0x7f, 0x11, 0xf9, 0x6f, 0xc1, 0xb9, 0x0f, 0x93, 0xd6, 0x26, 0xb8,
-	0x66, 0x13, 0x08, 0xb8, 0x59, 0x28, 0xea, 0x45, 0x30, 0xb1, 0x3f, 0x05, 0xaf, 0xf9, 0xcc, 0x83,
-	0x04, 0x1f, 0xa0, 0x6f, 0xa7, 0x78, 0x10, 0xfd, 0x3d, 0x74, 0xcd, 0x60, 0x0e, 0x7d, 0x4c, 0x33,
-	0x9b, 0x83, 0x04, 0xbf, 0x3a, 0x40, 0x5e, 0xcf, 0x84, 0x5c, 0xc1, 0xa0, 0xde, 0x16, 0x7b, 0x08,
-	0x4d, 0x4e, 0x6e, 0xa1, 0x2f, 0x78, 0xc6, 0x45, 0x98, 0x1a, 0xa7, 0xe1, 0xec, 0xc2, 0xce, 0xb6,
-	0xed, 0xb0, 0x46, 0xc5, 0x6a, 0x1a, 0xf9, 0x04, 0xc3, 0x12, 0xa3, 0x5c, 0x08, 0xcc, 0x62, 0x8c,
-	0xcd, 0xc5, 0xfc, 0x5b, 0xd5, 0xa6, 0xfa, 0x08, 0xa7, 0x7b, 0x75, 0x72, 0x06, 0xce, 0xd7, 0xd5,
-	0xc6, 0xbe, 0xca, 0x89, 0x56, 0x1b, 0x8d, 0x2c, 0x56, 0x1b, 0xfb, 0x59, 0x4e, 0xb2, 0xda, 0xe8,
-	0xed, 0x0f, 0xb8, 0x7c, 0x5a, 0x17, 0x61, 0x54, 0x1d, 0xe8, 0x09, 0xf3, 0xe2, 0x1a, 0xd0, 0x7c,
-	0x36, 0xbf, 0x33, 0xe7, 0x79, 0xc2, 0x9c, 0x72, 0x7e, 0x37, 0x9b, 0x83, 0xbb, 0x08, 0x05, 0x92,
-	0xcf, 0x70, 0xbe, 0x40, 0xf5, 0x65, 0xb7, 0x0c, 0xe6, 0x59, 0xcc, 0x5e, 0xee, 0x76, 0xd4, 0x7a,
-	0x2b, 0x4a, 0x75, 0x75, 0xda, 0xe4, 0xd5, 0x5f, 0x86, 0xff, 0xdf, 0x43, 0xcf, 0x20, 0x1f, 0x7f,
-	0x07, 0x00, 0x00, 0xff, 0xff, 0xb5, 0xc1, 0xab, 0xe7, 0xaf, 0x04, 0x00, 0x00,
+	// 655 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x54, 0xcf, 0x6e, 0xd3, 0x4e,
+	0x10, 0xfe, 0xa5, 0x76, 0x92, 0x7a, 0xdc, 0xa6, 0xd1, 0xfc, 0x4a, 0x71, 0x2b, 0x54, 0x22, 0x0b,
+	0xa1, 0x00, 0x52, 0x53, 0x85, 0x03, 0x48, 0x88, 0x43, 0x4a, 0x44, 0x95, 0x43, 0xa5, 0x68, 0xd3,
+	0x5c, 0xb8, 0xb9, 0xce, 0xd4, 0xac, 0xea, 0x7f, 0x78, 0x37, 0x95, 0xf2, 0x08, 0xbc, 0x03, 0x4f,
+	0xc3, 0x93, 0xa1, 0xdd, 0xac, 0x5d, 0xb7, 0xa5, 0x22, 0x27, 0xef, 0xcc, 0x7c, 0xdf, 0xb7, 0x3b,
+	0xe3, 0x99, 0x81, 0xc3, 0xfc, 0x26, 0x1a, 0x44, 0x45, 0x1e, 0x0e, 0xf2, 0x22, 0x93, 0xd9, 0x20,
+	0x0a, 0x12, 0x3a, 0xd1, 0x47, 0x6c, 0xea, 0x8f, 0xff, 0x1a, 0xba, 0xe7, 0x24, 0xcf, 0x56, 0xb3,
+	0x78, 0x19, 0x31, 0xfa, 0xb1, 0x24, 0x21, 0x11, 0xc1, 0x16, 0xf1, 0x32, 0xf2, 0x1a, 0xbd, 0x46,
+	0xdf, 0x61, 0xfa, 0xec, 0xf7, 0xa1, 0xa3, 0x71, 0x93, 0x71, 0x89, 0x3a, 0x80, 0x96, 0x92, 0x9b,
+	0x8c, 0x0d, 0xce, 0x58, 0xfe, 0x08, 0xda, 0xff, 0x80, 0xe0, 0x31, 0x40, 0x41, 0xb7, 0x5c, 0xf0,
+	0x2c, 0x9d, 0x8c, 0xbd, 0xad, 0x5e, 0xa3, 0x6f, 0xb3, 0x9a, 0xc7, 0x1f, 0xc0, 0xce, 0x79, 0x90,
+	0x10, 0x23, 0x91, 0x67, 0xa9, 0x20, 0x7c, 0x09, 0xb6, 0x62, 0x6a, 0x15, 0x77, 0xe8, 0xae, 0x33,
+	0x38, 0xd1, 0x10, 0x1d, 0xf0, 0x7f, 0xda, 0x60, 0x2b, 0x13, 0x3b, 0xb0, 0x55, 0xdd, 0xb6, 0xc5,
+	0xc7, 0xb8, 0x0f, 0x4d, 0xc9, 0x65, 0x4c, 0xfa, 0x12, 0x87, 0xad, 0x0d, 0x95, 0xa0, 0x5c, 0xe5,
+	0xe4, 0x59, 0xeb, 0x04, 0xd5, 0xf9, 0xc1, 0x9b, 0xec, 0x87, 0x6f, 0x42, 0x0f, 0xda, 0x62, 0x99,
+	0x24, 0x41, 0xb1, 0xf2, 0x9a, 0x9a, 0x56, 0x9a, 0xd8, 0x03, 0x77, 0x41, 0x22, 0x2c, 0x78, 0x2e,
+	0x79, 0x96, 0x7a, 0x2d, 0x1d, 0xad, 0xbb, 0xaa, 0x82, 0xb6, 0xef, 0x0a, 0xaa, 0xf4, 0x62, 0x1e,
+	0x52, 0x2a, 0xc8, 0xdb, 0x5e, 0xeb, 0x19, 0x13, 0x5f, 0x80, 0x93, 0xc7, 0x81, 0xbc, 0xce, 0x8a,
+	0x44, 0x78, 0x4e, 0xcf, 0xea, 0x3b, 0xec, 0xce, 0x81, 0xc7, 0x60, 0xcb, 0x20, 0x12, 0x1e, 0xf4,
+	0xac, 0xbe, 0x3b, 0x04, 0x53, 0x8b, 0xcb, 0x20, 0x62, 0xda, 0x8f, 0x6f, 0x61, 0xfb, 0x9a, 0x02,
+	0xb9, 0x2c, 0x48, 0x78, 0xae, 0xc6, 0x74, 0x0c, 0xe6, 0xeb, 0xda, 0xcd, 0xaa, 0x38, 0x9e, 0x02,
+	0x2c, 0xe8, 0x96, 0xe2, 0x2c, 0xa7, 0x42, 0x78, 0x3b, 0x1a, 0xdd, 0x35, 0xe8, 0x71, 0x19, 0x60,
+	0x35, 0x0c, 0xbe, 0x82, 0x56, 0x44, 0xa9, 0xd2, 0xde, 0xd5, 0xe8, 0x9d, 0xf2, 0x5f, 0x28, 0x27,
+	0x33, 0x31, 0xa5, 0x9b, 0x2f, 0xaf, 0x62, 0x2e, 0xbe, 0x2b, 0xdd, 0xce, 0x3d, 0xdd, 0x69, 0x19,
+	0x60, 0x35, 0x0c, 0x4e, 0x00, 0xc5, 0x4a, 0x48, 0x4a, 0x54, 0xeb, 0xf0, 0x82, 0x12, 0x4a, 0xa5,
+	0xf0, 0xf6, 0x34, 0xf3, 0xd0, 0x30, 0x67, 0x8f, 0x00, 0xec, 0x2f, 0x24, 0xff, 0x0d, 0x58, 0x97,
+	0x41, 0x54, 0xeb, 0x04, 0x5b, 0x77, 0x02, 0x82, 0x9d, 0xaa, 0x1e, 0x5a, 0x37, 0x82, 0x3e, 0xfb,
+	0x03, 0x70, 0xaa, 0x34, 0x37, 0x22, 0x8c, 0xa0, 0x6d, 0xaa, 0xb8, 0x09, 0x5c, 0xf9, 0x78, 0x98,
+	0xa5, 0x65, 0x9f, 0xa9, 0xb3, 0xff, 0x0e, 0x9a, 0xba, 0x58, 0x9b, 0x3e, 0xb0, 0xaa, 0xd7, 0x46,
+	0x84, 0x5f, 0x0d, 0xc0, 0xc7, 0x75, 0xc2, 0x23, 0xd8, 0x2e, 0x3b, 0xc8, 0x0c, 0x47, 0x65, 0xe3,
+	0x29, 0xb4, 0x13, 0x9e, 0xf2, 0x24, 0x88, 0xb5, 0x92, 0x3b, 0x3c, 0x30, 0xf5, 0xae, 0x2b, 0xcc,
+	0x48, 0xb2, 0x12, 0x86, 0x1f, 0xc1, 0x2d, 0x28, 0xcc, 0x92, 0x84, 0xd2, 0x05, 0x2d, 0x74, 0x76,
+	0x4f, 0xb3, 0xea, 0x50, 0x9f, 0x60, 0xef, 0x41, 0x1c, 0xbb, 0x60, 0x7d, 0x99, 0xce, 0xcd, 0xab,
+	0xac, 0x70, 0x3a, 0x57, 0x9e, 0xf3, 0xe9, 0xdc, 0xa4, 0x65, 0x45, 0xd3, 0xb9, 0x9a, 0x88, 0x31,
+	0x17, 0x37, 0xb3, 0x3c, 0x08, 0xd7, 0x43, 0xbb, 0xcb, 0x9c, 0x45, 0xe9, 0x50, 0x78, 0x36, 0xba,
+	0xd0, 0x23, 0xbb, 0xcb, 0xac, 0x62, 0x74, 0x31, 0xfc, 0xdd, 0x00, 0x57, 0xad, 0x83, 0x19, 0x15,
+	0xb7, 0x3c, 0x24, 0xfc, 0x0c, 0xfb, 0x66, 0x79, 0x8d, 0xd2, 0x05, 0xbb, 0x9b, 0xe9, 0x4e, 0xed,
+	0xcd, 0x24, 0xe4, 0xd1, 0xff, 0xf5, 0xcd, 0x62, 0x96, 0x8f, 0xff, 0x1f, 0x7e, 0x02, 0xa7, 0xda,
+	0x91, 0xf8, 0xbc, 0xea, 0xf8, 0xfb, 0x5b, 0xf3, 0x29, 0xf2, 0x07, 0x68, 0x9b, 0xbb, 0xf1, 0x59,
+	0x9d, 0x5a, 0x2d, 0xd2, 0x27, 0x88, 0x67, 0xdd, 0x6f, 0x9d, 0xfb, 0xdb, 0xfb, 0xaa, 0xa5, 0x3f,
+	0xef, 0xff, 0x04, 0x00, 0x00, 0xff, 0xff, 0xc1, 0x7f, 0xa9, 0xe5, 0xd6, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -638,72 +772,148 @@ var _ grpc.ClientConnInterface
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion6
 
-// GameClient is the client API for Game service.
+// GameServiceClient is the client API for GameService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
-type GameClient interface {
-	GetByIDAndRevisionID(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+type GameServiceClient interface {
+	GetByIDAndRevisionID(ctx context.Context, in *Request, opts ...grpc.CallOption) (*GameResponse, error)
+	// GetBySlug returns latest published game by slug
+	GetBySlug(ctx context.Context, in *GetBySlugRequest, opts ...grpc.CallOption) (*GameResponse, error)
+	// GetByID returns latest published game by slug
+	GetByID(ctx context.Context, in *GetByIDRequest, opts ...grpc.CallOption) (*GameResponse, error)
 }
 
-type gameClient struct {
+type gameServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewGameClient(cc grpc.ClientConnInterface) GameClient {
-	return &gameClient{cc}
+func NewGameServiceClient(cc grpc.ClientConnInterface) GameServiceClient {
+	return &gameServiceClient{cc}
 }
 
-func (c *gameClient) GetByIDAndRevisionID(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
-	out := new(Response)
-	err := c.cc.Invoke(ctx, "/proto.Game/GetByIDAndRevisionID", in, out, opts...)
+func (c *gameServiceClient) GetByIDAndRevisionID(ctx context.Context, in *Request, opts ...grpc.CallOption) (*GameResponse, error) {
+	out := new(GameResponse)
+	err := c.cc.Invoke(ctx, "/proto.GameService/GetByIDAndRevisionID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// GameServer is the server API for Game service.
-type GameServer interface {
-	GetByIDAndRevisionID(context.Context, *Request) (*Response, error)
+func (c *gameServiceClient) GetBySlug(ctx context.Context, in *GetBySlugRequest, opts ...grpc.CallOption) (*GameResponse, error) {
+	out := new(GameResponse)
+	err := c.cc.Invoke(ctx, "/proto.GameService/GetBySlug", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
-// UnimplementedGameServer can be embedded to have forward compatible implementations.
-type UnimplementedGameServer struct {
+func (c *gameServiceClient) GetByID(ctx context.Context, in *GetByIDRequest, opts ...grpc.CallOption) (*GameResponse, error) {
+	out := new(GameResponse)
+	err := c.cc.Invoke(ctx, "/proto.GameService/GetByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
-func (*UnimplementedGameServer) GetByIDAndRevisionID(ctx context.Context, req *Request) (*Response, error) {
+// GameServiceServer is the server API for GameService service.
+type GameServiceServer interface {
+	GetByIDAndRevisionID(context.Context, *Request) (*GameResponse, error)
+	// GetBySlug returns latest published game by slug
+	GetBySlug(context.Context, *GetBySlugRequest) (*GameResponse, error)
+	// GetByID returns latest published game by slug
+	GetByID(context.Context, *GetByIDRequest) (*GameResponse, error)
+}
+
+// UnimplementedGameServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedGameServiceServer struct {
+}
+
+func (*UnimplementedGameServiceServer) GetByIDAndRevisionID(ctx context.Context, req *Request) (*GameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetByIDAndRevisionID not implemented")
 }
-
-func RegisterGameServer(s *grpc.Server, srv GameServer) {
-	s.RegisterService(&_Game_serviceDesc, srv)
+func (*UnimplementedGameServiceServer) GetBySlug(ctx context.Context, req *GetBySlugRequest) (*GameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBySlug not implemented")
+}
+func (*UnimplementedGameServiceServer) GetByID(ctx context.Context, req *GetByIDRequest) (*GameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetByID not implemented")
 }
 
-func _Game_GetByIDAndRevisionID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func RegisterGameServiceServer(s *grpc.Server, srv GameServiceServer) {
+	s.RegisterService(&_GameService_serviceDesc, srv)
+}
+
+func _GameService_GetByIDAndRevisionID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GameServer).GetByIDAndRevisionID(ctx, in)
+		return srv.(GameServiceServer).GetByIDAndRevisionID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.Game/GetByIDAndRevisionID",
+		FullMethod: "/proto.GameService/GetByIDAndRevisionID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GameServer).GetByIDAndRevisionID(ctx, req.(*Request))
+		return srv.(GameServiceServer).GetByIDAndRevisionID(ctx, req.(*Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _Game_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.Game",
-	HandlerType: (*GameServer)(nil),
+func _GameService_GetBySlug_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBySlugRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GameServiceServer).GetBySlug(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.GameService/GetBySlug",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GameServiceServer).GetBySlug(ctx, req.(*GetBySlugRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GameService_GetByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GameServiceServer).GetByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.GameService/GetByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GameServiceServer).GetByID(ctx, req.(*GetByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _GameService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.GameService",
+	HandlerType: (*GameServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "GetByIDAndRevisionID",
-			Handler:    _Game_GetByIDAndRevisionID_Handler,
+			Handler:    _GameService_GetByIDAndRevisionID_Handler,
+		},
+		{
+			MethodName: "GetBySlug",
+			Handler:    _GameService_GetBySlug_Handler,
+		},
+		{
+			MethodName: "GetByID",
+			Handler:    _GameService_GetByID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -86,6 +86,7 @@ type Review {
 type Feature {
 	id: ID!
 	name: String!
+	icon: String!
 }
 
 type Genre {

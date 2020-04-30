@@ -11,7 +11,7 @@ import (
 
 type CreateGameInput struct {
 	Title              string                     `json:"title"`
-	Slug               *string                    `json:"slug"`
+	Slug               string                     `json:"slug"`
 	Summary            *string                    `json:"summary"`
 	Description        *string                    `json:"description"`
 	Type               GameType                   `json:"type"`
@@ -36,6 +36,7 @@ type Developer struct {
 type Feature struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
+	Icon string `json:"icon"`
 }
 
 type Game struct {

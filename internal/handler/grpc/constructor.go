@@ -27,7 +27,7 @@ func New(p Params) (*Server, error) {
 	}
 
 	server := grpc.NewServer()
-	proto.RegisterGameServer(server, p.GameHandler)
+	proto.RegisterGameServiceServer(server, p.GameHandler)
 
 	return &Server{
 		Server:   server,
