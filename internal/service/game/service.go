@@ -21,6 +21,7 @@ func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*ent
 		ID:    uuid.New().String(),
 		Title: data.Title,
 		Type:  data.Type,
+		Slug:  data.Slug,
 	}
 
 	var updatedRevision *entity.GameRevisionEx
@@ -38,7 +39,6 @@ func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*ent
 			ID:          revision.ID,
 			Summary:     data.Summary,
 			Description: data.Description,
-			Slug:        data.Slug,
 			License:     data.License,
 			Tags:        data.Tags,
 			Developers:  data.Developers,
@@ -77,6 +77,13 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameData) (*ent
 
 	var updatedRevision *entity.GameRevisionEx
 	if err := s.Transactor.Transact(ctx, func(ctx context.Context) error {
+		if data.Title != nil {
+			game.Title = *data.Title
+		}
+		if data.Slug != nil {
+			game.Slug = *data.Slug
+		}
+
 		if err = s.GameRepository.Update(ctx, game); err != nil {
 			return err
 		}
@@ -124,7 +131,7 @@ func (s Service) Publish(ctx context.Context, id string) error {
 		return err
 	}
 
-	revisionStatus := game_revision.StatusPublishing
+	revisionStatus := game_revision.StatusPublished // TODO publishing -> published
 	_, err = s.GameRevisionService.Update(ctx, &service.UpdateGameRevisionData{
 		ID:     game.Revision.ID,
 		Status: &revisionStatus,
@@ -149,6 +156,36 @@ func (s Service) GetByID(ctx context.Context, id string) (*entity.Game, error) {
 	return game, nil
 }
 
+func (s Service) GetBySlug(ctx context.Context, slug string) (*entity.Game, error) {
+	game, err := s.GameRepository.FindBySlug(ctx, slug)
+	if err != nil {
+		return nil, err
+	}
+
+	if game == nil {
+		return nil, errors.GameNotFound
+	}
+
+	return game, nil
+}
+
+func (s Service) GetExLastPublishedByID(ctx context.Context, id string) (*entity.GameEx, error) {
+	game, err := s.GetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	revision, err := s.GameRevisionService.GetLastPublishedByGame(ctx, game)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entity.GameEx{
+		Game:     *game,
+		Revision: revision,
+	}, nil
+}
+
 func (s Service) GetExByID(ctx context.Context, id string) (*entity.GameEx, error) {
 	game, err := s.GetByID(ctx, id)
 	if err != nil {
@@ -156,6 +193,23 @@ func (s Service) GetExByID(ctx context.Context, id string) (*entity.GameEx, erro
 	}
 
 	revision, err := s.GameRevisionService.GetDraftByGame(ctx, game)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entity.GameEx{
+		Game:     *game,
+		Revision: revision,
+	}, nil
+}
+
+func (s *Service) GetExBySlug(ctx context.Context, slug string) (*entity.GameEx, error) {
+	game, err := s.GetBySlug(ctx, slug)
+	if err != nil {
+		return nil, err
+	}
+
+	revision, err := s.GameRevisionService.GetLastPublishedByGame(ctx, game)
 	if err != nil {
 		return nil, err
 	}

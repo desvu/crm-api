@@ -1,8 +1,23 @@
 syntax = "proto3";
 package proto;
+option go_package = "pkg/grpc/proto";
 
-service Game {
-    rpc GetByIDAndRevisionID(Request) returns (Response) {}
+service GameService {
+    rpc GetByIDAndRevisionID(Request) returns (GameResponse) {}
+
+    // GetBySlug returns latest published game by slug
+    rpc GetBySlug(GetBySlugRequest) returns (GameResponse) {}
+
+    // GetByID returns latest published game by slug
+    rpc GetByID(GetByIDRequest) returns (GameResponse) {}
+}
+
+message GetBySlugRequest {
+    string slug = 1;
+}
+
+message GetByIDRequest {
+    string gameID = 1;
 }
 
 message Request {
@@ -10,7 +25,11 @@ message Request {
     uint64 revisionID = 2;
 }
 
-message Response {
+message GameResponse {
+    Game game = 1;
+}
+
+message Game {
     string ID = 1;
     string title = 2;
     string type = 3;
@@ -40,6 +59,7 @@ message Developer {
 message Feature {
     uint64 ID = 1;
     string name = 2;
+    string icon = 3;
 }
 
 message Genre {

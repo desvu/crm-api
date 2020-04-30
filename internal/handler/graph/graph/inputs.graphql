@@ -1,7 +1,7 @@
 # Create game input data
 input CreateGameInput {
 	title: String!
-	slug: String
+	slug: String!
 	summary: String
 	description: String
 	type: GameType!
