@@ -132,9 +132,9 @@ func (c gameConverter) convertPlatform(p game.Platform) model.GamePlatform {
 }
 
 func (c gameConverter) convertRequirements(s []entity.SystemRequirements) []*model.SystemRequirements {
-	a := []*model.SystemRequirements{}
+	systemRequirements := []*model.SystemRequirements{}
 	for _, i := range s {
-		a = append(a, &model.SystemRequirements{
+		systemRequirements = append(systemRequirements, &model.SystemRequirements{
 			Platform: c.convertPlatform(i.Platform),
 			Minimal: &model.RequirementsSet{
 				CPU:       i.Minimal.CPU,
@@ -150,5 +150,5 @@ func (c gameConverter) convertRequirements(s []entity.SystemRequirements) []*mod
 			},
 		})
 	}
-	return a
+	return systemRequirements
 }

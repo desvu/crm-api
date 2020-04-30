@@ -63,27 +63,27 @@ func (i CreateGameInput) Convert() (*service.CreateGameData, error) {
 
 	if len(i.SystemRequirements) > 0 {
 		var systemRequirements []service.SystemRequirements
-		for _, req := range i.SystemRequirements {
-			r := service.SystemRequirements{
-				Platform: game.NewPlatformByString(req.Platform.String()),
+		for _, item := range i.SystemRequirements {
+			requirementsSet := service.SystemRequirements{
+				Platform: game.NewPlatformByString(item.Platform.String()),
 			}
-			if req.Minimal != nil {
-				r.Minimal = &service.RequirementsSet{
-					CPU:       req.Minimal.CPU,
-					GPU:       req.Minimal.Gpu,
-					DiskSpace: uint(req.Minimal.DiskSpace),
-					RAM:       uint(req.Minimal.RAM),
+			if item.Minimal != nil {
+				requirementsSet.Minimal = &service.RequirementsSet{
+					CPU:       item.Minimal.CPU,
+					GPU:       item.Minimal.Gpu,
+					DiskSpace: uint(item.Minimal.DiskSpace),
+					RAM:       uint(item.Minimal.RAM),
 				}
 			}
-			if req.Recommended != nil {
-				r.Recommended = &service.RequirementsSet{
-					CPU:       req.Recommended.CPU,
-					GPU:       req.Recommended.Gpu,
-					DiskSpace: uint(req.Recommended.DiskSpace),
-					RAM:       uint(req.Recommended.RAM),
+			if item.Recommended != nil {
+				requirementsSet.Recommended = &service.RequirementsSet{
+					CPU:       item.Recommended.CPU,
+					GPU:       item.Recommended.Gpu,
+					DiskSpace: uint(item.Recommended.DiskSpace),
+					RAM:       uint(item.Recommended.RAM),
 				}
 			}
-			systemRequirements = append(systemRequirements, r)
+			systemRequirements = append(systemRequirements, requirementsSet)
 		}
 		data.SystemRequirements = &systemRequirements
 	}
@@ -139,27 +139,27 @@ func (i UpdateGameInput) Convert() (*service.UpdateGameData, error) {
 
 	if len(i.SystemRequirements) > 0 {
 		var systemRequirements []service.SystemRequirements
-		for _, req := range i.SystemRequirements {
-			r := service.SystemRequirements{
-				Platform: game.NewPlatformByString(req.Platform.String()),
+		for _, item := range i.SystemRequirements {
+			requirementsSet := service.SystemRequirements{
+				Platform: game.NewPlatformByString(item.Platform.String()),
 			}
-			if req.Minimal != nil {
-				r.Minimal = &service.RequirementsSet{
-					CPU:       r.Minimal.CPU,
-					GPU:       r.Minimal.GPU,
-					DiskSpace: r.Minimal.DiskSpace,
-					RAM:       r.Minimal.RAM,
+			if item.Minimal != nil {
+				requirementsSet.Minimal = &service.RequirementsSet{
+					CPU:       requirementsSet.Minimal.CPU,
+					GPU:       requirementsSet.Minimal.GPU,
+					DiskSpace: requirementsSet.Minimal.DiskSpace,
+					RAM:       requirementsSet.Minimal.RAM,
 				}
 			}
-			if req.Recommended != nil {
-				r.Recommended = &service.RequirementsSet{
-					CPU:       r.Recommended.CPU,
-					GPU:       r.Recommended.GPU,
-					DiskSpace: r.Recommended.DiskSpace,
-					RAM:       r.Recommended.RAM,
+			if item.Recommended != nil {
+				requirementsSet.Recommended = &service.RequirementsSet{
+					CPU:       requirementsSet.Recommended.CPU,
+					GPU:       requirementsSet.Recommended.GPU,
+					DiskSpace: requirementsSet.Recommended.DiskSpace,
+					RAM:       requirementsSet.Recommended.RAM,
 				}
 			}
-			systemRequirements = append(systemRequirements, r)
+			systemRequirements = append(systemRequirements, requirementsSet)
 		}
 		data.SystemRequirements = &systemRequirements
 	}

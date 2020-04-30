@@ -57,51 +57,51 @@ func newModel(i *entity.GameRevision) (*model, error) {
 }
 
 func newSystemRequirementsModel(i *[]entity.SystemRequirements) *[]SystemRequirements {
-	sysReqArray := []SystemRequirements{}
-	for _, req := range *i {
-		sysReq := SystemRequirements{
-			Platform: req.Platform.Value(),
+	systemRequirements := []SystemRequirements{}
+	for _, item := range *i {
+		requirementsSet := SystemRequirements{
+			Platform: item.Platform.Value(),
 			Minimal: RequirementsSetModel{
-				CPU:       req.Minimal.CPU,
-				GPU:       req.Minimal.GPU,
-				DiskSpace: req.Minimal.DiskSpace,
-				RAM:       req.Minimal.RAM,
+				CPU:       item.Minimal.CPU,
+				GPU:       item.Minimal.GPU,
+				DiskSpace: item.Minimal.DiskSpace,
+				RAM:       item.Minimal.RAM,
 			},
 			Recommended: RequirementsSetModel{
-				CPU:       req.Recommended.CPU,
-				GPU:       req.Recommended.GPU,
-				DiskSpace: req.Recommended.DiskSpace,
-				RAM:       req.Recommended.RAM,
+				CPU:       item.Recommended.CPU,
+				GPU:       item.Recommended.GPU,
+				DiskSpace: item.Recommended.DiskSpace,
+				RAM:       item.Recommended.RAM,
 			},
 		}
 
-		sysReqArray = append(sysReqArray, sysReq)
+		systemRequirements = append(systemRequirements, requirementsSet)
 	}
-	return &sysReqArray
+	return &systemRequirements
 }
 
 func convertSystemRequirements(m *[]SystemRequirements) *[]entity.SystemRequirements {
-	sysReqArray := []entity.SystemRequirements{}
-	for _, req := range *m {
-		sysReq := entity.SystemRequirements{
-			Platform: game.NewPlatform(req.Platform),
+	systemRequirements := []entity.SystemRequirements{}
+	for _, item := range *m {
+		requirementsSet := entity.SystemRequirements{
+			Platform: game.NewPlatform(item.Platform),
 			Minimal: &entity.RequirementsSet{
-				CPU:       req.Minimal.CPU,
-				GPU:       req.Minimal.GPU,
-				DiskSpace: req.Minimal.DiskSpace,
-				RAM:       req.Minimal.RAM,
+				CPU:       item.Minimal.CPU,
+				GPU:       item.Minimal.GPU,
+				DiskSpace: item.Minimal.DiskSpace,
+				RAM:       item.Minimal.RAM,
 			},
 			Recommended: &entity.RequirementsSet{
-				CPU:       req.Recommended.CPU,
-				GPU:       req.Recommended.GPU,
-				DiskSpace: req.Recommended.DiskSpace,
-				RAM:       req.Recommended.RAM,
+				CPU:       item.Recommended.CPU,
+				GPU:       item.Recommended.GPU,
+				DiskSpace: item.Recommended.DiskSpace,
+				RAM:       item.Recommended.RAM,
 			},
 		}
 
-		sysReqArray = append(sysReqArray, sysReq)
+		systemRequirements = append(systemRequirements, requirementsSet)
 	}
-	return &sysReqArray
+	return &systemRequirements
 }
 
 type SystemRequirements struct {

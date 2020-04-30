@@ -4,9 +4,11 @@ import (
 	"context"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/game"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/domain/service"
+	errors2 "github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
@@ -52,25 +54,30 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionDat
 	}
 
 	if data.SystemRequirements != nil {
-		var sra []entity.SystemRequirements
-		for _, sr := range *data.SystemRequirements {
-			sra = append(sra, entity.SystemRequirements{
-				Platform: sr.Platform,
+		platforms := map[game.Platform]bool{}
+		var systemRequirements []entity.SystemRequirements
+		for _, item := range *data.SystemRequirements {
+			if platforms[item.Platform] {
+				return nil, errors2.NewService(errors2.ErrValidation, "systemRequirements platform param must be unique")
+			}
+			systemRequirements = append(systemRequirements, entity.SystemRequirements{
+				Platform: item.Platform,
 				Minimal: &entity.RequirementsSet{
-					CPU:       sr.Minimal.CPU,
-					GPU:       sr.Minimal.GPU,
-					DiskSpace: sr.Minimal.DiskSpace,
-					RAM:       sr.Minimal.RAM,
+					CPU:       item.Minimal.CPU,
+					GPU:       item.Minimal.GPU,
+					DiskSpace: item.Minimal.DiskSpace,
+					RAM:       item.Minimal.RAM,
 				},
 				Recommended: &entity.RequirementsSet{
-					CPU:       sr.Recommended.CPU,
-					GPU:       sr.Recommended.GPU,
-					DiskSpace: sr.Recommended.DiskSpace,
-					RAM:       sr.Recommended.RAM,
+					CPU:       item.Recommended.CPU,
+					GPU:       item.Recommended.GPU,
+					DiskSpace: item.Recommended.DiskSpace,
+					RAM:       item.Recommended.RAM,
 				},
 			})
+			platforms[item.Platform] = true
 		}
-		revision.SystemRequirements = sra
+		revision.SystemRequirements = systemRequirements
 	}
 
 	if err := s.Transactor.Transact(ctx, func(tx context.Context) error {
