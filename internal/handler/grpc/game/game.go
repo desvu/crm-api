@@ -99,6 +99,7 @@ func (h Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		result.Features = append(result.Features, &proto.Feature{
 			ID:   uint64(item.ID),
 			Name: item.Name,
+			Icon: item.Icon.String(),
 		})
 	}
 

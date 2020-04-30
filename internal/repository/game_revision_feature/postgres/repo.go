@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 
+	"github.com/pkg/errors"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/env"
 	"github.com/qilin/crm-api/pkg/repository/handler/sql"
@@ -26,7 +27,7 @@ func (r GameRevisionFeatureRepository) Create(ctx context.Context, i *entity.Gam
 
 	_, err = r.h.ModelContext(ctx, model).Insert()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "insert feature failed")
 	}
 
 	*i = *model.Convert()
@@ -44,13 +45,12 @@ func (r GameRevisionFeatureRepository) CreateMultiple(ctx context.Context, items
 		if err != nil {
 			return err
 		}
-
 		models[i] = *m
 	}
 
-	_, err := r.h.ModelContext(ctx, models).Insert()
+	_, err := r.h.ModelContext(ctx, &models).Insert()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "insert features failed")
 	}
 
 	for i := range models {
@@ -68,7 +68,7 @@ func (r GameRevisionFeatureRepository) Delete(ctx context.Context, i *entity.Gam
 
 	_, err = r.h.ModelContext(ctx, model).WherePK().Delete()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "delete feature failed")
 	}
 
 	*i = *model.Convert()
@@ -90,9 +90,9 @@ func (r GameRevisionFeatureRepository) DeleteMultiple(ctx context.Context, items
 		models[i] = *m
 	}
 
-	_, err := r.h.ModelContext(ctx, models).Delete()
+	_, err := r.h.ModelContext(ctx, &models).Delete()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "delete features failed")
 	}
 
 	return nil
@@ -103,7 +103,7 @@ func (r GameRevisionFeatureRepository) FindByGameRevisionID(ctx context.Context,
 
 	err := r.h.ModelContext(ctx, &models).Where("game_revision_id = ?", gameRevisionID).Select()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "load features failed")
 	}
 
 	entities := make([]entity.GameRevisionFeature, len(models))
@@ -119,7 +119,7 @@ func (r GameRevisionFeatureRepository) FindByFeatureID(ctx context.Context, feat
 
 	err := r.h.ModelContext(ctx, &models).Where("feature_id = ?", featureID).Select()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "load features failed")
 	}
 
 	entities := make([]entity.GameRevisionFeature, len(models))
@@ -143,7 +143,7 @@ func (r GameRevisionFeatureRepository) FindByGameRevisionIDAndFeatureIDs(ctx con
 		Select()
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "load features failed")
 	}
 
 	entities := make([]entity.GameRevisionFeature, len(models))
