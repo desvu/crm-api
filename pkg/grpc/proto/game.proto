@@ -25,6 +25,7 @@ message Response {
     repeated Developer developers = 12;
     repeated Genre genres = 13;
     repeated Publisher publishers = 14;
+    repeated SystemRequirements systemRequirements = 15;
 }
 
 message Tag {
@@ -50,4 +51,17 @@ message Genre {
 message Publisher {
     uint64 ID = 1;
     string name = 2;
+}
+
+message SystemRequirements {
+    string platform = 1;
+    RequirementsSet minimal = 2;
+    RequirementsSet recommended = 3;
+}
+
+message RequirementsSet {
+    string CPU = 1;
+    string GPU = 2;
+    uint32 DiskSpace = 3;
+    uint32 RAM = 4;
 }
