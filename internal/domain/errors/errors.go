@@ -31,4 +31,8 @@ var (
 	// Tag service
 	TagNotFound   = errors.NewService(errors.ErrNotFound, "tag not found")
 	InvalidTagIDs = errors.NewService(errors.ErrValidation, "invalid tag ids")
+
+	// StoreFront service
+	StoreFrontNotFound = errors.NewService(errors.ErrNotFound, "storefront not found")
+	StoreFrontIsActive = errors.NewService(errors.ErrNotFound, "storefront is active")
 )

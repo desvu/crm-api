@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
@@ -170,4 +171,22 @@ func (r GameRevisionRepository) FindByIDAndGameID(ctx context.Context, id uint, 
 	}
 
 	return model.Convert(), nil
+}
+
+func (r GameRevisionRepository) IsGamesPublished(ctx context.Context, ids ...string) error {
+	cnt, err := r.h.ModelContext(ctx, (*model)(nil)).
+		Where("game_id in (?)", pg.In(ids)).
+		Where("status = ?", game_revision.StatusPublished.Value()).
+		Group("game_id").
+		Count()
+
+	if err != nil {
+		return errors.NewInternal(err)
+	}
+
+	if cnt != len(ids) {
+		return fmt.Errorf("not all games published or exists")
+	}
+
+	return nil
 }
