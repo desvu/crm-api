@@ -24,6 +24,9 @@ func (c gameConverter) convertGame(g *entity.GameEx) *model.Game {
 		Revision: &model.Revision{
 			ID:           strconv.Itoa(int(g.Revision.ID)),
 			GameID:       g.Revision.GameID,
+			Slug:         g.Slug,
+			Title:        g.Title,
+			Type:         c.convertGameType(g.Type),
 			Summary:      g.Revision.Summary,
 			Description:  g.Revision.Description,
 			License:      g.Revision.License,
