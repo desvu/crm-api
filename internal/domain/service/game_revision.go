@@ -17,6 +17,7 @@ type GameRevisionService interface {
 	GetByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error)
 	GetDraftByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error)
 	GetLastPublishedByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error)
+	IsGamesPublished(ctx context.Context, ids ...string) error
 }
 
 type UpdateGameRevisionData struct {
