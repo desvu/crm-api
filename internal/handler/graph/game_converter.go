@@ -3,6 +3,8 @@ package graph
 import (
 	"strconv"
 
+	"github.com/qilin/crm-api/internal/domain/enum/game_media"
+
 	"github.com/qilin/crm-api/internal/handler/graph/model"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
@@ -133,4 +135,23 @@ func (c gameConverter) convertPlatform(p game.Platform) model.GamePlatform {
 		return model.GamePlatformMacOs
 	}
 	return model.GamePlatformWindows
+}
+
+func (c gameConverter) convertCoverType(coverType game_media.Type) model.GameMediaType {
+	switch coverType {
+	case game_media.TypeWideSlider:
+		return model.GameMediaTypeWideSlider
+	case game_media.TypeHorizontal:
+		return model.GameMediaTypeHorizontal
+	case game_media.TypeHorizontalSmall:
+		return model.GameMediaTypeHorizontalSmall
+	case game_media.TypeVertical:
+		return model.GameMediaTypeVertical
+	case game_media.TypeLargeSingle:
+		return model.GameMediaTypeLargeSingle
+	case game_media.TypeCatalog:
+		return model.GameMediaTypeCatalog
+	default:
+		return model.GameMediaTypeUndefined
+	}
 }

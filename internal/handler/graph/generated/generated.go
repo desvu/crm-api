@@ -60,6 +60,14 @@ type ComplexityRoot struct {
 		Revision func(childComplexity int) int
 	}
 
+	GameMedia struct {
+		GameID     func(childComplexity int) int
+		ID         func(childComplexity int) int
+		RevisionID func(childComplexity int) int
+		Type       func(childComplexity int) int
+		URL        func(childComplexity int) int
+	}
+
 	Genre struct {
 		ID   func(childComplexity int) int
 		Name func(childComplexity int) int
@@ -73,11 +81,12 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateFeature func(childComplexity int, name string, icon string) int
-		CreateGame    func(childComplexity int, input model.CreateGameInput) int
-		DeleteGame    func(childComplexity int, id string) int
-		PublishGame   func(childComplexity int, id string) int
-		UpdateGame    func(childComplexity int, input model.UpdateGameInput) int
+		CreateFeature   func(childComplexity int, name string, icon string) int
+		CreateGame      func(childComplexity int, input model.CreateGameInput) int
+		DeleteGame      func(childComplexity int, id string) int
+		PublishGame     func(childComplexity int, id string) int
+		UpdateGame      func(childComplexity int, input model.UpdateGameInput) int
+		UploadGameMedia func(childComplexity int, input model.UploadGameMediaInput) int
 	}
 
 	Pricing struct {
@@ -144,6 +153,7 @@ type MutationResolver interface {
 	UpdateGame(ctx context.Context, input model.UpdateGameInput) (*model.Game, error)
 	DeleteGame(ctx context.Context, id string) (bool, error)
 	PublishGame(ctx context.Context, id string) (bool, error)
+	UploadGameMedia(ctx context.Context, input model.UploadGameMediaInput) (*model.GameMedia, error)
 	CreateFeature(ctx context.Context, name string, icon string) (*model.Feature, error)
 }
 type QueryResolver interface {
@@ -214,6 +224,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Game.Revision(childComplexity), true
+
+	case "GameMedia.gameID":
+		if e.complexity.GameMedia.GameID == nil {
+			break
+		}
+
+		return e.complexity.GameMedia.GameID(childComplexity), true
+
+	case "GameMedia.id":
+		if e.complexity.GameMedia.ID == nil {
+			break
+		}
+
+		return e.complexity.GameMedia.ID(childComplexity), true
+
+	case "GameMedia.revisionID":
+		if e.complexity.GameMedia.RevisionID == nil {
+			break
+		}
+
+		return e.complexity.GameMedia.RevisionID(childComplexity), true
+
+	case "GameMedia.type":
+		if e.complexity.GameMedia.Type == nil {
+			break
+		}
+
+		return e.complexity.GameMedia.Type(childComplexity), true
+
+	case "GameMedia.URL":
+		if e.complexity.GameMedia.URL == nil {
+			break
+		}
+
+		return e.complexity.GameMedia.URL(childComplexity), true
 
 	case "Genre.id":
 		if e.complexity.Genre.ID == nil {
@@ -316,6 +361,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateGame(childComplexity, args["input"].(model.UpdateGameInput)), true
+
+	case "Mutation.uploadGameMedia":
+		if e.complexity.Mutation.UploadGameMedia == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadGameMedia_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadGameMedia(childComplexity, args["input"].(model.UploadGameMediaInput)), true
 
 	case "Pricing.currency":
 		if e.complexity.Pricing.Currency == nil {
@@ -783,7 +840,26 @@ type Localization {
 #type Video {
 #	url: String!
 #}
-`, BuiltIn: false},
+
+type GameMedia {
+	id: ID!
+	gameID: ID!
+	revisionID: ID
+	type: GameMediaType!
+	URL: String!
+}
+
+enum GameMediaType {
+	undefined
+	wideSlider
+	vertical
+	horizontal
+	horizontalSmall
+	largeSingle
+	catalog
+	screenshot
+	description
+}`, BuiltIn: false},
 	&ast.Source{Name: "internal/handler/graph/graph/inputs.graphql", Input: `# Create game input data
 input CreateGameInput {
 	title: String!
@@ -829,7 +905,12 @@ input LocalizationInput {
 	audio: Boolean!
 	subtitles: Boolean!
 }
-`, BuiltIn: false},
+
+input UploadGameMediaInput {
+	gameID: ID!
+	type: GameMediaType!
+	image: Upload!
+}`, BuiltIn: false},
 	&ast.Source{Name: "internal/handler/graph/graph/root.graphql", Input: `type Query {
 	games: [Game!]!
 	game(id:ID!): Game
@@ -840,11 +921,13 @@ type Mutation {
 	updateGame(input: UpdateGameInput!): Game
 	deleteGame(id:ID!): Boolean!
     publishGame(id:ID!): Boolean!
-    
+
+	uploadGameMedia(input: UploadGameMediaInput!): GameMedia
 	createFeature(name: String!, icon: String!): Feature
 }
 
-scalar Time`, BuiltIn: false},
+scalar Time
+scalar Upload`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -922,6 +1005,20 @@ func (ec *executionContext) field_Mutation_updateGame_args(ctx context.Context, 
 	var arg0 model.UpdateGameInput
 	if tmp, ok := rawArgs["input"]; ok {
 		arg0, err = ec.unmarshalNUpdateGameInput2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐUpdateGameInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_uploadGameMedia_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.UploadGameMediaInput
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNUploadGameMediaInput2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐUploadGameMediaInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1230,6 +1327,173 @@ func (ec *executionContext) _Game_revision(ctx context.Context, field graphql.Co
 	res := resTmp.(*model.Revision)
 	fc.Result = res
 	return ec.marshalNRevision2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐRevision(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _GameMedia_id(ctx context.Context, field graphql.CollectedField, obj *model.GameMedia) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "GameMedia",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _GameMedia_gameID(ctx context.Context, field graphql.CollectedField, obj *model.GameMedia) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "GameMedia",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.GameID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _GameMedia_revisionID(ctx context.Context, field graphql.CollectedField, obj *model.GameMedia) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "GameMedia",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RevisionID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOID2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _GameMedia_type(ctx context.Context, field graphql.CollectedField, obj *model.GameMedia) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "GameMedia",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(model.GameMediaType)
+	fc.Result = res
+	return ec.marshalNGameMediaType2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGameMediaType(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _GameMedia_URL(ctx context.Context, field graphql.CollectedField, obj *model.GameMedia) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "GameMedia",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.URL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Genre_id(ctx context.Context, field graphql.CollectedField, obj *model.Genre) (ret graphql.Marshaler) {
@@ -1592,6 +1856,44 @@ func (ec *executionContext) _Mutation_publishGame(ctx context.Context, field gra
 	res := resTmp.(bool)
 	fc.Result = res
 	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_uploadGameMedia(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_uploadGameMedia_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UploadGameMedia(rctx, args["input"].(model.UploadGameMediaInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.GameMedia)
+	fc.Result = res
+	return ec.marshalOGameMedia2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGameMedia(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createFeature(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -4126,6 +4428,36 @@ func (ec *executionContext) unmarshalInputUpdateGameInput(ctx context.Context, o
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUploadGameMediaInput(ctx context.Context, obj interface{}) (model.UploadGameMediaInput, error) {
+	var it model.UploadGameMediaInput
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "gameID":
+			var err error
+			it.GameID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "type":
+			var err error
+			it.Type, err = ec.unmarshalNGameMediaType2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGameMediaType(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "image":
+			var err error
+			it.Image, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -4221,6 +4553,50 @@ func (ec *executionContext) _Game(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "revision":
 			out.Values[i] = ec._Game_revision(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var gameMediaImplementors = []string{"GameMedia"}
+
+func (ec *executionContext) _GameMedia(ctx context.Context, sel ast.SelectionSet, obj *model.GameMedia) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, gameMediaImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("GameMedia")
+		case "id":
+			out.Values[i] = ec._GameMedia_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "gameID":
+			out.Values[i] = ec._GameMedia_gameID(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "revisionID":
+			out.Values[i] = ec._GameMedia_revisionID(ctx, field, obj)
+		case "type":
+			out.Values[i] = ec._GameMedia_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "URL":
+			out.Values[i] = ec._GameMedia_URL(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -4338,6 +4714,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "uploadGameMedia":
+			out.Values[i] = ec._Mutation_uploadGameMedia(ctx, field)
 		case "createFeature":
 			out.Values[i] = ec._Mutation_createFeature(ctx, field)
 		default:
@@ -5106,6 +5484,15 @@ func (ec *executionContext) marshalNGame2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋi
 	return ec._Game(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNGameMediaType2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGameMediaType(ctx context.Context, v interface{}) (model.GameMediaType, error) {
+	var res model.GameMediaType
+	return res, res.UnmarshalGQL(v)
+}
+
+func (ec *executionContext) marshalNGameMediaType2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGameMediaType(ctx context.Context, sel ast.SelectionSet, v model.GameMediaType) graphql.Marshaler {
+	return v
+}
+
 func (ec *executionContext) unmarshalNGamePlatform2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGamePlatform(ctx context.Context, v interface{}) (model.GamePlatform, error) {
 	var res model.GamePlatform
 	return res, res.UnmarshalGQL(v)
@@ -5471,6 +5858,24 @@ func (ec *executionContext) unmarshalNUpdateGameInput2githubᚗcomᚋqilinᚋcrm
 	return ec.unmarshalInputUpdateGameInput(ctx, v)
 }
 
+func (ec *executionContext) unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, v interface{}) (graphql.Upload, error) {
+	return graphql.UnmarshalUpload(v)
+}
+
+func (ec *executionContext) marshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, sel ast.SelectionSet, v graphql.Upload) graphql.Marshaler {
+	res := graphql.MarshalUpload(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
+}
+
+func (ec *executionContext) unmarshalNUploadGameMediaInput2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐUploadGameMediaInput(ctx context.Context, v interface{}) (model.UploadGameMediaInput, error) {
+	return ec.unmarshalInputUploadGameMediaInput(ctx, v)
+}
+
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
 	return ec.___Directive(ctx, sel, &v)
 }
@@ -5765,6 +6170,17 @@ func (ec *executionContext) marshalOGame2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋi
 	return ec._Game(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalOGameMedia2githubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGameMedia(ctx context.Context, sel ast.SelectionSet, v model.GameMedia) graphql.Marshaler {
+	return ec._GameMedia(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOGameMedia2ᚖgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGameMedia(ctx context.Context, sel ast.SelectionSet, v *model.GameMedia) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._GameMedia(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalOGamePlatform2ᚕgithubᚗcomᚋqilinᚋcrmᚑapiᚋinternalᚋhandlerᚋgraphᚋmodelᚐGamePlatformᚄ(ctx context.Context, v interface{}) ([]model.GamePlatform, error) {
 	var vSlice []interface{}
 	if v != nil {
@@ -5823,6 +6239,29 @@ func (ec *executionContext) marshalOGamePlatform2ᚕgithubᚗcomᚋqilinᚋcrm�
 	}
 	wg.Wait()
 	return ret
+}
+
+func (ec *executionContext) unmarshalOID2string(ctx context.Context, v interface{}) (string, error) {
+	return graphql.UnmarshalID(v)
+}
+
+func (ec *executionContext) marshalOID2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	return graphql.MarshalID(v)
+}
+
+func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalOID2string(ctx, v)
+	return &res, err
+}
+
+func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.SelectionSet, v *string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec.marshalOID2string(ctx, sel, *v)
 }
 
 func (ec *executionContext) unmarshalOInt2int(ctx context.Context, v interface{}) (int, error) {

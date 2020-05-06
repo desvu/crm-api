@@ -2,6 +2,12 @@ package graph
 
 import (
 	"context"
+	"io/ioutil"
+	"strconv"
+
+	"github.com/qilin/crm-api/internal/domain/enum/game_media"
+
+	"github.com/qilin/crm-api/internal/domain/service"
 
 	"github.com/qilin/crm-api/internal/handler/graph/model"
 )
@@ -60,4 +66,28 @@ func (r *mutationResolver) DeleteGame(ctx context.Context, id string) (bool, err
 func (r *mutationResolver) PublishGame(ctx context.Context, id string) (bool, error) {
 	err := r.gameService.Publish(ctx, id)
 	return err == nil, err
+}
+
+func (r *mutationResolver) UploadGameMedia(ctx context.Context, input model.UploadGameMediaInput) (*model.GameMedia, error) {
+	image, err := ioutil.ReadAll(input.Image.File)
+	if err != nil {
+		return nil, err
+	}
+
+	cover, err := r.gameRevisionMediaService.Upload(ctx, &service.UploadGameMediaData{
+		GameID: input.GameID,
+		Type:   game_media.NewTypeByString(input.Type.String()),
+		Image:  image,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.GameMedia{
+		ID:     strconv.Itoa(int(cover.ID)),
+		GameID: cover.GameID,
+		Type:   r.convertCoverType(cover.Type),
+		URL:    cover.FilePath,
+	}, nil
 }

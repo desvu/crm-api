@@ -15,7 +15,6 @@ require (
 	github.com/isayme/go-amqp-reconnect v0.0.0-20180930040740-e71660afb5ca
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/labstack/echo/v4 v4.1.16
-	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/onsi/ginkgo v1.12.0 // indirect
 	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/pkg/errors v0.9.1
@@ -23,6 +22,7 @@ require (
 	github.com/vektah/gqlparser/v2 v2.0.1
 	go.uber.org/fx v1.12.0
 	go.uber.org/zap v1.14.1
+	gocloud.dev v0.19.0
 	golang.org/x/crypto v0.0.0-20200323165209-0ec3e9974c59 // indirect
 	golang.org/x/lint v0.0.0-20191125180803-fdd1cda4f05f // indirect
 	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
