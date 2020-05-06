@@ -11,7 +11,7 @@ func init() {
 			CREATE TABLE storefronts (
 				id         bigserial, 
 				name       text       not null, 
-				created_at timestampt DEFAULT now(),
+				created_at timestamp DEFAULT now(),
 				PRIMARY KEY (id)
 			);
 
@@ -19,12 +19,12 @@ func init() {
 				storefront_id bigint     not null, 
 				id            bigint     not null, 
 				blocks        jsonb      not null,
-				created_at    timestampt DEFAULT now(), 
+				created_at    timestamp DEFAULT now(), 
 				PRIMARY KEY (storefront_id, id)
 			);
 
 			CREATE TABLE storefront_activations (
-				timestamp     timestampt DEFAULT now(),
+				timestamp     timestamp DEFAULT now(),
 				version_id    bigint     not null, 
 				storefront_id bigint     not null, 
 				PRIMARY KEY (timestamp)

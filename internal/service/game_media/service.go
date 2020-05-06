@@ -79,7 +79,7 @@ func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.GameMedia, 
 }
 
 func (s Service) GetByRevision(ctx context.Context, revision *entity.GameRevision) ([]entity.GameMedia, error) {
-	revisionMedia, err := s.GameRevisionMediaRepository.FindByRevisionID(ctx, revision.ID)
+	revisionMedia, err := s.GameRevisionMediaService.GetByRevision(ctx, revision)
 	if err != nil {
 		return nil, err
 	}

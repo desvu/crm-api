@@ -10,10 +10,10 @@ import (
 type ServiceParams struct {
 	fx.In
 
-	GameService                 service.GameService
-	GameMediaRepository         repository.GameMediaRepository
-	GameRevisionMediaRepository repository.GameRevisionMediaRepository
-	Storage                     *storage.Env
+	GameService              service.GameService
+	GameRevisionMediaService service.GameRevisionMediaService
+	GameMediaRepository      repository.GameMediaRepository
+	Storage                  *storage.Env
 }
 
 func New(params ServiceParams) service.GameMediaService {
