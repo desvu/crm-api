@@ -61,6 +61,10 @@ func (i CreateGameInput) Convert() (*service.CreateGameData, error) {
 		data.Genres = &genreIDs
 	}
 
+	if len(i.Localizations) > 0 {
+		data.Localizations = convertLocalizationInputToLocalizationData(i.Localizations)
+	}
+
 	return data, nil
 }
 
@@ -110,6 +114,10 @@ func (i UpdateGameInput) Convert() (*service.UpdateGameData, error) {
 		data.Genres = &genreIDs
 	}
 
+	if len(i.Localizations) > 0 {
+		data.Localizations = convertLocalizationInputToLocalizationData(i.Localizations)
+	}
+
 	return data, nil
 }
 
@@ -124,4 +132,20 @@ func convertGamePlatformsToGamePlatformArrayPointer(items []GamePlatform) *game.
 	}
 
 	return &result
+}
+
+func convertLocalizationInputToLocalizationData(items []*LocalizationInput) *[]service.LocalizationData {
+	var localizations []service.LocalizationData
+	for _, localization := range items {
+		if localization == nil {
+			continue
+		}
+		localizations = append(localizations, service.LocalizationData{
+			Language:  localization.Language,
+			Interface: localization.Interface,
+			Audio:     localization.Audio,
+			Subtitles: localization.Subtitles,
+		})
+	}
+	return &localizations
 }

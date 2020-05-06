@@ -36,17 +36,18 @@ func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*ent
 		}
 
 		updatedRevision, err = s.GameRevisionService.Update(tx, &service.UpdateGameRevisionData{
-			ID:          revision.ID,
-			Summary:     data.Summary,
-			Description: data.Description,
-			License:     data.License,
-			Tags:        data.Tags,
-			Developers:  data.Developers,
-			Publishers:  data.Publishers,
-			Features:    data.Features,
-			Genres:      data.Genres,
-			ReleaseDate: data.ReleaseDate,
-			Platforms:   data.Platforms,
+			ID:            revision.ID,
+			Summary:       data.Summary,
+			Description:   data.Description,
+			License:       data.License,
+			Tags:          data.Tags,
+			Developers:    data.Developers,
+			Publishers:    data.Publishers,
+			Features:      data.Features,
+			Genres:        data.Genres,
+			ReleaseDate:   data.ReleaseDate,
+			Platforms:     data.Platforms,
+			Localizations: data.Localizations,
 		})
 
 		if err != nil {
@@ -89,12 +90,13 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameData) (*ent
 		}
 
 		updatedRevision, err = s.GameRevisionService.Update(ctx, &service.UpdateGameRevisionData{
-			ID:         revision.ID,
-			Tags:       data.Tags,
-			Developers: data.Developers,
-			Publishers: data.Publishers,
-			Features:   data.Features,
-			Genres:     data.Genres,
+			ID:            revision.ID,
+			Tags:          data.Tags,
+			Developers:    data.Developers,
+			Publishers:    data.Publishers,
+			Features:      data.Features,
+			Genres:        data.Genres,
+			Localizations: data.Localizations,
 		})
 
 		if err != nil {

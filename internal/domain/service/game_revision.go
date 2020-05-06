@@ -34,4 +34,6 @@ type UpdateGameRevisionData struct {
 	Publishers *[]uint
 	Features   *[]uint
 	Genres     *[]uint
+
+	Localizations *[]LocalizationData
 }

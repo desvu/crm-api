@@ -37,20 +37,22 @@ type CreateGameData struct {
 	Platforms   *game.PlatformArray
 	ReleaseDate *time.Time
 
-	Tags       *[]uint
-	Developers *[]uint
-	Publishers *[]uint
-	Features   *[]uint
-	Genres     *[]uint
+	Tags          *[]uint
+	Developers    *[]uint
+	Publishers    *[]uint
+	Features      *[]uint
+	Genres        *[]uint
+	Localizations *[]LocalizationData
 }
 
 type UpdateGameData struct {
-	ID         string
-	Title      *string
-	Slug       *string
-	Tags       *[]uint
-	Developers *[]uint
-	Publishers *[]uint
-	Features   *[]uint
-	Genres     *[]uint
+	ID            string
+	Title         *string
+	Slug          *string
+	Tags          *[]uint
+	Developers    *[]uint
+	Publishers    *[]uint
+	Features      *[]uint
+	Genres        *[]uint
+	Localizations *[]LocalizationData
 }

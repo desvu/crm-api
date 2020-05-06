@@ -31,4 +31,8 @@ var (
 	// Tag service
 	TagNotFound   = errors.NewService(errors.ErrNotFound, "tag not found")
 	InvalidTagIDs = errors.NewService(errors.ErrValidation, "invalid tag ids")
+
+	// Localization service
+	LocalizationNotFound   = errors.NewService(errors.ErrNotFound, "localization not found")
+	InvalidLocalizationIDs = errors.NewService(errors.ErrValidation, "invalid localization ids")
 )
