@@ -3,10 +3,11 @@ package postgres
 import (
 	"context"
 
+	"github.com/go-pg/pg/v9"
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/env"
-	"github.com/qilin/crm-api/pkg/errors"
 	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
 
@@ -23,6 +24,9 @@ func New(env *env.Postgres) StorefrontRepository {
 // Create inserts new storefront in db
 func (r StorefrontRepository) Create(ctx context.Context, i *entity.Storefront) error {
 	sf, err := newStorefront(i)
+	if err != nil {
+		return err
+	}
 
 	_, err = r.h.ModelContext(ctx, sf).Insert()
 	if err != nil {
@@ -43,8 +47,11 @@ func (r StorefrontRepository) Create(ctx context.Context, i *entity.Storefront) 
 // Update inserts new storefront version in db
 func (r StorefrontRepository) Update(ctx context.Context, i *entity.Storefront) error {
 	sf, err := newStorefront(i)
+	if err != nil {
+		return err
+	}
 
-	_, err = r.h.ModelContext(ctx, sf).Update()
+	_, err = r.h.ModelContext(ctx, sf).WherePK().Update()
 	if err != nil {
 		return errors.NewInternal(err)
 	}
@@ -86,9 +93,12 @@ func (r StorefrontRepository) GetByID(ctx context.Context, id uint) (*entity.Sto
 	err := r.h.ModelContext(ctx, sf).
 		Column("sf.*").
 		ColumnExpr("((?) = sf.id) as is_active", r.lastActive()).
-		Where("id=?", id).
+		Where("sf.id=?", id).
 		Relation("Version").Order("version desc").
 		First()
+	if err == pg.ErrNoRows {
+		return nil, errors.StoreFrontNotFound
+	}
 	if err != nil {
 		return nil, errors.NewInternal(err)
 	}

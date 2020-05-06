@@ -20,18 +20,33 @@ func (s *Service) Create(ctx context.Context, data *entity.Storefront) (*entity.
 		IsActive: false,
 	}
 
-	if err := s.verifyGames(ctx, front); err != nil {
+	if front.Blocks == nil {
+		front.Blocks = []entity.Block{}
+	}
+
+	if err := s.verifyBlocks(ctx, front); err != nil {
 		return nil, err
 	}
 
 	return front, s.Repository.Create(ctx, front)
 }
 
-func (s *Service) verifyGames(ctx context.Context, data *entity.Storefront) error {
+func (s *Service) verifyBlocks(ctx context.Context, data *entity.Storefront) error {
 	for i := range data.Blocks {
-		if err := s.GameRevisionService.IsGamesPublished(ctx, data.Blocks[i].GameIDs...); err != nil {
-			return pkgerrors.Wrapf(err, "invalid games for block %d", i)
+		if err := s.verifyBlock(ctx, &data.Blocks[i]); err != nil {
+			return pkgerrors.Wrapf(err, "invalid block %d", i)
 		}
+	}
+	return nil
+}
+
+func (s *Service) verifyBlock(ctx context.Context, data *entity.Block) error {
+	if err := data.Validate(); err != nil {
+		return err
+	}
+	err := s.GameRevisionService.IsGamesPublished(ctx, data.GameIDs...)
+	if err != nil {
+		return err
 	}
 	return nil
 }
@@ -46,7 +61,11 @@ func (s *Service) Update(ctx context.Context, data *entity.Storefront) (*entity.
 	front.Blocks = data.Blocks
 	front.Version++
 
-	if err := s.verifyGames(ctx, front); err != nil {
+	if front.Blocks == nil {
+		front.Blocks = []entity.Block{}
+	}
+
+	if err := s.verifyBlocks(ctx, front); err != nil {
 		return nil, err
 	}
 
@@ -77,7 +96,7 @@ func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Storefront, err
 	return s.Repository.GetByID(ctx, id)
 }
 
-func (s *Service) GetAll(ctx context.Context, id uint) ([]*entity.Storefront, error) {
+func (s *Service) GetAll(ctx context.Context) ([]*entity.Storefront, error) {
 	return s.Repository.GetAll(ctx)
 }
 

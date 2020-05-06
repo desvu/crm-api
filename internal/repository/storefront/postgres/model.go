@@ -8,7 +8,7 @@ import (
 
 type storefront struct {
 	ID        uint      `pg:"id"`
-	Name      string    `pg:"name"`
+	Name      string    `pg:"name,use_zero"`
 	IsActive  bool      `pg:"-"`
 	CreatedAt time.Time `pg:"created_at,default:now()"`
 
@@ -24,7 +24,7 @@ type storefront struct {
 type version struct {
 	StorefrontID uint           `pg:"storefront_id,pk,fk"`
 	ID           uint           `pg:"id,use_zero,pk"`
-	Blocks       []entity.Block `pg:"blocks"`
+	Blocks       []entity.Block `pg:"blocks,use_zero"`
 	CreatedAt    time.Time      `pg:"created_at,default:now()"`
 
 	// relations

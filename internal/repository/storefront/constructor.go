@@ -1,4 +1,4 @@
-package publisher
+package storefront
 
 import (
 	"github.com/qilin/crm-api/internal/domain/repository"

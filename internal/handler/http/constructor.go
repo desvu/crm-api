@@ -10,7 +10,8 @@ import (
 type Params struct {
 	fx.In
 
-	Resolver *graph.Resolver
+	Storefronts *StorefrontHandler
+	Resolver    *graph.Resolver
 }
 
 func New(params Params) *echo.Echo {
@@ -25,6 +26,15 @@ func New(params Params) *echo.Echo {
 	// Routes
 	e.GET("/api/graphql/client", echo.WrapHandler(graph.Playground("/api/graphql")))
 	e.POST("/api/graphql", echo.WrapHandler(graph.NewHandler(params.Resolver)))
+
+	api := e.Group("/api/v1")
+	// manage storefront templates
+	api.GET("/storefronts", params.Storefronts.List)
+	api.POST("/storefronts", params.Storefronts.Create)
+	api.GET("/storefronts/:id", params.Storefronts.Get)
+	api.PUT("/storefronts/:id", params.Storefronts.Update)
+	api.POST("/storefronts/:id/activate", params.Storefronts.Activate)
+	api.DELETE("/storefronts/:id", params.Storefronts.Delete)
 
 	return e
 }

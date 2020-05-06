@@ -10,6 +10,7 @@ import (
 
 func New() fx.Option {
 	return fx.Provide(
+		http.NewStorefrontHandler,
 		graph.NewResolver,
 		game.New,
 		grpc.New,

@@ -12,11 +12,11 @@ RUN go mod download
 
 # Copy all files in currend directiry into home directory
 COPY . ./
-RUN CGO_ENABLED=0 GOOS=linux go build -a -o ./bin/crm ./cmd/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o ./bin/crm ./cmd/main.go
 
 FROM alpine:3.9
 RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 WORKDIR /application
-COPY --from=builder /application .
+COPY --from=builder /application/bin .
 
-ENTRYPOINT /application/bin/crm
+ENTRYPOINT /application/crm

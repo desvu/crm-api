@@ -159,5 +159,26 @@ func (s *Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entit
 }
 
 func (s *Service) IsGamesPublished(ctx context.Context, ids ...string) error {
-	return s.GameRevisionRepository.IsGamesPublished(ctx, ids...)
+	if len(ids) == 0 {
+		return nil
+	}
+	res, err := s.GameRevisionRepository.GetPublishedIds(ctx, ids...)
+	if err != nil {
+		return err
+	}
+
+	if len(res) != len(ids) {
+		return errors.GameNotFound // attach game id
+	}
+
+	// sort.Strings(res)
+	// sort.Strings(ids)
+
+	// for i := range ids {
+	// 	if i >= len(res) || res[i] != ids[i] {
+	// 		return errors.GameNotFound // attach game id
+	// 	}
+	// }
+
+	return nil
 }

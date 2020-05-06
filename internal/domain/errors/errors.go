@@ -33,6 +33,13 @@ var (
 	InvalidTagIDs = errors.NewService(errors.ErrValidation, "invalid tag ids")
 
 	// StoreFront service
-	StoreFrontNotFound = errors.NewService(errors.ErrNotFound, "storefront not found")
-	StoreFrontIsActive = errors.NewService(errors.ErrNotFound, "storefront is active")
+	StoreFrontNotFound     = errors.NewService(errors.ErrNotFound, "storefront not found")
+	StoreFrontIsActive     = errors.NewService(errors.ErrValidation, "storefront is active")
+	UnknownBlockType       = errors.NewService(errors.ErrValidation, "unknown block type")
+	InvalidBlockTitle      = errors.NewService(errors.ErrValidation, "invalid block title")
+	InvalidBlockGamesCount = errors.NewService(errors.ErrValidation, "invalid block games count")
 )
+
+func NewInternal(err error) errors.Error {
+	return errors.NewInternal(err)
+}
