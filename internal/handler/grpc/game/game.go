@@ -103,6 +103,15 @@ func (h Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		})
 	}
 
+	for _, item := range game.Revision.Localization {
+		result.Localizations = append(result.Localizations, &proto.Localization{
+			Language:  item.Language,
+			Interface: item.Interface,
+			Audio:     item.Audio,
+			Subtitles: item.Subtitles,
+		})
+	}
+
 	return result, nil
 
 }

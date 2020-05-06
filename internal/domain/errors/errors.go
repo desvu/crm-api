@@ -33,6 +33,6 @@ var (
 	InvalidTagIDs = errors.NewService(errors.ErrValidation, "invalid tag ids")
 
 	// Localization service
-	LocalizationNotFound   = errors.NewService(errors.ErrNotFound, "localization not found")
-	InvalidLocalizationIDs = errors.NewService(errors.ErrValidation, "invalid localization ids")
+	LocalizationNotFound            = errors.NewService(errors.ErrNotFound, "localization not found")
+	InvalidLocalizationLanguageCode = errors.NewService(errors.ErrValidation, "invalid localization language code")
 )

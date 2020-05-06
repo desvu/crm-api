@@ -44,6 +44,7 @@ message Game {
     repeated Developer developers = 12;
     repeated Genre genres = 13;
     repeated Publisher publishers = 14;
+    repeated Localization localizations = 16;
 }
 
 message Tag {
@@ -70,4 +71,11 @@ message Genre {
 message Publisher {
     uint64 ID = 1;
     string name = 2;
+}
+
+message Localization {
+    string Language = 1;
+    bool Interface = 2;
+    bool Audio = 3;
+    bool Subtitles = 4;
 }
