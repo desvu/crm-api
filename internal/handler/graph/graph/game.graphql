@@ -157,3 +157,23 @@ type Localization {
 #type Video {
 #	url: String!
 #}
+
+type GameMedia {
+	id: ID!
+	gameID: ID!
+	revisionID: ID
+	type: GameMediaType!
+	URL: String!
+}
+
+enum GameMediaType {
+	undefined
+	wideSlider
+	vertical
+	horizontal
+	horizontalSmall
+	largeSingle
+	catalog
+	screenshot
+	description
+}

@@ -7,6 +7,8 @@ import (
 	"io"
 	"strconv"
 	"time"
+
+	"github.com/99designs/gqlgen/graphql"
 )
 
 type CreateGameInput struct {
@@ -41,6 +43,14 @@ type Feature struct {
 type Game struct {
 	ID       string    `json:"id"`
 	Revision *Revision `json:"revision"`
+}
+
+type GameMedia struct {
+	ID         string        `json:"id"`
+	GameID     string        `json:"gameID"`
+	RevisionID *string       `json:"revisionID"`
+	Type       GameMediaType `json:"type"`
+	URL        string        `json:"URL"`
 }
 
 type Genre struct {
@@ -131,6 +141,67 @@ type UpdateGameInput struct {
 	Features      []int                `json:"features"`
 	Localizations []*LocalizationInput `json:"localizations"`
 	Platforms     []GamePlatform       `json:"platforms"`
+}
+
+type UploadGameMediaInput struct {
+	GameID string         `json:"gameID"`
+	Type   GameMediaType  `json:"type"`
+	Image  graphql.Upload `json:"image"`
+}
+
+type GameMediaType string
+
+const (
+	GameMediaTypeUndefined       GameMediaType = "undefined"
+	GameMediaTypeWideSlider      GameMediaType = "wideSlider"
+	GameMediaTypeVertical        GameMediaType = "vertical"
+	GameMediaTypeHorizontal      GameMediaType = "horizontal"
+	GameMediaTypeHorizontalSmall GameMediaType = "horizontalSmall"
+	GameMediaTypeLargeSingle     GameMediaType = "largeSingle"
+	GameMediaTypeCatalog         GameMediaType = "catalog"
+	GameMediaTypeScreenshot      GameMediaType = "screenshot"
+	GameMediaTypeDescription     GameMediaType = "description"
+)
+
+var AllGameMediaType = []GameMediaType{
+	GameMediaTypeUndefined,
+	GameMediaTypeWideSlider,
+	GameMediaTypeVertical,
+	GameMediaTypeHorizontal,
+	GameMediaTypeHorizontalSmall,
+	GameMediaTypeLargeSingle,
+	GameMediaTypeCatalog,
+	GameMediaTypeScreenshot,
+	GameMediaTypeDescription,
+}
+
+func (e GameMediaType) IsValid() bool {
+	switch e {
+	case GameMediaTypeUndefined, GameMediaTypeWideSlider, GameMediaTypeVertical, GameMediaTypeHorizontal, GameMediaTypeHorizontalSmall, GameMediaTypeLargeSingle, GameMediaTypeCatalog, GameMediaTypeScreenshot, GameMediaTypeDescription:
+		return true
+	}
+	return false
+}
+
+func (e GameMediaType) String() string {
+	return string(e)
+}
+
+func (e *GameMediaType) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = GameMediaType(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid GameMediaType", str)
+	}
+	return nil
+}
+
+func (e GameMediaType) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
 type GamePlatform string

@@ -8,8 +8,9 @@ import (
 
 type Resolver struct {
 	gameConverter
-	gameService    service.GameService
-	featureService service.FeatureService
+	gameService              service.GameService
+	gameRevisionMediaService service.GameMediaService
+	featureService           service.FeatureService
 }
 
 type Params struct {

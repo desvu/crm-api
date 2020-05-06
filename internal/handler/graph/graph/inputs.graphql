@@ -43,3 +43,9 @@ input LocalizationInput {
 	audio: Boolean!
 	subtitles: Boolean!
 }
+
+input UploadGameMediaInput {
+	gameID: ID!
+	type: GameMediaType!
+	image: Upload!
+}
