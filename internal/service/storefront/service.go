@@ -2,6 +2,7 @@ package storefront
 
 import (
 	"context"
+	"sort"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/qilin/crm-api/internal/domain/entity"
@@ -97,7 +98,22 @@ func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Storefront, err
 }
 
 func (s *Service) GetAll(ctx context.Context) ([]*entity.Storefront, error) {
-	return s.Repository.GetAll(ctx)
+	result, err := s.Repository.GetAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+	sort.Slice(result, func(i, j int) bool {
+		// active first
+		if result[i].IsActive {
+			return true
+		}
+		if result[j].IsActive {
+			return false
+		}
+		// by last update
+		return result[i].UpdatedAt.After(result[j].UpdatedAt)
+	})
+	return result, nil
 }
 
 func (s *Service) FindActive(ctx context.Context) (*entity.Storefront, error) {
