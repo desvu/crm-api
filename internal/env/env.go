@@ -16,12 +16,13 @@ type Env struct {
 	Storage *storage.Env
 }
 
-func New(ctx context.Context, transactor *transactor.Transactor) (*Env, error) {
+func New(transactor *transactor.Transactor) (*Env, error) {
 	cfg, err := config.New()
 	if cfg == nil {
 		return nil, err
 	}
 
+	ctx := context.Background()
 	storageEnv, err := storage.New(ctx, cfg.Storage)
 	if err != nil {
 		return nil, err
