@@ -40,8 +40,8 @@ type CommonGameData struct {
 	Media       *[]uint
 
 	SystemRequirements *[]SystemRequirements
-	Platforms   *game.PlatformArray
-	ReleaseDate *time.Time
+	Platforms          *game.PlatformArray
+	ReleaseDate        *time.Time
 }
 
 type UpsertGameData struct {
