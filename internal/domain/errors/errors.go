@@ -16,7 +16,8 @@ var (
 	InvalidFeatureIDs = errors.NewService(errors.ErrValidation, "invalid feature ids")
 
 	// Game service
-	GameNotFound = errors.NewService(errors.ErrNotFound, "game not found")
+	GameSlugAlreadyExist = errors.NewService(errors.ErrAlreadyExist, "game slug already exist")
+	GameNotFound         = errors.NewService(errors.ErrNotFound, "game not found")
 
 	// GameRevision service
 	GameRevisionNotFound = errors.NewService(errors.ErrNotFound, "game revision not found")

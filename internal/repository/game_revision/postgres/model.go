@@ -19,7 +19,7 @@ type model struct {
 	ReleaseDate        time.Time             `pg:"release_date,notnull,use_zero"`
 	PublishedAt        *time.Time            `pg:"published_at"`
 	SystemRequirements *[]SystemRequirements `pg:"type:jsonb"`
-	//
+
 	tableName struct{} `pg:"game_revisions"`
 }
 
@@ -54,7 +54,7 @@ func newModel(i *entity.GameRevision) (*model, error) {
 }
 
 func newSystemRequirementsModel(i *[]entity.SystemRequirements) *[]SystemRequirements {
-	systemRequirements := []SystemRequirements{}
+	var systemRequirements = make([]SystemRequirements, 0)
 	for _, item := range *i {
 		requirementsSet := SystemRequirements{
 			Platform: item.Platform.Value(),
@@ -78,7 +78,7 @@ func newSystemRequirementsModel(i *[]entity.SystemRequirements) *[]SystemRequire
 }
 
 func convertSystemRequirements(m *[]SystemRequirements) *[]entity.SystemRequirements {
-	systemRequirements := []entity.SystemRequirements{}
+	var systemRequirements = make([]entity.SystemRequirements, 0)
 	for _, item := range *m {
 		requirementsSet := entity.SystemRequirements{
 			Platform: game.NewPlatform(item.Platform),

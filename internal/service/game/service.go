@@ -21,6 +21,10 @@ func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*en
 		return nil, errors.NewValidation(err)
 	}
 
+	if err := s.checkNoExistGameBySlug(ctx, data.Slug); err != nil {
+		return nil, err
+	}
+
 	game := &entity.Game{
 		ID:    uuid.New().String(),
 		Title: data.Title,
@@ -40,18 +44,18 @@ func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*en
 		}
 
 		updatedRevision, err = s.GameRevisionService.Update(tx, &service.UpdateGameRevisionData{
-			ID:          revision.ID,
-			Summary:     data.Summary,
-			Description: data.Description,
-			License:     data.License,
-			Tags:        data.Tags,
-			Developers:  data.Developers,
-			Publishers:  data.Publishers,
-			Features:    data.Features,
-			Genres:      data.Genres,
-			ReleaseDate: data.ReleaseDate,
-			Platforms:   data.Platforms,
-            SystemRequirements: data.SystemRequirements,
+			ID:                 revision.ID,
+			Summary:            data.Summary,
+			Description:        data.Description,
+			License:            data.License,
+			Tags:               data.Tags,
+			Developers:         data.Developers,
+			Publishers:         data.Publishers,
+			Features:           data.Features,
+			Genres:             data.Genres,
+			ReleaseDate:        data.ReleaseDate,
+			Platforms:          data.Platforms,
+			SystemRequirements: data.SystemRequirements,
 		})
 
 		if err != nil {
@@ -86,6 +90,10 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*en
 			game.Title = *data.Title
 		}
 		if data.Slug != nil {
+			if err := s.checkNoExistGameBySlug(ctx, *data.Slug); err != nil {
+				return err
+			}
+
 			game.Slug = *data.Slug
 		}
 
@@ -271,4 +279,17 @@ func (s *Service) GetExByIDAndRevisionID(ctx context.Context, id string, revisio
 		Game:     *game,
 		Revision: revision,
 	}, nil
+}
+
+func (s *Service) checkNoExistGameBySlug(ctx context.Context, slug string) error {
+	gameSlug, err := s.GetBySlug(ctx, slug)
+	if err != nil && err != errors.GameNotFound {
+		return err
+	}
+
+	if gameSlug != nil {
+		return errors.GameSlugAlreadyExist
+	}
+
+	return nil
 }
