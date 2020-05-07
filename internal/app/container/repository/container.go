@@ -16,6 +16,7 @@ import (
 	"github.com/qilin/crm-api/internal/repository/game_store_publish"
 	"github.com/qilin/crm-api/internal/repository/genre"
 	"github.com/qilin/crm-api/internal/repository/publisher"
+	"github.com/qilin/crm-api/internal/repository/storefront"
 	"github.com/qilin/crm-api/internal/repository/tag"
 	"go.uber.org/fx"
 )
@@ -38,5 +39,6 @@ func New() fx.Option {
 		game_media.New,
 		game_revision_media.New,
 		game_store_publish.New,
+		storefront.New,
 	)
 }

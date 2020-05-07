@@ -5,6 +5,8 @@ import (
 
 	"github.com/qilin/crm-api/internal/config"
 	"gocloud.dev/blob"
+	_ "gocloud.dev/blob/fileblob"
+	_ "gocloud.dev/blob/memblob"
 	_ "gocloud.dev/blob/s3blob"
 )
 

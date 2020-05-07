@@ -6,6 +6,7 @@ import (
 	"github.com/qilin/crm-api/internal/env/app"
 
 	"github.com/isayme/go-amqp-reconnect/rabbitmq"
+	"github.com/pkg/errors"
 	"github.com/qilin/crm-api/internal/config"
 	"github.com/qilin/crm-api/internal/env/migration/postgres"
 	"github.com/qilin/crm-api/internal/env/storage"
@@ -38,7 +39,7 @@ func New(transactor *transactor.Transactor) (*Env, error) {
 
 	rabbitEnv, err := newRabbit(cfg.Rabbit)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed connect to rabbitmq")
 	}
 
 	storeEnv, err := newStore(cfg.Store, transactor.GetStore())
@@ -47,7 +48,7 @@ func New(transactor *transactor.Transactor) (*Env, error) {
 	}
 
 	if err = postgres.Migrate(storeEnv.Postgres.Handler.GetConnection()); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "postgres migrations failed")
 	}
 
 	return &Env{

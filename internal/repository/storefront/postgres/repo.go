@@ -3,37 +3,51 @@ package postgres
 import (
 	"context"
 
+	"github.com/go-pg/pg/v9"
 	"github.com/go-pg/pg/v9/orm"
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/env"
-	"github.com/qilin/crm-api/pkg/errors"
 	"github.com/qilin/crm-api/pkg/repository/handler/sql"
+	"github.com/qilin/crm-api/pkg/transactor"
 )
 
 type StorefrontRepository struct {
-	h sql.Handler
+	h  sql.Handler
+	tx *transactor.Transactor
 }
 
-func New(env *env.Postgres) StorefrontRepository {
+func New(env *env.Postgres, tx *transactor.Transactor) StorefrontRepository {
 	return StorefrontRepository{
-		h: env.Handler,
+		h:  env.Handler,
+		tx: tx,
 	}
 }
 
 // Create inserts new storefront in db
 func (r StorefrontRepository) Create(ctx context.Context, i *entity.Storefront) error {
 	sf, err := newStorefront(i)
-
-	_, err = r.h.ModelContext(ctx, sf).Insert()
 	if err != nil {
-		return errors.NewInternal(err)
+		return err
 	}
 
-	sf.Version.StorefrontID = sf.ID
+	err = r.tx.Transact(ctx, func(ctx context.Context) error {
+		_, err = r.h.ModelContext(ctx, sf).Insert()
+		if err != nil {
+			return errors.NewInternal(err)
+		}
 
-	_, err = r.h.ModelContext(ctx, &sf.Version).Insert()
+		sf.Version.StorefrontID = sf.ID
+
+		_, err = r.h.ModelContext(ctx, &sf.Version).Insert()
+		if err != nil {
+			return errors.NewInternal(err)
+		}
+
+		return nil
+	})
 	if err != nil {
-		return errors.NewInternal(err)
+		return err
 	}
 
 	*i = *sf.Convert()
@@ -43,15 +57,25 @@ func (r StorefrontRepository) Create(ctx context.Context, i *entity.Storefront) 
 // Update inserts new storefront version in db
 func (r StorefrontRepository) Update(ctx context.Context, i *entity.Storefront) error {
 	sf, err := newStorefront(i)
-
-	_, err = r.h.ModelContext(ctx, sf).Update()
 	if err != nil {
-		return errors.NewInternal(err)
+		return err
 	}
 
-	_, err = r.h.ModelContext(ctx, &sf.Version).Insert()
+	err = r.tx.Transact(ctx, func(ctx context.Context) error {
+		_, err = r.h.ModelContext(ctx, sf).WherePK().Update()
+		if err != nil {
+			return errors.NewInternal(err)
+		}
+
+		_, err = r.h.ModelContext(ctx, &sf.Version).Insert()
+		if err != nil {
+			return errors.NewInternal(err)
+		}
+
+		return nil
+	})
 	if err != nil {
-		return errors.NewInternal(err)
+		return err
 	}
 
 	*i = *sf.Convert()
@@ -81,14 +105,19 @@ func (r StorefrontRepository) Activate(ctx context.Context, id, version uint) er
 	return nil
 }
 
-func (r StorefrontRepository) GetByID(ctx context.Context, id uint) (*entity.Storefront, error) {
+func (r StorefrontRepository) FindByID(ctx context.Context, id uint) (*entity.Storefront, error) {
 	sf := new(storefront)
 	err := r.h.ModelContext(ctx, sf).
 		Column("sf.*").
 		ColumnExpr("((?) = sf.id) as is_active", r.lastActive()).
-		Where("id=?", id).
+		Where("sf.id=?", id).
 		Relation("Version").Order("version desc").
 		First()
+
+	if err == pg.ErrNoRows {
+		return nil, errors.StoreFrontNotFound
+	}
+
 	if err != nil {
 		return nil, errors.NewInternal(err)
 	}
@@ -96,7 +125,7 @@ func (r StorefrontRepository) GetByID(ctx context.Context, id uint) (*entity.Sto
 	return sf.Convert(), nil
 }
 
-func (r StorefrontRepository) GetByIDAndVersion(ctx context.Context, id, version uint) (*entity.Storefront, error) {
+func (r StorefrontRepository) FindByIDAndVersion(ctx context.Context, id, version uint) (*entity.Storefront, error) {
 	sf := new(storefront)
 	err := r.h.ModelContext(ctx, sf).
 		Column("sf.*").
@@ -105,6 +134,9 @@ func (r StorefrontRepository) GetByIDAndVersion(ctx context.Context, id, version
 			return q.JoinOn("id = ?", version), nil
 		}).
 		First()
+	if err == pg.ErrNoRows {
+		return nil, errors.StoreFrontNotFound
+	}
 	if err != nil {
 		return nil, errors.NewInternal(err)
 	}
@@ -112,7 +144,7 @@ func (r StorefrontRepository) GetByIDAndVersion(ctx context.Context, id, version
 	return sf.Convert(), nil
 }
 
-func (r StorefrontRepository) GetAll(ctx context.Context) ([]*entity.Storefront, error) {
+func (r StorefrontRepository) FindAll(ctx context.Context) ([]*entity.Storefront, error) {
 	var sf []storefront
 	err := r.h.ModelContext(ctx, &sf).
 		DistinctOn("sf.id").Order("sf.id").
@@ -120,6 +152,7 @@ func (r StorefrontRepository) GetAll(ctx context.Context) ([]*entity.Storefront,
 		ColumnExpr("((?) = sf.id) as is_active", r.lastActive()).
 		Relation("Version").Order("version desc").
 		Select()
+
 	if err != nil {
 		return nil, errors.NewInternal(err)
 	}
@@ -143,6 +176,11 @@ func (r StorefrontRepository) FindActive(ctx context.Context) (*entity.Storefron
 		Where("id=(?)", r.lastActive()).
 		Relation("Version").Order("version desc").
 		First()
+
+	if err == pg.ErrNoRows {
+		return nil, errors.StoreFrontNotFound
+	}
+
 	if err != nil {
 		return nil, errors.NewInternal(err)
 	}
