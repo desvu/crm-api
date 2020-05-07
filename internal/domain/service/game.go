@@ -39,8 +39,9 @@ type CommonGameData struct {
 	Genres      *[]uint
 	Media       *[]uint
 
-	Platforms   *game.PlatformArray
-	ReleaseDate *time.Time
+	SystemRequirements *[]SystemRequirements
+	Platforms          *game.PlatformArray
+	ReleaseDate        *time.Time
 }
 
 type UpsertGameData struct {
@@ -72,4 +73,17 @@ type UpdateGameData struct {
 	Type  *game.Type
 
 	CommonGameData
+}
+
+type SystemRequirements struct {
+	Platform    game.Platform
+	Minimal     *RequirementsSet
+	Recommended *RequirementsSet
+}
+
+type RequirementsSet struct {
+	CPU       string
+	GPU       string
+	DiskSpace uint
+	RAM       uint
 }

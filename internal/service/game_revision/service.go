@@ -4,9 +4,11 @@ import (
 	"context"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/game"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/domain/service"
+	errors2 "github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
@@ -45,6 +47,33 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionDa
 
 	if data.Platforms != nil {
 		revision.Platforms = *data.Platforms
+	}
+
+	if data.SystemRequirements != nil {
+		platforms := map[game.Platform]bool{}
+		var systemRequirements []entity.SystemRequirements
+		for _, item := range *data.SystemRequirements {
+			if platforms[item.Platform] {
+				return nil, errors2.NewService(errors2.ErrValidation, "systemRequirements platform param must be unique")
+			}
+			systemRequirements = append(systemRequirements, entity.SystemRequirements{
+				Platform: item.Platform,
+				Minimal: &entity.RequirementsSet{
+					CPU:       item.Minimal.CPU,
+					GPU:       item.Minimal.GPU,
+					DiskSpace: item.Minimal.DiskSpace,
+					RAM:       item.Minimal.RAM,
+				},
+				Recommended: &entity.RequirementsSet{
+					CPU:       item.Recommended.CPU,
+					GPU:       item.Recommended.GPU,
+					DiskSpace: item.Recommended.DiskSpace,
+					RAM:       item.Recommended.RAM,
+				},
+			})
+			platforms[item.Platform] = true
+		}
+		revision.SystemRequirements = systemRequirements
 	}
 
 	if err := s.Transactor.Transact(ctx, func(tx context.Context) error {
@@ -145,8 +174,9 @@ func (s *Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entit
 	}
 
 	newRevision := &entity.GameRevision{
-		GameID: game.ID,
-		Status: game_revision.StatusDraft,
+		GameID:             game.ID,
+		Status:             game_revision.StatusDraft,
+		SystemRequirements: []entity.SystemRequirements{},
 	}
 
 	if err = s.GameRevisionRepository.Create(ctx, newRevision); err != nil {

@@ -103,6 +103,30 @@ func (h Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		})
 	}
 
+	for _, item := range game.Revision.SystemRequirements {
+		r := &proto.SystemRequirements{
+			Platform: item.Platform.String(),
+		}
+		if item.Minimal != nil {
+			r.Minimal = &proto.RequirementsSet{
+				CPU:       item.Minimal.CPU,
+				GPU:       item.Minimal.GPU,
+				DiskSpace: uint32(item.Minimal.DiskSpace),
+				RAM:       uint32(item.Minimal.RAM),
+			}
+		}
+		if item.Recommended != nil {
+			r.Recommended = &proto.RequirementsSet{
+				CPU:       item.Recommended.CPU,
+				GPU:       item.Recommended.GPU,
+				DiskSpace: uint32(item.Recommended.DiskSpace),
+				RAM:       uint32(item.Recommended.RAM),
+			}
+		}
+
+		result.SystemRequirements = append(result.SystemRequirements, r)
+	}
+
 	return result, nil
 
 }
