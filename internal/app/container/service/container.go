@@ -4,7 +4,9 @@ import (
 	"github.com/qilin/crm-api/internal/service/developer"
 	"github.com/qilin/crm-api/internal/service/feature"
 	"github.com/qilin/crm-api/internal/service/game"
+	"github.com/qilin/crm-api/internal/service/game_media"
 	"github.com/qilin/crm-api/internal/service/game_revision"
+	"github.com/qilin/crm-api/internal/service/game_revision_media"
 	"github.com/qilin/crm-api/internal/service/game_store_publish"
 	"github.com/qilin/crm-api/internal/service/genre"
 	"github.com/qilin/crm-api/internal/service/publisher"
@@ -21,6 +23,8 @@ func New() fx.Option {
 		publisher.New,
 		tag.New,
 		game_revision.New,
+		game_media.New,
 		game_store_publish.New,
+		game_revision_media.New,
 	)
 }

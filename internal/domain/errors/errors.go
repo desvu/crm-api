@@ -2,6 +2,10 @@ package errors
 
 import "github.com/qilin/crm-api/pkg/errors"
 
+func NewValidation(err error) error {
+	return errors.NewService(errors.ErrValidation, err.Error())
+}
+
 var (
 	// Developer service
 	DeveloperNotFound   = errors.NewService(errors.ErrNotFound, "developer not found")
@@ -31,4 +35,8 @@ var (
 	// Tag service
 	TagNotFound   = errors.NewService(errors.ErrNotFound, "tag not found")
 	InvalidTagIDs = errors.NewService(errors.ErrValidation, "invalid tag ids")
+
+	// StoreFront service
+	StoreFrontNotFound = errors.NewService(errors.ErrNotFound, "storefront not found")
+	StoreFrontIsActive = errors.NewService(errors.ErrNotFound, "storefront is active")
 )
