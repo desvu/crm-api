@@ -116,6 +116,6 @@ func (s *Service) GetAll(ctx context.Context) ([]*entity.Storefront, error) {
 	return result, nil
 }
 
-func (s *Service) FindActive(ctx context.Context) (*entity.Storefront, error) {
+func (s *Service) GetActive(ctx context.Context) (*entity.Storefront, error) {
 	return s.Repository.FindActive(ctx)
 }

@@ -3,16 +3,16 @@ package http
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/qilin/crm-api/internal/handler/http/storefront"
 	"github.com/qilin/crm-api/internal/handler/http/game"
 	"github.com/qilin/crm-api/internal/handler/http/game_media"
+	"github.com/qilin/crm-api/internal/handler/http/storefront"
 	"go.uber.org/fx"
 )
 
 type Params struct {
 	fx.In
 
-	Storefronts *storefront.Handler
+	Storefronts      *storefront.Handler
 	GameMediaHandler game_media.Handler
 	GameHandler      game.Handler
 }

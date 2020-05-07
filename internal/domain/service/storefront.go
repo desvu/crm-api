@@ -15,5 +15,5 @@ type StorefrontService interface {
 
 	GetByID(ctx context.Context, id uint) (*entity.Storefront, error)
 	GetAll(ctx context.Context) ([]*entity.Storefront, error)
-	FindActive(ctx context.Context) (*entity.Storefront, error)
+	GetActive(ctx context.Context) (*entity.Storefront, error)
 }
