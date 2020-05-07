@@ -73,6 +73,10 @@ func (r GameMediaRepository) FindByID(ctx context.Context, id uint) (*entity.Gam
 }
 
 func (r GameMediaRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.GameMedia, error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+
 	var models []model
 
 	err := r.h.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
