@@ -17,5 +17,5 @@ type GameRevisionRepository interface {
 	FindByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevision, error)
 	FindDraftByGameID(ctx context.Context, gameID string) (*entity.GameRevision, error)
 	FindLastPublishedByGameID(ctx context.Context, gameID string) (*entity.GameRevision, error)
-	GetPublishedIds(ctx context.Context, ids ...string) ([]string, error)
+	FindPublishedByGameIDs(ctx context.Context, ids ...string) ([]string, error)
 }

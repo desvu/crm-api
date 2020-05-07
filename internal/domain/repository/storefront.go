@@ -12,9 +12,9 @@ type StoreFrontRepository interface {
 	Delete(ctx context.Context, id uint) error
 	Activate(ctx context.Context, id, version uint) error
 
-	GetByID(ctx context.Context, id uint) (*entity.Storefront, error)
-	GetByIDAndVersion(ctx context.Context, id, version uint) (*entity.Storefront, error)
-	GetAll(ctx context.Context) ([]*entity.Storefront, error)
+	FindByID(ctx context.Context, id uint) (*entity.Storefront, error)
+	FindByIDAndVersion(ctx context.Context, id, version uint) (*entity.Storefront, error)
+	FindAll(ctx context.Context) ([]*entity.Storefront, error)
 
 	FindActive(ctx context.Context) (*entity.Storefront, error)
 }

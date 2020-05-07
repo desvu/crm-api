@@ -4,13 +4,14 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/qilin/crm-api/internal/handler/graph"
+	"github.com/qilin/crm-api/internal/handler/http/storefront"
 	"go.uber.org/fx"
 )
 
 type Params struct {
 	fx.In
 
-	Storefronts *StorefrontHandler
+	Storefronts *storefront.Handler
 	Resolver    *graph.Resolver
 }
 

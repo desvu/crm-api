@@ -38,6 +38,7 @@ services:
       - QILIN_STORE_POSTGRES_PASSWORD=password
       - QILIN_STORE_POSTGRES_DATABASE=crm
       - QILIN_RABBIT_URI=amqp://guest:guest@rabbit:5672
+      - QILIN_STORAGE_BUCKET=mem://
 
 volumes:
   crm-postgres:

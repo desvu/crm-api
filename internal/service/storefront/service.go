@@ -94,11 +94,11 @@ func (s *Service) Activate(ctx context.Context, id uint) error {
 }
 
 func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Storefront, error) {
-	return s.Repository.GetByID(ctx, id)
+	return s.Repository.FindByID(ctx, id)
 }
 
 func (s *Service) GetAll(ctx context.Context) ([]*entity.Storefront, error) {
-	result, err := s.Repository.GetAll(ctx)
+	result, err := s.Repository.FindAll(ctx)
 	if err != nil {
 		return nil, err
 	}

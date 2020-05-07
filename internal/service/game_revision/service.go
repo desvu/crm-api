@@ -162,7 +162,7 @@ func (s *Service) IsGamesPublished(ctx context.Context, ids ...string) error {
 	if len(ids) == 0 {
 		return nil
 	}
-	res, err := s.GameRevisionRepository.GetPublishedIds(ctx, ids...)
+	res, err := s.GameRevisionRepository.FindPublishedByGameIDs(ctx, ids...)
 	if err != nil {
 		return err
 	}
