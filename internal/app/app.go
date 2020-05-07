@@ -3,6 +3,8 @@ package app
 import (
 	"context"
 
+	"github.com/qilin/crm-api/pkg/errors"
+
 	"github.com/labstack/echo/v4"
 	"github.com/qilin/crm-api/internal/app/container/env"
 	"github.com/qilin/crm-api/internal/app/container/event"
@@ -59,7 +61,7 @@ func (app *App) Init() error {
 
 	err := fx.New(app.fxOptions).Start(context.Background())
 	if err != nil {
-		return err
+		return errors.WrapFxError(err)
 	}
 
 	return nil

@@ -2,6 +2,10 @@ package errors
 
 import "github.com/qilin/crm-api/pkg/errors"
 
+func NewValidation(err error) error {
+	return errors.NewService(errors.ErrValidation, err.Error())
+}
+
 var (
 	// Developer service
 	DeveloperNotFound   = errors.NewService(errors.ErrNotFound, "developer not found")

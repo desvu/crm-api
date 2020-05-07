@@ -32,6 +32,18 @@ func (r GameMediaRepository) Create(ctx context.Context, i *entity.GameMedia) er
 	return nil
 }
 
+func (r GameMediaRepository) Update(ctx context.Context, i *entity.GameMedia) error {
+	model := newModel(i)
+
+	_, err := r.h.ModelContext(ctx, model).WherePK().Update()
+	if err != nil {
+		return errors.NewInternal(err)
+	}
+
+	*i = *model.Convert()
+	return nil
+}
+
 func (r GameMediaRepository) Delete(ctx context.Context, i *entity.GameMedia) error {
 	model := newModel(i)
 

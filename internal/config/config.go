@@ -5,9 +5,14 @@ import (
 )
 
 type Config struct {
+	App     AppConf
 	Store   Store
 	Rabbit  RabbitConf
 	Storage StorageConf
+}
+
+type AppConf struct {
+	StorageURL string `envconfig:"storage_url"`
 }
 
 type Store struct {

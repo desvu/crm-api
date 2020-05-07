@@ -31,6 +31,24 @@ func NewTypeByString(v string) Type {
 	}
 }
 
+func NewTypePointerByStringPointer(v *string) *Type {
+	if v == nil {
+		return nil
+	}
+
+	var t = TypeUndefined
+	switch *v {
+	case "web":
+		t = TypeWeb
+		return &t
+	case "desktop":
+		t = TypeDesktop
+		return &t
+	default:
+		return &t
+	}
+}
+
 func (t Type) Value() uint8 {
 	return uint8(t)
 }
