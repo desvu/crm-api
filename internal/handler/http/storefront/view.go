@@ -7,6 +7,10 @@ import (
 	"github.com/qilin/crm-api/internal/domain/entity"
 )
 
+//swagger:model StorefrontList
+type storefrontList []storefrontInfo
+
+//swagger:model StorefrontInfo
 type storefrontInfo struct {
 	ID        string    `json:"id"`
 	Name      string    `json:"name"`
@@ -16,6 +20,7 @@ type storefrontInfo struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+//swagger:model Storefront
 type storefront struct {
 	storefrontInfo
 	Blocks []entity.Block `json:"blocks"`
@@ -39,7 +44,7 @@ func (h *Handler) viewInfo(sf *entity.Storefront) storefrontInfo {
 	}
 }
 
-func (h *Handler) viewList(sf []*entity.Storefront) []storefrontInfo {
+func (h *Handler) viewList(sf []*entity.Storefront) storefrontList {
 	var res = make([]storefrontInfo, len(sf))
 	for i := range sf {
 		res[i] = h.viewInfo(sf[i])

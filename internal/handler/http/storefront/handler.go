@@ -17,6 +17,14 @@ type requestData struct {
 	Blocks []entity.Block `json:"blocks"`
 }
 
+// swagger:route GET /storefronts storefronts listStorefronts
+//
+// Lists all storefront page templates
+//
+// This endpoint lists all storefront page template
+//
+//     Responses:
+//       200: StorefrontList
 func (h *Handler) List(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
 
@@ -28,6 +36,14 @@ func (h *Handler) List(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, h.viewList(res))
 }
 
+// swagger:route POST /storefronts storefronts createStorefronts
+//
+// Creates new storefront page template
+//
+// This endpoint creates new storefront page template
+//
+//     Responses:
+//       200: Storefront
 func (h *Handler) Create(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
 
@@ -55,6 +71,14 @@ func (h *Handler) Create(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, h.view(res))
 }
 
+// swagger:route PUT /storefronts/:id storefronts updateStorefronts
+//
+// Updates storefront page template
+//
+// This endpoint updates storefront page template
+//
+//     Responses:
+//       200: Storefront
 func (h *Handler) Update(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
@@ -87,6 +111,14 @@ func (h *Handler) Update(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, h.view(res))
 }
 
+// swagger:route DELETE /storefronts/:id storefronts deleteStorefronts
+//
+// Removes storefront page template
+//
+// This endpoint removes storefront page template
+//
+//     Responses:
+//       204:
 func (h *Handler) Delete(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
@@ -105,6 +137,14 @@ func (h *Handler) Delete(ctx echo.Context) error {
 	return ctx.NoContent(http.StatusNoContent)
 }
 
+// swagger:route GET /storefronts/:id storefronts getStorefront
+//
+// Finds storefront page template
+//
+// This endpoint finds storefront page template
+//
+//     Responses:
+//       200: Storefront
 func (h *Handler) Get(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
@@ -123,6 +163,14 @@ func (h *Handler) Get(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, h.view(res))
 }
 
+// swagger:route POST /storefronts/:id/activate storefronts activateStorefront
+//
+// Activates storefront page template
+//
+// This endpoint activates storefront page template
+//
+//     Responses:
+//       204:
 func (h *Handler) Activate(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)

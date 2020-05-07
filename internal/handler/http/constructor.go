@@ -1,3 +1,19 @@
+// Package classification awesome.
+//
+// Documentation of Qilin CRM api.
+//
+//     Schemes: http
+//     BasePath: /api/v1
+//     Version: 1
+//     Host: localhost:7002
+//
+//     Consumes:
+//     - application/json
+//
+//     Produces:
+//     - application/json
+//
+// swagger:meta
 package http
 
 import (
