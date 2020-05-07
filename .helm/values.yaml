@@ -34,6 +34,10 @@ backend:
     - QILIN_STORE_POSTGRES_PASSWORD
     - QILIN_STORE_POSTGRES_DATABASE
     - QILIN_RABBIT_URI
+    - QILIN_STORAGE_BUCKET
+    - AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY
+    - QILIN_APP_STORAGE_URL
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

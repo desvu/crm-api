@@ -3,8 +3,9 @@ package http
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/qilin/crm-api/internal/handler/graph"
 	"github.com/qilin/crm-api/internal/handler/http/storefront"
+	"github.com/qilin/crm-api/internal/handler/http/game"
+	"github.com/qilin/crm-api/internal/handler/http/game_media"
 	"go.uber.org/fx"
 )
 
@@ -12,7 +13,8 @@ type Params struct {
 	fx.In
 
 	Storefronts *storefront.Handler
-	Resolver    *graph.Resolver
+	GameMediaHandler game_media.Handler
+	GameHandler      game.Handler
 }
 
 func New(params Params) *echo.Echo {
@@ -24,11 +26,16 @@ func New(params Params) *echo.Echo {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	// Routes
-	e.GET("/api/graphql/client", echo.WrapHandler(graph.Playground("/api/graphql")))
-	e.POST("/api/graphql", echo.WrapHandler(graph.NewHandler(params.Resolver)))
-
 	api := e.Group("/api/v1")
+
+	// manage games
+	api.POST("/games", params.GameHandler.Upsert)
+	api.GET("/games/:game_id", params.GameHandler.GetByID)
+
+	// media files upload
+	api.POST("/games/:game_id/media", params.GameMediaHandler.Create)
+	api.PUT("/games/:game_id/media/:game_media_id", params.GameMediaHandler.Upload)
+
 	// manage storefront templates
 	api.GET("/storefronts", params.Storefronts.List)
 	api.POST("/storefronts", params.Storefronts.Create)

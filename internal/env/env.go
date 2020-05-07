@@ -3,6 +3,8 @@ package env
 import (
 	"context"
 
+	"github.com/qilin/crm-api/internal/env/app"
+
 	"github.com/isayme/go-amqp-reconnect/rabbitmq"
 	"github.com/pkg/errors"
 	"github.com/qilin/crm-api/internal/config"
@@ -12,6 +14,7 @@ import (
 )
 
 type Env struct {
+	App     *app.App
 	Store   *Store
 	Rabbit  *rabbitmq.Connection
 	Storage *storage.Env
@@ -20,6 +23,11 @@ type Env struct {
 func New(transactor *transactor.Transactor) (*Env, error) {
 	cfg, err := config.New()
 	if cfg == nil {
+		return nil, err
+	}
+
+	appEnv, err := app.New(cfg)
+	if err != nil {
 		return nil, err
 	}
 
@@ -44,6 +52,7 @@ func New(transactor *transactor.Transactor) (*Env, error) {
 	}
 
 	return &Env{
+		App:     appEnv,
 		Store:   storeEnv,
 		Rabbit:  rabbitEnv,
 		Storage: storageEnv,

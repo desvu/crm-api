@@ -11,6 +11,7 @@ import (
 var ErrGameMediaNotFound = errors.NewService(errors.ErrNotFound, "game media not found")
 
 type GameMediaService interface {
+	Create(ctx context.Context, data *CreateGameMediaData) (*entity.GameMedia, error)
 	Upload(ctx context.Context, data *UploadGameMediaData) (*entity.GameMedia, error)
 	Delete(ctx context.Context, id uint) error
 
@@ -19,9 +20,15 @@ type GameMediaService interface {
 	GetByRevision(ctx context.Context, revision *entity.GameRevision) ([]entity.GameMedia, error)
 }
 
+type CreateGameMediaData struct {
+	GameID    string
+	Type      game_media.Type
+	Extension string
+}
+
 type UploadGameMediaData struct {
+	ID     uint
 	GameID string
-	Type   game_media.Type
 	Image  []byte
 }
 

@@ -7,9 +7,10 @@ import (
 )
 
 type GameMedia struct {
-	ID        uint
-	GameID    string
-	Type      game_media.Type
-	FilePath  string
-	CreatedAt time.Time
+	ID         uint
+	GameID     string
+	Type       game_media.Type
+	FilePath   string
+	IsUploaded bool
+	CreatedAt  time.Time
 }

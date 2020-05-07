@@ -17,6 +17,10 @@ type Service struct {
 }
 
 func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*entity.GameEx, error) {
+	if err := data.Validate(); err != nil {
+		return nil, errors.NewValidation(err)
+	}
+
 	game := &entity.Game{
 		ID:    uuid.New().String(),
 		Title: data.Title,
@@ -47,6 +51,7 @@ func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*en
 			Genres:      data.Genres,
 			ReleaseDate: data.ReleaseDate,
 			Platforms:   data.Platforms,
+            SystemRequirements: data.SystemRequirements,
 		})
 
 		if err != nil {
@@ -89,12 +94,13 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*en
 		}
 
 		updatedRevision, err = s.GameRevisionService.Update(ctx, &service.UpdateGameRevisionData{
-			ID:         revision.ID,
-			Tags:       data.Tags,
-			Developers: data.Developers,
-			Publishers: data.Publishers,
-			Features:   data.Features,
-			Genres:     data.Genres,
+			ID:                 revision.ID,
+			Tags:               data.Tags,
+			Developers:         data.Developers,
+			Publishers:         data.Publishers,
+			Features:           data.Features,
+			Genres:             data.Genres,
+			SystemRequirements: data.SystemRequirements,
 		})
 
 		if err != nil {
@@ -110,6 +116,36 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*en
 		Game:     *game,
 		Revision: updatedRevision,
 	}, nil
+}
+
+func (s *Service) Upsert(ctx context.Context, data *service.UpsertGameData) (*entity.GameEx, error) {
+	if data.ID != nil {
+		return s.Update(ctx, &service.UpdateGameData{
+			ID:             *data.ID,
+			Title:          data.Title,
+			Slug:           data.Slug,
+			Type:           data.Type,
+			CommonGameData: data.CommonGameData,
+		})
+	}
+
+	d := &service.CreateGameData{
+		CommonGameData: data.CommonGameData,
+	}
+
+	if data.Title != nil {
+		d.Title = *data.Title
+	}
+
+	if data.Slug != nil {
+		d.Slug = *data.Slug
+	}
+
+	if data.Type != nil {
+		d.Type = *data.Type
+	}
+
+	return s.Create(ctx, d)
 }
 
 func (s *Service) Delete(ctx context.Context, id string) error {

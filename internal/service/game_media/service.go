@@ -13,15 +13,35 @@ type Service struct {
 	ServiceParams
 }
 
-func (s Service) Upload(ctx context.Context, data *service.UploadGameMediaData) (*entity.GameMedia, error) {
+func (s Service) Create(ctx context.Context, data *service.CreateGameMediaData) (*entity.GameMedia, error) {
 	game, err := s.GameService.GetByID(ctx, data.GameID)
 	if err != nil {
 		return nil, err
 	}
 
-	fileName := strings.Join([]string{uuid.New().String(), "png"}, ".")
-	filePath := strings.Join([]string{"game", game.ID, "media", fileName}, "/")
-	w, err := s.Storage.Bucket.NewWriter(ctx, filePath, nil)
+	fileName := strings.Join([]string{uuid.New().String(), data.Extension}, ".")
+	filePath := strings.Join([]string{"/", "game", game.ID, "media", fileName}, "/")
+
+	gameMedia := &entity.GameMedia{
+		GameID:   game.ID,
+		Type:     data.Type,
+		FilePath: filePath,
+	}
+
+	if err = s.GameMediaRepository.Create(ctx, gameMedia); err != nil {
+		return nil, err
+	}
+
+	return gameMedia, nil
+}
+
+func (s Service) Upload(ctx context.Context, data *service.UploadGameMediaData) (*entity.GameMedia, error) {
+	gameMedia, err := s.GetByID(ctx, data.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	w, err := s.Env.Storage.Bucket.NewWriter(ctx, gameMedia.FilePath, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -35,17 +55,12 @@ func (s Service) Upload(ctx context.Context, data *service.UploadGameMediaData) 
 		return nil, err
 	}
 
-	cover := &entity.GameMedia{
-		GameID:   game.ID,
-		Type:     data.Type,
-		FilePath: filePath,
-	}
-
-	if err = s.GameMediaRepository.Create(ctx, cover); err != nil {
+	gameMedia.IsUploaded = true
+	if err = s.GameMediaRepository.Update(ctx, gameMedia); err != nil {
 		return nil, err
 	}
 
-	return cover, nil
+	return gameMedia, nil
 }
 
 func (s Service) Delete(ctx context.Context, id uint) error {
@@ -54,7 +69,7 @@ func (s Service) Delete(ctx context.Context, id uint) error {
 		return err
 	}
 
-	if err := s.Storage.Bucket.Delete(ctx, cover.FilePath); err != nil {
+	if err := s.Env.Storage.Bucket.Delete(ctx, cover.FilePath); err != nil {
 		return err
 	}
 

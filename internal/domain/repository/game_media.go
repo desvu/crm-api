@@ -8,6 +8,7 @@ import (
 
 type GameMediaRepository interface {
 	Create(ctx context.Context, i *entity.GameMedia) error
+	Update(ctx context.Context, i *entity.GameMedia) error
 	Delete(ctx context.Context, i *entity.GameMedia) error
 
 	FindByID(ctx context.Context, id uint) (*entity.GameMedia, error)

@@ -79,34 +79,64 @@ func (mr *MockGameServiceMockRecorder) GetByID(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByID", reflect.TypeOf((*MockGameService)(nil).GetByID), arg0, arg1)
 }
 
-// GetExistByID mocks base method
-func (m *MockGameService) GetExistByID(arg0 context.Context, arg1 string) (*entity.Game, error) {
+// GetExByID mocks base method
+func (m *MockGameService) GetExByID(arg0 context.Context, arg1 string) (*entity.GameEx, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetExistByID", arg0, arg1)
-	ret0, _ := ret[0].(*entity.Game)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetExistByID indicates an expected call of GetExistByID
-func (mr *MockGameServiceMockRecorder) GetExistByID(arg0, arg1 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExistByID", reflect.TypeOf((*MockGameService)(nil).GetExistByID), arg0, arg1)
-}
-
-// GetExistExByID mocks base method
-func (m *MockGameService) GetExistExByID(arg0 context.Context, arg1 string) (*entity.GameEx, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetExistExByID", arg0, arg1)
+	ret := m.ctrl.Call(m, "GetExByID", arg0, arg1)
 	ret0, _ := ret[0].(*entity.GameEx)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetExistExByID indicates an expected call of GetExistExByID
-func (mr *MockGameServiceMockRecorder) GetExistExByID(arg0, arg1 interface{}) *gomock.Call {
+// GetExByID indicates an expected call of GetExByID
+func (mr *MockGameServiceMockRecorder) GetExByID(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExistExByID", reflect.TypeOf((*MockGameService)(nil).GetExistExByID), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExByID", reflect.TypeOf((*MockGameService)(nil).GetExByID), arg0, arg1)
+}
+
+// GetExByIDAndRevisionID mocks base method
+func (m *MockGameService) GetExByIDAndRevisionID(arg0 context.Context, arg1 string, arg2 uint) (*entity.GameEx, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetExByIDAndRevisionID", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*entity.GameEx)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetExByIDAndRevisionID indicates an expected call of GetExByIDAndRevisionID
+func (mr *MockGameServiceMockRecorder) GetExByIDAndRevisionID(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExByIDAndRevisionID", reflect.TypeOf((*MockGameService)(nil).GetExByIDAndRevisionID), arg0, arg1, arg2)
+}
+
+// GetExBySlug mocks base method
+func (m *MockGameService) GetExBySlug(arg0 context.Context, arg1 string) (*entity.GameEx, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetExBySlug", arg0, arg1)
+	ret0, _ := ret[0].(*entity.GameEx)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetExBySlug indicates an expected call of GetExBySlug
+func (mr *MockGameServiceMockRecorder) GetExBySlug(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExBySlug", reflect.TypeOf((*MockGameService)(nil).GetExBySlug), arg0, arg1)
+}
+
+// GetExLastPublishedByID mocks base method
+func (m *MockGameService) GetExLastPublishedByID(arg0 context.Context, arg1 string) (*entity.GameEx, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetExLastPublishedByID", arg0, arg1)
+	ret0, _ := ret[0].(*entity.GameEx)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetExLastPublishedByID indicates an expected call of GetExLastPublishedByID
+func (mr *MockGameServiceMockRecorder) GetExLastPublishedByID(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetExLastPublishedByID", reflect.TypeOf((*MockGameService)(nil).GetExLastPublishedByID), arg0, arg1)
 }
 
 // Publish mocks base method
@@ -136,4 +166,19 @@ func (m *MockGameService) Update(arg0 context.Context, arg1 *service.UpdateGameD
 func (mr *MockGameServiceMockRecorder) Update(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockGameService)(nil).Update), arg0, arg1)
+}
+
+// Upsert mocks base method
+func (m *MockGameService) Upsert(arg0 context.Context, arg1 *service.UpsertGameData) (*entity.GameEx, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Upsert", arg0, arg1)
+	ret0, _ := ret[0].(*entity.GameEx)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Upsert indicates an expected call of Upsert
+func (mr *MockGameServiceMockRecorder) Upsert(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Upsert", reflect.TypeOf((*MockGameService)(nil).Upsert), arg0, arg1)
 }
