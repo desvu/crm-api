@@ -32,6 +32,7 @@ type CommonGameData struct {
 	Summary     *string
 	Description *string
 	License     *string
+	Trailer     *string
 	Tags        *[]uint
 	Developers  *[]uint
 	Publishers  *[]uint

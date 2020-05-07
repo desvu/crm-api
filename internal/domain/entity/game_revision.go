@@ -13,6 +13,7 @@ type GameRevision struct {
 	Summary            string
 	Description        string
 	License            string
+	Trailer            string
 	ReleaseDate        time.Time
 	PublishedAt        *time.Time
 	SystemRequirements []SystemRequirements

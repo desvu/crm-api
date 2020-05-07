@@ -48,6 +48,7 @@ func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*en
 			Summary:            data.Summary,
 			Description:        data.Description,
 			License:            data.License,
+			Trailer:            data.Trailer,
 			Tags:               data.Tags,
 			Developers:         data.Developers,
 			Publishers:         data.Publishers,
@@ -151,6 +152,10 @@ func (s *Service) Upsert(ctx context.Context, data *service.UpsertGameData) (*en
 
 	if data.Type != nil {
 		d.Type = *data.Type
+	}
+
+	if data.Trailer != nil {
+		d.Trailer = data.Trailer
 	}
 
 	return s.Create(ctx, d)

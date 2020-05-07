@@ -45,6 +45,7 @@ message Game {
     repeated Genre genres = 13;
     repeated Publisher publishers = 14;
     repeated SystemRequirements systemRequirements = 15;
+    string trailer = 17;
 }
 
 message Tag {

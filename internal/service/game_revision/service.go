@@ -37,6 +37,10 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionDa
 		revision.License = *data.License
 	}
 
+	if data.Trailer != nil {
+		revision.Trailer = *data.Trailer
+	}
+
 	if data.Status != nil {
 		revision.Status = *data.Status
 	}
