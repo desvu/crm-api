@@ -21,7 +21,7 @@ type revision struct {
 	Description string       `json:"description,omitempty"`
 	License     string       `json:"license,omitempty"`
 	Media       []media      `json:"media,omitempty"`
-	SocialLinks []socialLink `json:"social_links"`
+	SocialLinks []socialLink `json:"social_links,omitempty"`
 }
 
 type socialLink struct {
