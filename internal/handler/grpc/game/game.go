@@ -21,7 +21,6 @@ func (h Handler) GetBySlug(ctx context.Context, request *proto.GetBySlugRequest)
 	}
 
 	return &proto.GameResponse{Game: result}, nil
-
 }
 
 func (h Handler) GetByID(ctx context.Context, request *proto.GetByIDRequest) (*proto.GameResponse, error) {
@@ -36,7 +35,6 @@ func (h Handler) GetByID(ctx context.Context, request *proto.GetByIDRequest) (*p
 	}
 
 	return &proto.GameResponse{Game: result}, nil
-
 }
 
 func (h Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Request) (*proto.GameResponse, error) {
@@ -54,7 +52,6 @@ func (h Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Reques
 }
 
 func (h Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
-
 	result := &proto.Game{
 		ID:          game.ID,
 		Title:       game.Title,
@@ -104,5 +101,4 @@ func (h Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 	}
 
 	return result, nil
-
 }

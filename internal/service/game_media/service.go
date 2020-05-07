@@ -20,7 +20,7 @@ func (s Service) Create(ctx context.Context, data *service.CreateGameMediaData) 
 	}
 
 	fileName := strings.Join([]string{uuid.New().String(), data.Extension}, ".")
-	filePath := strings.Join([]string{"game", game.ID, "media", fileName}, "/")
+	filePath := strings.Join([]string{"/", "game", game.ID, "media", fileName}, "/")
 
 	gameMedia := &entity.GameMedia{
 		GameID:   game.ID,
