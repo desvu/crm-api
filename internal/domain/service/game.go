@@ -2,11 +2,13 @@ package service
 
 import (
 	"context"
+	"net/url"
 	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game"
+	"github.com/qilin/crm-api/pkg/errors"
 )
 
 //go:generate mockgen -destination=../mocks/game_service.go -package=mocks github.com/qilin/crm-api/internal/domain/service GameService
@@ -78,6 +80,19 @@ type UpdateGameData struct {
 
 type SocialLink struct {
 	URL string
+}
+
+func (d SocialLink) Validate() error {
+	u, err := url.Parse(d.URL)
+	if err != nil {
+		return errors.NewService(errors.ErrValidation, err.Error())
+	}
+
+	if u.Hostname() == "" {
+		return errors.NewService(errors.ErrValidation, "URL must contain domain name")
+	}
+
+	return nil
 }
 
 type SystemRequirements struct {
