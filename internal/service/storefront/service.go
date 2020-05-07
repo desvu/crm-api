@@ -2,6 +2,7 @@ package storefront
 
 import (
 	"context"
+	"sort"
 
 	pkgerrors "github.com/pkg/errors"
 	"github.com/qilin/crm-api/internal/domain/entity"
@@ -20,18 +21,33 @@ func (s *Service) Create(ctx context.Context, data *entity.Storefront) (*entity.
 		IsActive: false,
 	}
 
-	if err := s.verifyGames(ctx, front); err != nil {
+	if front.Blocks == nil {
+		front.Blocks = []entity.Block{}
+	}
+
+	if err := s.verifyBlocks(ctx, front); err != nil {
 		return nil, err
 	}
 
 	return front, s.Repository.Create(ctx, front)
 }
 
-func (s *Service) verifyGames(ctx context.Context, data *entity.Storefront) error {
+func (s *Service) verifyBlocks(ctx context.Context, data *entity.Storefront) error {
 	for i := range data.Blocks {
-		if err := s.GameRevisionService.IsGamesPublished(ctx, data.Blocks[i].GameIDs...); err != nil {
-			return pkgerrors.Wrapf(err, "invalid games for block %d", i)
+		if err := s.verifyBlock(ctx, &data.Blocks[i]); err != nil {
+			return pkgerrors.Wrapf(err, "invalid block %d", i)
 		}
+	}
+	return nil
+}
+
+func (s *Service) verifyBlock(ctx context.Context, data *entity.Block) error {
+	if err := data.Validate(); err != nil {
+		return err
+	}
+	err := s.GameRevisionService.IsGamesPublished(ctx, data.GameIDs...)
+	if err != nil {
+		return err
 	}
 	return nil
 }
@@ -46,7 +62,11 @@ func (s *Service) Update(ctx context.Context, data *entity.Storefront) (*entity.
 	front.Blocks = data.Blocks
 	front.Version++
 
-	if err := s.verifyGames(ctx, front); err != nil {
+	if front.Blocks == nil {
+		front.Blocks = []entity.Block{}
+	}
+
+	if err := s.verifyBlocks(ctx, front); err != nil {
 		return nil, err
 	}
 
@@ -74,13 +94,28 @@ func (s *Service) Activate(ctx context.Context, id uint) error {
 }
 
 func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Storefront, error) {
-	return s.Repository.GetByID(ctx, id)
+	return s.Repository.FindByID(ctx, id)
 }
 
-func (s *Service) GetAll(ctx context.Context, id uint) ([]*entity.Storefront, error) {
-	return s.Repository.GetAll(ctx)
+func (s *Service) GetAll(ctx context.Context) ([]*entity.Storefront, error) {
+	result, err := s.Repository.FindAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+	sort.Slice(result, func(i, j int) bool {
+		// active first
+		if result[i].IsActive {
+			return true
+		}
+		if result[j].IsActive {
+			return false
+		}
+		// by last update
+		return result[i].UpdatedAt.After(result[j].UpdatedAt)
+	})
+	return result, nil
 }
 
-func (s *Service) FindActive(ctx context.Context) (*entity.Storefront, error) {
+func (s *Service) GetActive(ctx context.Context) (*entity.Storefront, error) {
 	return s.Repository.FindActive(ctx)
 }

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/qilin/crm-api/internal/domain/enum/block"
+	"github.com/qilin/crm-api/internal/domain/errors"
 )
 
 type Storefront struct {
@@ -42,4 +43,17 @@ type Block struct {
 
 	// GameIDs is list of games identifiers
 	GameIDs []string `json:"games"`
+}
+
+func (b *Block) Validate() error {
+	if !b.Type.Valid() {
+		return errors.UnknownBlockType
+	}
+	if !b.Title.Valid() {
+		return errors.InvalidBlockTitle
+	}
+	if !b.Type.ValidGamesCount(len(b.GameIDs)) {
+		return errors.InvalidBlockGamesCount
+	}
+	return nil
 }

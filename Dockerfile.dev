@@ -1,0 +1,9 @@
+FROM alpine:3.9
+
+RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+
+WORKDIR /application
+
+COPY ./bin .
+
+ENTRYPOINT /application/crm
