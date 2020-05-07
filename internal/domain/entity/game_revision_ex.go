@@ -7,4 +7,5 @@ type GameRevisionEx struct {
 	Publishers []Publisher
 	Features   []Feature
 	Genres     []Genre
+	Media      []GameMedia
 }

@@ -15,7 +15,7 @@ type Service struct {
 	ServiceParams
 }
 
-func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionData) (*entity.GameRevisionEx, error) {
+func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionData) (*entity.GameRevisionEx, error) {
 	revision, err := s.GameRevisionRepository.FindByID(ctx, data.ID)
 	if err != nil {
 		return nil, err
@@ -124,7 +124,7 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionDat
 	return s.GetByID(ctx, revision.ID)
 }
 
-func (s Service) GetByID(ctx context.Context, id uint) (*entity.GameRevisionEx, error) {
+func (s *Service) GetByID(ctx context.Context, id uint) (*entity.GameRevisionEx, error) {
 	revision, err := s.GameRevisionExRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -137,7 +137,7 @@ func (s Service) GetByID(ctx context.Context, id uint) (*entity.GameRevisionEx, 
 	return revision, nil
 }
 
-func (s Service) GetByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error) {
+func (s *Service) GetByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error) {
 	revision, err := s.GameRevisionExRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -150,7 +150,7 @@ func (s Service) GetByIDAndGameID(ctx context.Context, id uint, gameID string) (
 	return revision, nil
 }
 
-func (s Service) GetLastPublishedByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error) {
+func (s *Service) GetLastPublishedByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error) {
 	revision, err := s.GameRevisionRepository.FindLastPublishedByGameID(ctx, game.ID)
 	if err != nil {
 		return nil, err
@@ -163,7 +163,7 @@ func (s Service) GetLastPublishedByGame(ctx context.Context, game *entity.Game) 
 	return s.GameRevisionExRepository.FindByID(ctx, revision.ID)
 }
 
-func (s Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error) {
+func (s *Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error) {
 	draftRevision, err := s.GameRevisionRepository.FindDraftByGameID(ctx, game.ID)
 	if err != nil {
 		return nil, err
@@ -186,4 +186,8 @@ func (s Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entity
 	return &entity.GameRevisionEx{
 		GameRevision: *newRevision,
 	}, nil
+}
+
+func (s *Service) IsGamesPublished(ctx context.Context, ids ...string) error {
+	return s.GameRevisionRepository.IsGamesPublished(ctx, ids...)
 }

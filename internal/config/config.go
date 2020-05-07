@@ -5,8 +5,14 @@ import (
 )
 
 type Config struct {
-	Store  Store
-	Rabbit RabbitConf
+	App     AppConf
+	Store   Store
+	Rabbit  RabbitConf
+	Storage StorageConf
+}
+
+type AppConf struct {
+	StorageURL string `envconfig:"storage_url"`
 }
 
 type Store struct {
@@ -30,6 +36,10 @@ type RedisConf struct {
 
 type RabbitConf struct {
 	Uri string `default:"amqp://guest:guest@localhost:5672"`
+}
+
+type StorageConf struct {
+	Bucket string
 }
 
 func New() (*Config, error) {
