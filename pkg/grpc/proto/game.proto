@@ -45,6 +45,7 @@ message Game {
     repeated Genre genres = 13;
     repeated Publisher publishers = 14;
     repeated SystemRequirements systemRequirements = 15;
+    repeated SocialLink socialLinks = 18;
 }
 
 message Tag {
@@ -84,4 +85,8 @@ message RequirementsSet {
     string GPU = 2;
     uint32 DiskSpace = 3;
     uint32 RAM = 4;
+}
+
+message SocialLink {
+    string url = 1;
 }

@@ -39,6 +39,7 @@ type CommonGameData struct {
 	Genres      *[]uint
 	Media       *[]uint
 
+	SocialLinks        *[]SocialLink
 	SystemRequirements *[]SystemRequirements
 	Platforms          *game.PlatformArray
 	ReleaseDate        *time.Time
@@ -73,6 +74,10 @@ type UpdateGameData struct {
 	Type  *game.Type
 
 	CommonGameData
+}
+
+type SocialLink struct {
+	URL string
 }
 
 type SystemRequirements struct {

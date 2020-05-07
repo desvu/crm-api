@@ -15,12 +15,17 @@ type game struct {
 }
 
 type revision struct {
-	ID          uint    `json:"id"`
-	Status      string  `json:"status"`
-	Summary     string  `json:"summary,omitempty"`
-	Description string  `json:"description,omitempty"`
-	License     string  `json:"license,omitempty"`
-	Media       []media `json:"media,omitempty"`
+	ID          uint         `json:"id"`
+	Status      string       `json:"status"`
+	Summary     string       `json:"summary,omitempty"`
+	Description string       `json:"description,omitempty"`
+	License     string       `json:"license,omitempty"`
+	Media       []media      `json:"media,omitempty"`
+	SocialLinks []socialLink `json:"social_links"`
+}
+
+type socialLink struct {
+	URL string `json:"url"`
 }
 
 type media struct {
@@ -41,6 +46,7 @@ func (h Handler) view(i *entity.GameEx) view {
 			Summary:     i.Revision.Summary,
 			Description: i.Revision.Description,
 			License:     i.Revision.License,
+			SocialLinks: convertEntitySocialLinksToSocialLinks(i.Revision.SocialLinks),
 		},
 	}}
 

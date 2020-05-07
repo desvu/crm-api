@@ -49,6 +49,14 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionDa
 		revision.Platforms = *data.Platforms
 	}
 
+	if data.SocialLinks != nil {
+		var socialLinks []entity.SocialLink
+		for _, i := range *data.SocialLinks {
+			socialLinks = append(socialLinks, entity.SocialLink{URL: i.URL})
+		}
+		revision.SocialLinks = socialLinks
+	}
+
 	if data.SystemRequirements != nil {
 		platforms := map[game.Platform]bool{}
 		var systemRequirements []entity.SystemRequirements

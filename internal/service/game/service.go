@@ -55,6 +55,7 @@ func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*en
 			Genres:             data.Genres,
 			ReleaseDate:        data.ReleaseDate,
 			Platforms:          data.Platforms,
+			SocialLinks:        data.SocialLinks,
 			SystemRequirements: data.SystemRequirements,
 		})
 
@@ -108,6 +109,7 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*en
 			Publishers:         data.Publishers,
 			Features:           data.Features,
 			Genres:             data.Genres,
+			SocialLinks:        data.SocialLinks,
 			SystemRequirements: data.SystemRequirements,
 		})
 
