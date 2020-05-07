@@ -1,20 +1,12 @@
 package postgres
 
 import (
-	"github.com/go-pg/migrations/v7"
 	"github.com/go-pg/pg/v9"
+	migrations "github.com/robinjoseph08/go-pg-migrations/v2"
 )
 
+const Directory = "internal/env/migration/postgres"
+
 func Migrate(db *pg.DB) error {
-	_, _, err := migrations.Run(db, "init")
-	if err != nil {
-		return err
-	}
-
-	_, _, err = migrations.Run(db, "up")
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return migrations.Run(db, Directory, []string{"app", "migrate"})
 }
