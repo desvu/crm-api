@@ -31,6 +31,15 @@ func NewTypeByString(v string) Type {
 	}
 }
 
+func NewTypePointerByStringPointer(v *string) *Type {
+	if v == nil {
+		return nil
+	}
+
+	t := NewTypeByString(*v)
+	return &t
+}
+
 func (t Type) Value() uint8 {
 	return uint8(t)
 }

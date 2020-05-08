@@ -4,16 +4,18 @@ import (
 	"context"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/game"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/domain/service"
+	errors2 "github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
 	ServiceParams
 }
 
-func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionData) (*entity.GameRevisionEx, error) {
+func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionData) (*entity.GameRevisionEx, error) {
 	revision, err := s.GameRevisionRepository.FindByID(ctx, data.ID)
 	if err != nil {
 		return nil, err
@@ -45,6 +47,33 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionDat
 
 	if data.Platforms != nil {
 		revision.Platforms = *data.Platforms
+	}
+
+	if data.SystemRequirements != nil {
+		platforms := map[game.Platform]bool{}
+		var systemRequirements []entity.SystemRequirements
+		for _, item := range *data.SystemRequirements {
+			if platforms[item.Platform] {
+				return nil, errors2.NewService(errors2.ErrValidation, "systemRequirements platform param must be unique")
+			}
+			systemRequirements = append(systemRequirements, entity.SystemRequirements{
+				Platform: item.Platform,
+				Minimal: &entity.RequirementsSet{
+					CPU:       item.Minimal.CPU,
+					GPU:       item.Minimal.GPU,
+					DiskSpace: item.Minimal.DiskSpace,
+					RAM:       item.Minimal.RAM,
+				},
+				Recommended: &entity.RequirementsSet{
+					CPU:       item.Recommended.CPU,
+					GPU:       item.Recommended.GPU,
+					DiskSpace: item.Recommended.DiskSpace,
+					RAM:       item.Recommended.RAM,
+				},
+			})
+			platforms[item.Platform] = true
+		}
+		revision.SystemRequirements = systemRequirements
 	}
 
 	if err := s.Transactor.Transact(ctx, func(tx context.Context) error {
@@ -87,12 +116,20 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionDat
 			}
 		}
 
-		if data.Localizations != nil {
-			err := s.LocalizationService.UpdateLocalizationsForGameRevision(tx, revision, *data.Localizations)
+		if data.Media != nil {
+			err := s.GameMediaService.UpdateForGameRevision(tx, revision, *data.Media)
 			if err != nil {
 				return err
 			}
 		}
+
+        if data.Localizations != nil {
+            err := s.LocalizationService.UpdateLocalizationsForGameRevision(tx, revision, *data.Localizations)
+            if err != nil {
+                return err
+            }
+        }
+
 
 		return nil
 	}); err != nil {
@@ -102,7 +139,7 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameRevisionDat
 	return s.GetByID(ctx, revision.ID)
 }
 
-func (s Service) GetByID(ctx context.Context, id uint) (*entity.GameRevisionEx, error) {
+func (s *Service) GetByID(ctx context.Context, id uint) (*entity.GameRevisionEx, error) {
 	revision, err := s.GameRevisionExRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -115,7 +152,7 @@ func (s Service) GetByID(ctx context.Context, id uint) (*entity.GameRevisionEx, 
 	return revision, nil
 }
 
-func (s Service) GetByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error) {
+func (s *Service) GetByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error) {
 	revision, err := s.GameRevisionExRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -128,7 +165,7 @@ func (s Service) GetByIDAndGameID(ctx context.Context, id uint, gameID string) (
 	return revision, nil
 }
 
-func (s Service) GetLastPublishedByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error) {
+func (s *Service) GetLastPublishedByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error) {
 	revision, err := s.GameRevisionRepository.FindLastPublishedByGameID(ctx, game.ID)
 	if err != nil {
 		return nil, err
@@ -141,7 +178,7 @@ func (s Service) GetLastPublishedByGame(ctx context.Context, game *entity.Game) 
 	return s.GameRevisionExRepository.FindByID(ctx, revision.ID)
 }
 
-func (s Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error) {
+func (s *Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error) {
 	draftRevision, err := s.GameRevisionRepository.FindDraftByGameID(ctx, game.ID)
 	if err != nil {
 		return nil, err
@@ -152,8 +189,9 @@ func (s Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entity
 	}
 
 	newRevision := &entity.GameRevision{
-		GameID: game.ID,
-		Status: game_revision.StatusDraft,
+		GameID:             game.ID,
+		Status:             game_revision.StatusDraft,
+		SystemRequirements: []entity.SystemRequirements{},
 	}
 
 	if err = s.GameRevisionRepository.Create(ctx, newRevision); err != nil {
@@ -163,4 +201,29 @@ func (s Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entity
 	return &entity.GameRevisionEx{
 		GameRevision: *newRevision,
 	}, nil
+}
+
+func (s *Service) IsGamesPublished(ctx context.Context, ids ...string) error {
+	if len(ids) == 0 {
+		return nil
+	}
+	res, err := s.GameRevisionRepository.FindPublishedByGameIDs(ctx, ids...)
+	if err != nil {
+		return err
+	}
+
+	if len(res) != len(ids) {
+		return errors.GameNotFound // attach game id
+	}
+
+	// sort.Strings(res)
+	// sort.Strings(ids)
+
+	// for i := range ids {
+	// 	if i >= len(res) || res[i] != ids[i] {
+	// 		return errors.GameNotFound // attach game id
+	// 	}
+	// }
+
+	return nil
 }

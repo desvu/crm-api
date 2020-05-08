@@ -171,3 +171,19 @@ func (r GameRevisionRepository) FindByIDAndGameID(ctx context.Context, id uint, 
 
 	return model.Convert(), nil
 }
+
+func (r GameRevisionRepository) FindPublishedByGameIDs(ctx context.Context, ids ...string) ([]string, error) {
+	var res []string
+	err := r.h.ModelContext(ctx, (*model)(nil)).
+		Column("game_id").
+		Where("game_id in (?)", pg.In(ids)).
+		Where("status = ?", game_revision.StatusPublished.Value()).
+		Group("game_id").
+		Select(&res)
+
+	if err != nil {
+		return nil, errors.NewInternal(err)
+	}
+
+	return res, nil
+}

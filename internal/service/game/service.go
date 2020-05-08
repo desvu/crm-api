@@ -16,7 +16,15 @@ type Service struct {
 	ServiceParams
 }
 
-func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*entity.GameEx, error) {
+func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*entity.GameEx, error) {
+	if err := data.Validate(); err != nil {
+		return nil, errors.NewValidation(err)
+	}
+
+	if err := s.checkNoExistGameBySlug(ctx, data.Slug); err != nil {
+		return nil, err
+	}
+
 	game := &entity.Game{
 		ID:    uuid.New().String(),
 		Title: data.Title,
@@ -36,18 +44,20 @@ func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*ent
 		}
 
 		updatedRevision, err = s.GameRevisionService.Update(tx, &service.UpdateGameRevisionData{
-			ID:            revision.ID,
-			Summary:       data.Summary,
-			Description:   data.Description,
-			License:       data.License,
-			Tags:          data.Tags,
-			Developers:    data.Developers,
-			Publishers:    data.Publishers,
-			Features:      data.Features,
-			Genres:        data.Genres,
-			ReleaseDate:   data.ReleaseDate,
-			Platforms:     data.Platforms,
-			Localizations: data.Localizations,
+			ID:                 revision.ID,
+			Summary:            data.Summary,
+			Description:        data.Description,
+			License:            data.License,
+			Tags:               data.Tags,
+			Developers:         data.Developers,
+			Publishers:         data.Publishers,
+			Features:           data.Features,
+			Genres:             data.Genres,
+			Media:              data.Media,
+			ReleaseDate:        data.ReleaseDate,
+			Platforms:          data.Platforms,
+			SystemRequirements: data.SystemRequirements,
+            Localizations:      data.Localizations,
 		})
 
 		if err != nil {
@@ -65,7 +75,7 @@ func (s Service) Create(ctx context.Context, data *service.CreateGameData) (*ent
 	}, nil
 }
 
-func (s Service) Update(ctx context.Context, data *service.UpdateGameData) (*entity.GameEx, error) {
+func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*entity.GameEx, error) {
 	game, err := s.GetByID(ctx, data.ID)
 	if err != nil {
 		return nil, err
@@ -81,7 +91,12 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameData) (*ent
 		if data.Title != nil {
 			game.Title = *data.Title
 		}
-		if data.Slug != nil {
+
+		if data.Slug != nil && *data.Slug != game.Slug {
+			if err := s.checkNoExistGameBySlug(ctx, *data.Slug); err != nil {
+				return err
+			}
+
 			game.Slug = *data.Slug
 		}
 
@@ -90,13 +105,15 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameData) (*ent
 		}
 
 		updatedRevision, err = s.GameRevisionService.Update(ctx, &service.UpdateGameRevisionData{
-			ID:            revision.ID,
-			Tags:          data.Tags,
-			Developers:    data.Developers,
-			Publishers:    data.Publishers,
-			Features:      data.Features,
-			Genres:        data.Genres,
-			Localizations: data.Localizations,
+			ID:                 revision.ID,
+			Tags:               data.Tags,
+			Developers:         data.Developers,
+			Publishers:         data.Publishers,
+			Features:           data.Features,
+			Genres:             data.Genres,
+			Media:              data.Media,
+			SystemRequirements: data.SystemRequirements,
+            Localizations:      data.Localizations,
 		})
 
 		if err != nil {
@@ -114,7 +131,37 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameData) (*ent
 	}, nil
 }
 
-func (s Service) Delete(ctx context.Context, id string) error {
+func (s *Service) Upsert(ctx context.Context, data *service.UpsertGameData) (*entity.GameEx, error) {
+	if data.ID != nil {
+		return s.Update(ctx, &service.UpdateGameData{
+			ID:             *data.ID,
+			Title:          data.Title,
+			Slug:           data.Slug,
+			Type:           data.Type,
+			CommonGameData: data.CommonGameData,
+		})
+	}
+
+	d := &service.CreateGameData{
+		CommonGameData: data.CommonGameData,
+	}
+
+	if data.Title != nil {
+		d.Title = *data.Title
+	}
+
+	if data.Slug != nil {
+		d.Slug = *data.Slug
+	}
+
+	if data.Type != nil {
+		d.Type = *data.Type
+	}
+
+	return s.Create(ctx, d)
+}
+
+func (s *Service) Delete(ctx context.Context, id string) error {
 	game, err := s.GetByID(ctx, id)
 	if err != nil {
 		return err
@@ -123,7 +170,7 @@ func (s Service) Delete(ctx context.Context, id string) error {
 	return s.GameRepository.Delete(ctx, game)
 }
 
-func (s Service) Publish(ctx context.Context, id string) error {
+func (s *Service) Publish(ctx context.Context, id string) error {
 	game, err := s.GetExByID(ctx, id)
 	if err != nil {
 		return err
@@ -145,7 +192,7 @@ func (s Service) Publish(ctx context.Context, id string) error {
 	return nil
 }
 
-func (s Service) GetByID(ctx context.Context, id string) (*entity.Game, error) {
+func (s *Service) GetByID(ctx context.Context, id string) (*entity.Game, error) {
 	game, err := s.GameRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -158,7 +205,7 @@ func (s Service) GetByID(ctx context.Context, id string) (*entity.Game, error) {
 	return game, nil
 }
 
-func (s Service) GetBySlug(ctx context.Context, slug string) (*entity.Game, error) {
+func (s *Service) GetBySlug(ctx context.Context, slug string) (*entity.Game, error) {
 	game, err := s.GameRepository.FindBySlug(ctx, slug)
 	if err != nil {
 		return nil, err
@@ -171,7 +218,7 @@ func (s Service) GetBySlug(ctx context.Context, slug string) (*entity.Game, erro
 	return game, nil
 }
 
-func (s Service) GetExLastPublishedByID(ctx context.Context, id string) (*entity.GameEx, error) {
+func (s *Service) GetExLastPublishedByID(ctx context.Context, id string) (*entity.GameEx, error) {
 	game, err := s.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -188,7 +235,7 @@ func (s Service) GetExLastPublishedByID(ctx context.Context, id string) (*entity
 	}, nil
 }
 
-func (s Service) GetExByID(ctx context.Context, id string) (*entity.GameEx, error) {
+func (s *Service) GetExByID(ctx context.Context, id string) (*entity.GameEx, error) {
 	game, err := s.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -222,7 +269,7 @@ func (s *Service) GetExBySlug(ctx context.Context, slug string) (*entity.GameEx,
 	}, nil
 }
 
-func (s Service) GetExByIDAndRevisionID(ctx context.Context, id string, revisionID uint) (*entity.GameEx, error) {
+func (s *Service) GetExByIDAndRevisionID(ctx context.Context, id string, revisionID uint) (*entity.GameEx, error) {
 	game, err := s.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -237,4 +284,17 @@ func (s Service) GetExByIDAndRevisionID(ctx context.Context, id string, revision
 		Game:     *game,
 		Revision: revision,
 	}, nil
+}
+
+func (s *Service) checkNoExistGameBySlug(ctx context.Context, slug string) error {
+	gameSlug, err := s.GetBySlug(ctx, slug)
+	if err != nil && err != errors.GameNotFound {
+		return err
+	}
+
+	if gameSlug != nil {
+		return errors.GameSlugAlreadyExist
+	}
+
+	return nil
 }

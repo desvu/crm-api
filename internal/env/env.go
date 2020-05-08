@@ -1,15 +1,23 @@
 package env
 
 import (
+	"context"
+
+	"github.com/qilin/crm-api/internal/env/app"
+
 	"github.com/isayme/go-amqp-reconnect/rabbitmq"
+	"github.com/pkg/errors"
 	"github.com/qilin/crm-api/internal/config"
 	"github.com/qilin/crm-api/internal/env/migration/postgres"
+	"github.com/qilin/crm-api/internal/env/storage"
 	"github.com/qilin/crm-api/pkg/transactor"
 )
 
 type Env struct {
-	Store  *Store
-	Rabbit *rabbitmq.Connection
+	App     *app.App
+	Store   *Store
+	Rabbit  *rabbitmq.Connection
+	Storage *storage.Env
 }
 
 func New(transactor *transactor.Transactor) (*Env, error) {
@@ -18,9 +26,20 @@ func New(transactor *transactor.Transactor) (*Env, error) {
 		return nil, err
 	}
 
-	rabbitEnv, err := newRabbit(cfg.Rabbit)
+	appEnv, err := app.New(cfg)
 	if err != nil {
 		return nil, err
+	}
+
+	ctx := context.Background()
+	storageEnv, err := storage.New(ctx, cfg.Storage)
+	if err != nil {
+		return nil, err
+	}
+
+	rabbitEnv, err := newRabbit(cfg.Rabbit)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed connect to rabbitmq")
 	}
 
 	storeEnv, err := newStore(cfg.Store, transactor.GetStore())
@@ -29,11 +48,13 @@ func New(transactor *transactor.Transactor) (*Env, error) {
 	}
 
 	if err = postgres.Migrate(storeEnv.Postgres.Handler.GetConnection()); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "postgres migrations failed")
 	}
 
 	return &Env{
-		Store:  storeEnv,
-		Rabbit: rabbitEnv,
+		App:     appEnv,
+		Store:   storeEnv,
+		Rabbit:  rabbitEnv,
+		Storage: storageEnv,
 	}, nil
 }

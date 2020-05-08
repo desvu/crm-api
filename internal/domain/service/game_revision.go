@@ -17,6 +17,7 @@ type GameRevisionService interface {
 	GetByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error)
 	GetDraftByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error)
 	GetLastPublishedByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error)
+	IsGamesPublished(ctx context.Context, ids ...string) error
 }
 
 type UpdateGameRevisionData struct {
@@ -25,15 +26,16 @@ type UpdateGameRevisionData struct {
 	Description *string
 	License     *string
 
-	Status      *game_revision.Status
-	Platforms   *game.PlatformArray
-	ReleaseDate *time.Time
+	Status             *game_revision.Status
+	Platforms          *game.PlatformArray
+	ReleaseDate        *time.Time
+	SystemRequirements *[]SystemRequirements
+    Localizations *[]LocalizationData
 
 	Tags       *[]uint
 	Developers *[]uint
 	Publishers *[]uint
 	Features   *[]uint
 	Genres     *[]uint
-
-	Localizations *[]LocalizationData
+	Media      *[]uint
 }
