@@ -11,11 +11,16 @@ type App struct {
 }
 
 func New(cfg *config.Config) (*App, error) {
-	if cfg.App.StorageURL == "" {
+	storageUrl := cfg.App.StorageURL
+	if storageUrl == "" {
 		return nil, errors.New("storage url must be set")
 	}
 
+	if len(storageUrl) > 0 && storageUrl[:len(storageUrl)-1] == "/" {
+		storageUrl = storageUrl[:len(storageUrl)-1]
+	}
+
 	return &App{
-		StorageURL: cfg.App.StorageURL,
+		StorageURL: storageUrl,
 	}, nil
 }
