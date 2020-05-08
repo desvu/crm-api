@@ -66,7 +66,20 @@ type CreateGameData struct {
 
 func (d CreateGameData) Validate() error {
 	validate := validator.New()
-	return validate.Struct(d)
+	err := validate.Struct(d)
+	if err != nil {
+		return err
+	}
+
+	if d.SocialLinks != nil {
+		for _, l := range *d.SocialLinks {
+			if err := l.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 type UpdateGameData struct {

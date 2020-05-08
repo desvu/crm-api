@@ -1,11 +1,12 @@
 package postgres
 
 import (
-	"github.com/go-pg/migrations/v7"
+	"github.com/go-pg/pg/v9/orm"
+	migrations "github.com/robinjoseph08/go-pg-migrations/v2"
 )
 
 func init() {
-	migrations.MustRegisterTx(func(db migrations.DB) error {
+	up := func(db orm.DB) error {
 		_, err := db.Exec(`
 			alter table games add column slug text not null;
 			alter table game_revisions drop column slug;
@@ -13,12 +14,18 @@ func init() {
 			create unique index idx_unq_games_slug on games(slug) where trim(slug) <> '';
 		`)
 		return err
-	}, func(db migrations.DB) error {
+	}
+
+	down := func(db orm.DB) error {
 		_, err := db.Exec(`
 			alter table game_revisions add column slug text not null;
 			alter table games drop column slug;
 			drop index idx_unq_games_slug;
 		`)
 		return err
-	})
+	}
+
+	opts := migrations.MigrationOptions{}
+
+	migrations.Register("20200507181144_slug_in_game", up, down, opts)
 }

@@ -1,0 +1,25 @@
+syntax = "proto3";
+package proto;
+option go_package = "pkg/grpc/proto";
+
+service StorefrontService {
+    rpc GetActive(GetActiveStorefrontRequest) returns (StorefrontResponse) {}
+}
+
+message GetActiveStorefrontRequest {
+}
+
+message StorefrontResponse {
+    Storefront storefront = 1;
+}
+
+message Storefront {
+    repeated Block blocks = 1;
+}
+
+message Block {
+    string type = 1;
+    string title = 2;
+    string filter = 3;
+    repeated string gameIds = 4;
+}

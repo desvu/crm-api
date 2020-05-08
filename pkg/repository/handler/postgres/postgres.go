@@ -140,13 +140,17 @@ type Config struct {
 }
 
 func New(cfg Config, transactionStore *transactor.Store) *Handler {
+	return NewOptions(&pg.Options{
+		Addr:     fmt.Sprintf("%s:%s", cfg.Host, cfg.Port),
+		Database: cfg.Database,
+		User:     cfg.User,
+		Password: cfg.Password,
+	}, transactionStore)
+}
+
+func NewOptions(opts *pg.Options, transactionStore *transactor.Store) *Handler {
 	return &Handler{
 		transactionStore: transactionStore,
-		conn: pg.Connect(&pg.Options{
-			Addr:     fmt.Sprintf("%s:%s", cfg.Host, cfg.Port),
-			Database: cfg.Database,
-			User:     cfg.User,
-			Password: cfg.Password,
-		}),
+		conn:             pg.Connect(opts),
 	}
 }
