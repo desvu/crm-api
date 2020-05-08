@@ -129,7 +129,7 @@ func (r StorefrontRepository) FindByIDAndVersion(ctx context.Context, id, versio
 	sf := new(storefront)
 	err := r.h.ModelContext(ctx, sf).
 		Column("sf.*").
-		Where("id=?", id).
+		Where("sf.id=?", id).
 		Relation("Version", func(q *orm.Query) (*orm.Query, error) {
 			return q.JoinOn("id = ?", version), nil
 		}).
@@ -173,7 +173,7 @@ func (r StorefrontRepository) FindActive(ctx context.Context) (*entity.Storefron
 	err := r.h.ModelContext(ctx, sf).
 		Column("sf.*").
 		ColumnExpr("true as is_active").
-		Where("id=(?)", r.lastActive()).
+		Where("sf.id=(?)", r.lastActive()).
 		Relation("Version").Order("version desc").
 		First()
 
