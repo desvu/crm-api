@@ -37,10 +37,15 @@ func (h Handler) Upload(c echo.Context) error {
 		return err
 	}
 
+	game, err := h.GameService.GetByID(c.Request().Context(), c.Param("game_id"))
+	if err != nil {
+		return err
+	}
+
 	media, err := h.GameMediaService.Upload(c.Request().Context(), &service.UploadGameMediaData{
-		GameID: c.Param("game_id"),
-		ID:     uint(gameMediaID),
-		Image:  buf.Bytes(),
+		Game:  game,
+		ID:    uint(gameMediaID),
+		Image: buf.Bytes(),
 	})
 
 	if err != nil {
@@ -61,8 +66,13 @@ func (h Handler) Create(c echo.Context) error {
 		return err
 	}
 
+	game, err := h.GameService.GetByID(c.Request().Context(), c.Param("game_id"))
+	if err != nil {
+		return err
+	}
+
 	media, err := h.GameMediaService.Create(c.Request().Context(), &service.CreateGameMediaData{
-		GameID:    c.Param("game_id"),
+		Game:      game,
 		Type:      game_media.NewTypeByString(req.Type),
 		Extension: req.Extension,
 	})

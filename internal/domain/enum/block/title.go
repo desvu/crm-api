@@ -12,6 +12,10 @@ const (
 	Title_YouMayLikeIt Title = "you-may-like-it"
 )
 
+func (t Title) String() string {
+	return string(t)
+}
+
 func (t Title) Valid() bool {
 	switch t {
 	case
