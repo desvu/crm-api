@@ -1,11 +1,12 @@
 package postgres
 
 import (
-	"github.com/go-pg/migrations/v7"
+	"github.com/go-pg/pg/v9/orm"
+	migrations "github.com/robinjoseph08/go-pg-migrations/v2"
 )
 
 func init() {
-	migrations.MustRegisterTx(func(db migrations.DB) error {
+	up := func(db orm.DB) error {
 		_, err := db.Exec(`
 			create table games
 			(
@@ -120,7 +121,9 @@ func init() {
 			create index idx_game_revision_genres_genre_id ON game_revision_genres (genre_id);
 		`)
 		return err
-	}, func(db migrations.DB) error {
+	}
+
+	down := func(db orm.DB) error {
 		_, err := db.Exec(`
 			drop table games;
 			drop table game_revisions;
@@ -136,5 +139,9 @@ func init() {
 			drop table game_revision_genres;
 		`)
 		return err
-	})
+	}
+
+	opts := migrations.MigrationOptions{}
+
+	migrations.Register("20200507175908_added_game_tables", up, down, opts)
 }

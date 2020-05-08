@@ -1,11 +1,12 @@
 package postgres
 
 import (
-	"github.com/go-pg/migrations/v7"
+	"github.com/go-pg/pg/v9/orm"
+	migrations "github.com/robinjoseph08/go-pg-migrations/v2"
 )
 
 func init() {
-	migrations.MustRegisterTx(func(db migrations.DB) error {
+	up := func(db orm.DB) error {
 		_, err := db.Exec(`
 
 			CREATE TABLE storefronts (
@@ -32,12 +33,18 @@ func init() {
 
 		`)
 		return err
-	}, func(db migrations.DB) error {
+	}
+
+	down := func(db orm.DB) error {
 		_, err := db.Exec(`
 			drop table storefront_activations;
 			drop table storefront_versions;
 			drop table storefronts;
 		`)
 		return err
-	})
+	}
+
+	opts := migrations.MigrationOptions{}
+
+	migrations.Register("20200507181312_storefront", up, down, opts)
 }
