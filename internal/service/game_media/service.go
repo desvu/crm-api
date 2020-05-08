@@ -2,7 +2,7 @@ package game_media
 
 import (
 	"context"
-	"strings"
+	"fmt"
 
 	"github.com/qilin/crm-api/internal/domain/errors"
 
@@ -16,8 +16,8 @@ type Service struct {
 }
 
 func (s Service) Create(ctx context.Context, data *service.CreateGameMediaData) (*entity.GameMedia, error) {
-	fileName := strings.Join([]string{uuid.New().String(), data.Extension}, ".")
-	filePath := strings.Join([]string{"/game", data.Game.ID, "media", fileName}, "/")
+	fileName := fmt.Sprintf("%s.%s", uuid.New().String(), data.Extension)
+	filePath := fmt.Sprintf("/game/%s/media/%s", data.Game.ID, fileName)
 
 	gameMedia := &entity.GameMedia{
 		GameID:   data.Game.ID,
