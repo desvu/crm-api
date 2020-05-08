@@ -18,18 +18,20 @@ type GameMediaService interface {
 	GetByID(ctx context.Context, id uint) (*entity.GameMedia, error)
 	GetByIDs(ctx context.Context, ids []uint) ([]entity.GameMedia, error)
 	GetByRevision(ctx context.Context, revision *entity.GameRevision) ([]entity.GameMedia, error)
+
+	UpdateForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, mediaIDs []uint) error
 }
 
 type CreateGameMediaData struct {
-	GameID    string
+	Game      *entity.Game
 	Type      game_media.Type
 	Extension string
 }
 
 type UploadGameMediaData struct {
-	ID     uint
-	GameID string
-	Image  []byte
+	ID    uint
+	Game  *entity.Game
+	Image []byte
 }
 
 type UpdateGameMediaData struct {
