@@ -57,7 +57,7 @@ func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*en
 			ReleaseDate:        data.ReleaseDate,
 			Platforms:          data.Platforms,
 			SystemRequirements: data.SystemRequirements,
-            Localizations:      data.Localizations,
+			Localizations:      data.Localizations,
 		})
 
 		if err != nil {
@@ -76,6 +76,10 @@ func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*en
 }
 
 func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*entity.GameEx, error) {
+	if err := data.Validate(); err != nil {
+		return nil, errors.NewValidation(err)
+	}
+
 	game, err := s.GetByID(ctx, data.ID)
 	if err != nil {
 		return nil, err
@@ -113,7 +117,7 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*en
 			Genres:             data.Genres,
 			Media:              data.Media,
 			SystemRequirements: data.SystemRequirements,
-            Localizations:      data.Localizations,
+			Localizations:      data.Localizations,
 		})
 
 		if err != nil {

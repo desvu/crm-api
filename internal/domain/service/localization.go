@@ -4,6 +4,8 @@ import (
 	"context"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/errors"
+	"golang.org/x/text/language"
 )
 
 //go:generate mockgen -destination=../mocks/localization_service.go -package=mocks github.com/qilin/crm-api/internal/domain/service LocalizationService
@@ -21,4 +23,16 @@ type LocalizationData struct {
 	Interface bool
 	Audio     bool
 	Subtitles bool
+}
+
+func (d LocalizationData) Validate() error {
+	// check iso 639-2
+	if len(d.Language) != 3 {
+		return errors.InvalidLocalizationLanguageCode
+	}
+	_, err := language.ParseBase(d.Language)
+	if err != nil {
+		return errors.InvalidLocalizationLanguageCode
+	}
+	return nil
 }

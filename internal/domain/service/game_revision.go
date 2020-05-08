@@ -4,9 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/qilin/crm-api/internal/domain/enum/game"
-
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/game"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 )
 
@@ -30,7 +29,7 @@ type UpdateGameRevisionData struct {
 	Platforms          *game.PlatformArray
 	ReleaseDate        *time.Time
 	SystemRequirements *[]SystemRequirements
-    Localizations *[]LocalizationData
+	Localizations      *[]LocalizationData
 
 	Tags       *[]uint
 	Developers *[]uint

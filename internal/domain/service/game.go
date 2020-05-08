@@ -42,7 +42,7 @@ type CommonGameData struct {
 	SystemRequirements *[]SystemRequirements
 	Platforms          *game.PlatformArray
 	ReleaseDate        *time.Time
-    Localizations *[]LocalizationData
+	Localizations      *[]LocalizationData
 }
 
 type UpsertGameData struct {
@@ -64,7 +64,20 @@ type CreateGameData struct {
 
 func (d CreateGameData) Validate() error {
 	validate := validator.New()
-	return validate.Struct(d)
+	err := validate.Struct(d)
+	if err != nil {
+		return err
+	}
+
+	if d.Localizations != nil {
+		for _, l := range *d.Localizations {
+			if err := l.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 type UpdateGameData struct {
@@ -74,6 +87,17 @@ type UpdateGameData struct {
 	Type  *game.Type
 
 	CommonGameData
+}
+
+func (d UpdateGameData) Validate() error {
+	if d.Localizations != nil {
+		for _, l := range *d.Localizations {
+			if err := l.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 type SystemRequirements struct {

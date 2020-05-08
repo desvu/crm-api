@@ -3,10 +3,8 @@ package localization
 import (
 	"context"
 
-	"github.com/qilin/crm-api/internal/domain/errors"
-	"golang.org/x/text/language"
-
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
@@ -40,10 +38,6 @@ func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity
 }
 
 func (s Service) UpdateLocalizationsForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, localizations []service.LocalizationData) error {
-	if err := validateLanguagesISO_639_2(localizations); err != nil {
-		return err
-	}
-
 	langs := make([]string, len(localizations))
 	for i, l := range localizations {
 		langs[i] = l.Language
@@ -146,17 +140,4 @@ func getGameLocalizationsForDelete(localizations []entity.Localization, currentG
 		}
 	}
 	return gameLocalizations
-}
-
-func validateLanguagesISO_639_2(localizations []service.LocalizationData) error {
-	for _, l := range localizations {
-		if len(l.Language) != 3 {
-			return errors.InvalidLocalizationLanguageCode
-		}
-		_, err := language.ParseBase(l.Language)
-		if err != nil {
-			return errors.InvalidLocalizationLanguageCode
-		}
-	}
-	return nil
 }
