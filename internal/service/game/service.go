@@ -196,6 +196,11 @@ func (s *Service) Publish(ctx context.Context, id string) error {
 }
 
 func (s *Service) GetByID(ctx context.Context, id string) (*entity.Game, error) {
+	_, err := uuid.Parse(id)
+	if err != nil {
+		return nil, errors.InvalidGameID
+	}
+
 	game, err := s.GameRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err

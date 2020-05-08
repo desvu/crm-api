@@ -80,7 +80,7 @@ func (s Service) GetByID(ctx context.Context, id uint) (*entity.GameMedia, error
 	}
 
 	if cover == nil {
-		return nil, service.ErrGameMediaNotFound
+		return nil, errors.MediaNotFound
 	}
 
 	return cover, nil

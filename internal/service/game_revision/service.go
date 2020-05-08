@@ -8,7 +8,6 @@ import (
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/domain/service"
-	errors2 "github.com/qilin/crm-api/pkg/errors"
 )
 
 type Service struct {
@@ -58,7 +57,7 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionDa
 		var systemRequirements []entity.SystemRequirements
 		for _, item := range *data.SystemRequirements {
 			if platforms[item.Platform] {
-				return nil, errors2.NewService(errors2.ErrValidation, "systemRequirements platform param must be unique")
+				return nil, errors.GameRevisionUniqueSystemRequirements
 			}
 			systemRequirements = append(systemRequirements, entity.SystemRequirements{
 				Platform: item.Platform,

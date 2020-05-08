@@ -1,7 +1,7 @@
 package game
 
 import (
-	"net/http"
+	"github.com/qilin/crm-api/pkg/response"
 
 	"github.com/labstack/echo/v4"
 )
@@ -12,7 +12,7 @@ func (h Handler) GetByID(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, h.view(game))
+	return response.New(c, h.view(game))
 }
 
 func (h Handler) Upsert(c echo.Context) error {
@@ -26,5 +26,5 @@ func (h Handler) Upsert(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, h.view(game))
+	return response.New(c, h.view(game))
 }
