@@ -31,6 +31,29 @@ func (r GameRevisionMediaRepository) Create(ctx context.Context, i *entity.GameR
 	return nil
 }
 
+func (r GameRevisionMediaRepository) CreateMultiple(ctx context.Context, items []entity.GameRevisionMedia) error {
+	if len(items) == 0 {
+		return nil
+	}
+
+	models := make([]model, len(items))
+	for i := range items {
+		m := newModel(&items[i])
+		models[i] = *m
+	}
+
+	_, err := r.h.ModelContext(ctx, &models).Insert()
+	if err != nil {
+		return errors.NewInternal(err)
+	}
+
+	for i := range models {
+		items[i] = *models[i].Convert()
+	}
+
+	return nil
+}
+
 func (r GameRevisionMediaRepository) Delete(ctx context.Context, i *entity.GameRevisionMedia) error {
 	model := newModel(i)
 
@@ -40,6 +63,25 @@ func (r GameRevisionMediaRepository) Delete(ctx context.Context, i *entity.GameR
 	}
 
 	*i = *model.Convert()
+	return nil
+}
+
+func (r GameRevisionMediaRepository) DeleteMultiple(ctx context.Context, items []entity.GameRevisionMedia) error {
+	if len(items) == 0 {
+		return nil
+	}
+
+	models := make([]model, len(items))
+	for i := range items {
+		m := newModel(&items[i])
+		models[i] = *m
+	}
+
+	_, err := r.h.ModelContext(ctx, &models).Delete()
+	if err != nil {
+		return errors.NewInternal(err)
+	}
+
 	return nil
 }
 

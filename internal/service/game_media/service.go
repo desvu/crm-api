@@ -4,6 +4,8 @@ import (
 	"context"
 	"strings"
 
+	"github.com/qilin/crm-api/internal/domain/errors"
+
 	"github.com/google/uuid"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
@@ -14,21 +16,16 @@ type Service struct {
 }
 
 func (s Service) Create(ctx context.Context, data *service.CreateGameMediaData) (*entity.GameMedia, error) {
-	game, err := s.GameService.GetByID(ctx, data.GameID)
-	if err != nil {
-		return nil, err
-	}
-
 	fileName := strings.Join([]string{uuid.New().String(), data.Extension}, ".")
-	filePath := strings.Join([]string{"game", game.ID, "media", fileName}, "/")
+	filePath := strings.Join([]string{"/game", data.Game.ID, "media", fileName}, "/")
 
 	gameMedia := &entity.GameMedia{
-		GameID:   game.ID,
+		GameID:   data.Game.ID,
 		Type:     data.Type,
 		FilePath: filePath,
 	}
 
-	if err = s.GameMediaRepository.Create(ctx, gameMedia); err != nil {
+	if err := s.GameMediaRepository.Create(ctx, gameMedia); err != nil {
 		return nil, err
 	}
 
@@ -94,7 +91,7 @@ func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.GameMedia, 
 }
 
 func (s Service) GetByRevision(ctx context.Context, revision *entity.GameRevision) ([]entity.GameMedia, error) {
-	revisionMedia, err := s.GameRevisionMediaService.GetByRevision(ctx, revision)
+	revisionMedia, err := s.GameRevisionMediaRepository.FindByRevisionID(ctx, revision.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -104,4 +101,76 @@ func (s Service) GetByRevision(ctx context.Context, revision *entity.GameRevisio
 	}
 
 	return s.GetByIDs(ctx, entity.NewGameRevisionMediaArray(revisionMedia).MediaIDs())
+}
+
+func (s Service) UpdateForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, mediaIDs []uint) error {
+	media, err := s.GetByIDs(ctx, mediaIDs)
+	if err != nil {
+		return err
+	}
+
+	// checking for IDs among the media
+	if len(media) != len(mediaIDs) {
+		return errors.InvalidMediaIDs
+	}
+
+	currentGameMedia, err := s.GameRevisionMediaRepository.FindByRevisionID(ctx, gameRevision.ID)
+	if err != nil {
+		return err
+	}
+
+	err = s.GameRevisionMediaRepository.DeleteMultiple(ctx, getGameMediaForDelete(mediaIDs, currentGameMedia))
+	if err != nil {
+		return err
+	}
+
+	err = s.GameRevisionMediaRepository.CreateMultiple(ctx, getGameMediaForInsert(gameRevision.ID, mediaIDs, currentGameMedia))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func getGameMediaForInsert(revisionID uint, newMediaIDs []uint, currentGameMedia []entity.GameRevisionMedia) []entity.GameRevisionMedia {
+	gameMedia := make([]entity.GameRevisionMedia, 0)
+	for _, newMediaID := range newMediaIDs {
+		var hasMatch bool
+		for _, currentGameMedia := range currentGameMedia {
+			if newMediaID == currentGameMedia.MediaID {
+				hasMatch = true
+			}
+		}
+
+		if !hasMatch {
+			gameMedia = append(gameMedia, entity.GameRevisionMedia{
+				RevisionID: revisionID,
+				MediaID:    newMediaID,
+			})
+		}
+	}
+
+	return gameMedia
+}
+
+func getGameMediaForDelete(newMediaIDs []uint, currentGameMedia []entity.GameRevisionMedia) []entity.GameRevisionMedia {
+	gameMedia := make([]entity.GameRevisionMedia, 0)
+	for _, currentGameMedia := range currentGameMedia {
+		var hasMatch bool
+		for _, newMediaID := range newMediaIDs {
+			if currentGameMedia.MediaID == newMediaID {
+				hasMatch = true
+			}
+		}
+
+		if !hasMatch {
+			gameMedia = append(gameMedia, entity.GameRevisionMedia{
+				ID:         currentGameMedia.ID,
+				RevisionID: currentGameMedia.RevisionID,
+				MediaID:    currentGameMedia.MediaID,
+			})
+		}
+	}
+
+	return gameMedia
 }

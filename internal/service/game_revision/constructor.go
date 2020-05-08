@@ -15,6 +15,7 @@ type ServiceParams struct {
 	PublisherService         service.PublisherService
 	FeatureService           service.FeatureService
 	GenreService             service.GenreService
+	GameMediaService         service.GameMediaService
 	GameRevisionRepository   repository.GameRevisionRepository
 	GameRevisionExRepository repository.GameRevisionExRepository
 	Transactor               *transactor.Transactor
