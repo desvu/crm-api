@@ -16,6 +16,7 @@ type reqUpsert struct {
 	Summary     *string    `json:"summary"`
 	Description *string    `json:"description"`
 	License     *string    `json:"license"`
+	Trailer     *string    `json:"trailer"`
 	Platforms   *[]string  `json:"platforms"`
 	Developers  *[]uint    `json:"developers"`
 	Features    *[]uint    `json:"features"`
@@ -41,6 +42,7 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 			Summary:     req.Summary,
 			Description: req.Description,
 			License:     req.License,
+			Trailer:     req.Trailer,
 			Tags:        req.Tags,
 			Developers:  req.Developers,
 			Publishers:  req.Publishers,

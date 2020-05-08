@@ -20,6 +20,7 @@ type revision struct {
 	Summary     string  `json:"summary,omitempty"`
 	Description string  `json:"description,omitempty"`
 	License     string  `json:"license,omitempty"`
+	Trailer     string  `json:"trailer,omitempty"`
 	Media       []media `json:"media,omitempty"`
 }
 
@@ -41,6 +42,7 @@ func (h Handler) view(i *entity.GameEx) view {
 			Summary:     i.Revision.Summary,
 			Description: i.Revision.Description,
 			License:     i.Revision.License,
+			Trailer:     i.Revision.Trailer,
 		},
 	}}
 
