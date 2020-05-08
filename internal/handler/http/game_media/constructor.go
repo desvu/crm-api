@@ -9,6 +9,7 @@ import (
 type Params struct {
 	fx.In
 
+	GameService      service.GameService
 	GameMediaService service.GameMediaService
 	URLBuilder       url_builder.Helper
 }

@@ -54,6 +54,7 @@ func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*en
 			Publishers:         data.Publishers,
 			Features:           data.Features,
 			Genres:             data.Genres,
+			Media:              data.Media,
 			ReleaseDate:        data.ReleaseDate,
 			Platforms:          data.Platforms,
 			SystemRequirements: data.SystemRequirements,
@@ -90,7 +91,8 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*en
 		if data.Title != nil {
 			game.Title = *data.Title
 		}
-		if data.Slug != nil {
+
+		if data.Slug != nil && *data.Slug != game.Slug {
 			if err := s.checkNoExistGameBySlug(ctx, *data.Slug); err != nil {
 				return err
 			}
@@ -109,6 +111,7 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*en
 			Publishers:         data.Publishers,
 			Features:           data.Features,
 			Genres:             data.Genres,
+			Media:              data.Media,
 			SystemRequirements: data.SystemRequirements,
 		})
 

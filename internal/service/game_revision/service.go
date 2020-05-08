@@ -120,6 +120,13 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionDa
 			}
 		}
 
+		if data.Media != nil {
+			err := s.GameMediaService.UpdateForGameRevision(tx, revision, *data.Media)
+			if err != nil {
+				return err
+			}
+		}
+
 		return nil
 	}); err != nil {
 		return nil, err
