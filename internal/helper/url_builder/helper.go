@@ -7,5 +7,5 @@ import (
 )
 
 func (h Helper) BuildGameMedia(i *entity.GameMedia) string {
-	return strings.Join([]string{h.Env.App.StorageURL, i.FilePath}, "/")
+	return strings.Join([]string{h.Env.App.StorageURL, i.FilePath}, "")
 }
