@@ -22,6 +22,7 @@ import (
 	"github.com/qilin/crm-api/internal/handler/http/game"
 	"github.com/qilin/crm-api/internal/handler/http/game_media"
 	"github.com/qilin/crm-api/internal/handler/http/storefront"
+	"github.com/qilin/crm-api/pkg/response"
 	"go.uber.org/fx"
 )
 
@@ -37,6 +38,7 @@ func New(params Params) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 	e.HidePort = true
+	e.HTTPErrorHandler = response.Err
 
 	// Middleware
 	e.Use(middleware.Logger())

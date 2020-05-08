@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/qilin/crm-api/pkg/response"
+
 	"github.com/labstack/echo/v4"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
@@ -25,15 +27,13 @@ type requestData struct {
 //
 //     Responses:
 //       200: StorefrontList
-func (h *Handler) List(ctx echo.Context) error {
-	cnt := ctx.Request().Context()
-
-	res, err := h.Storefronts.GetAll(cnt)
+func (h *Handler) List(c echo.Context) error {
+	res, err := h.Storefronts.GetAll(c.Request().Context())
 	if err != nil {
 		return err
 	}
 
-	return ctx.JSON(http.StatusOK, h.viewList(res))
+	return response.New(c, h.viewList(res))
 }
 
 // swagger:route POST /storefronts storefronts createStorefronts
@@ -44,11 +44,9 @@ func (h *Handler) List(ctx echo.Context) error {
 //
 //     Responses:
 //       200: Storefront
-func (h *Handler) Create(ctx echo.Context) error {
-	cnt := ctx.Request().Context()
-
+func (h *Handler) Create(c echo.Context) error {
 	var request requestData
-	if err := ctx.Bind(&request); err != nil {
+	if err := c.Bind(&request); err != nil {
 		return err
 	}
 
@@ -57,18 +55,18 @@ func (h *Handler) Create(ctx echo.Context) error {
 		Blocks: request.Blocks,
 	}
 
-	res, err := h.Storefronts.Create(cnt, data)
+	res, err := h.Storefronts.Create(c.Request().Context(), data)
 	if err != nil {
 		var x perrors.Error
 		if errors.As(err, &x) {
 			if x.Type != perrors.ErrInternal {
-				return ctx.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
+				return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
 			}
 		}
 		return err
 	}
 
-	return ctx.JSON(http.StatusOK, h.view(res))
+	return response.New(c, h.view(res))
 }
 
 // swagger:route PUT /storefronts/:id storefronts updateStorefronts

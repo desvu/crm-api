@@ -3,10 +3,6 @@ package game
 import "github.com/qilin/crm-api/internal/domain/entity"
 
 type view struct {
-	Game game `json:"game"`
-}
-
-type game struct {
 	ID       string   `json:"id"`
 	Title    string   `json:"title"`
 	Type     string   `json:"type"`
@@ -30,7 +26,7 @@ type media struct {
 }
 
 func (h Handler) view(i *entity.GameEx) view {
-	var v = view{Game: game{
+	var v = view{
 		ID:    i.ID,
 		Title: i.Title,
 		Type:  i.Type.String(),
@@ -42,11 +38,11 @@ func (h Handler) view(i *entity.GameEx) view {
 			Description: i.Revision.Description,
 			License:     i.Revision.License,
 		},
-	}}
+	}
 
 	if len(i.Revision.Media) > 0 {
 		for _, m := range i.Revision.Media {
-			v.Game.Revision.Media = append(v.Game.Revision.Media, media{
+			v.Revision.Media = append(v.Revision.Media, media{
 				ID:   m.ID,
 				Type: m.Type.String(),
 				URL:  h.URLBuilder.BuildGameMedia(&m),

@@ -6,13 +6,15 @@ import (
 
 type Error struct {
 	Err   error
+	Key   string
 	Type  Type
 	Layer Layer
 }
 
-func NewService(t Type, msg string) Error {
+func NewService(t Type, msg string, key string) Error {
 	return Error{
 		Err:   errors.WithStack(errors.New(msg)),
+		Key:   key,
 		Type:  t,
 		Layer: Service,
 	}
@@ -21,6 +23,7 @@ func NewService(t Type, msg string) Error {
 func NewInternal(err error) Error {
 	return Error{
 		Err:   errors.WithStack(err),
+		Key:   "internal_server_error",
 		Type:  ErrInternal,
 		Layer: Internal,
 	}

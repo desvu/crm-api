@@ -2,52 +2,57 @@ package errors
 
 import "github.com/qilin/crm-api/pkg/errors"
 
-func NewValidation(err error) error {
-	return errors.NewService(errors.ErrValidation, err.Error())
-}
-
 var (
+	// Common
+	InvalidGameID = errors.NewService(errors.ErrValidation, "invalid game id", "invalid_game_id")
+
 	// Developer service
-	DeveloperNotFound   = errors.NewService(errors.ErrNotFound, "developer not found")
-	InvalidDeveloperIDs = errors.NewService(errors.ErrValidation, "invalid developer ids")
+	DeveloperNotFound   = errors.NewService(errors.ErrNotFound, "developer not found", "developer_not_found")
+	InvalidDeveloperIDs = errors.NewService(errors.ErrValidation, "invalid developer ids", "invalid_developer_ids")
 
 	// Feature service
-	FeatureNotFound   = errors.NewService(errors.ErrNotFound, "feature not found")
-	InvalidFeatureIDs = errors.NewService(errors.ErrValidation, "invalid feature ids")
+	FeatureNotFound   = errors.NewService(errors.ErrNotFound, "feature not found", "feature_not_found")
+	InvalidFeatureIDs = errors.NewService(errors.ErrValidation, "invalid feature ids", "invalid_feature_ids")
 
 	// Game service
-	GameSlugAlreadyExist = errors.NewService(errors.ErrAlreadyExist, "game slug already exist")
-	GameNotFound         = errors.NewService(errors.ErrNotFound, "game not found")
+	GameSlugAlreadyExist = errors.NewService(errors.ErrAlreadyExist, "game slug already exist", "game_slug_already_exist")
+	GameNotFound         = errors.NewService(errors.ErrNotFound, "game not found", "game_not_found")
 
 	// GameRevision service
-	GameRevisionNotFound = errors.NewService(errors.ErrNotFound, "game revision not found")
+	GameRevisionNotFound                 = errors.NewService(errors.ErrNotFound, "game revision not found", "game_revision_not_found")
+	GameRevisionUniqueSystemRequirements = errors.NewService(errors.ErrValidation, "systemRequirements platform param must be unique", "game_revision_unique_system_requirements")
 
 	// GameStorePublish service
-	GameStorePublishNotFound = errors.NewService(errors.ErrNotFound, "game store publish not found")
+	GameStorePublishNotFound = errors.NewService(errors.ErrNotFound, "game store publish not found", "game_store_publish_not_found")
 
 	// Genre service
-	GenreNotFound   = errors.NewService(errors.ErrNotFound, "genre not found")
-	InvalidGenreIDs = errors.NewService(errors.ErrValidation, "invalid genre ids")
+	GenreNotFound   = errors.NewService(errors.ErrNotFound, "genre not found", "genre_not_found")
+	InvalidGenreIDs = errors.NewService(errors.ErrValidation, "invalid genre ids", "invalid_genre_ids")
 
 	// Publisher service
-	PublisherNotFound   = errors.NewService(errors.ErrNotFound, "publisher not found")
-	InvalidPublisherIDs = errors.NewService(errors.ErrValidation, "invalid publisher ids")
+	PublisherNotFound   = errors.NewService(errors.ErrNotFound, "publisher not found", "publisher_not_found")
+	InvalidPublisherIDs = errors.NewService(errors.ErrValidation, "invalid publisher ids", "invalid_publisher_ids")
 
 	// Tag service
-	TagNotFound   = errors.NewService(errors.ErrNotFound, "tag not found")
-	InvalidTagIDs = errors.NewService(errors.ErrValidation, "invalid tag ids")
+	TagNotFound   = errors.NewService(errors.ErrNotFound, "tag not found", "tag_not_found")
+	InvalidTagIDs = errors.NewService(errors.ErrValidation, "invalid tag ids", "invalid_tag_ids")
 
 	// GameMedia service
-	InvalidMediaIDs = errors.NewService(errors.ErrValidation, "invalid media ids")
+	MediaNotFound   = errors.NewService(errors.ErrNotFound, "media not found", "media_not_found")
+	InvalidMediaIDs = errors.NewService(errors.ErrValidation, "invalid media ids", "invalid_media_ids")
 
 	// StoreFront service
-	StoreFrontNotFound     = errors.NewService(errors.ErrNotFound, "storefront not found")
-	StoreFrontIsActive     = errors.NewService(errors.ErrValidation, "storefront is active")
-	UnknownBlockType       = errors.NewService(errors.ErrValidation, "unknown block type")
-	InvalidBlockTitle      = errors.NewService(errors.ErrValidation, "invalid block title")
-	InvalidBlockGamesCount = errors.NewService(errors.ErrValidation, "invalid block games count")
+	StoreFrontNotFound     = errors.NewService(errors.ErrNotFound, "storefront not found", "storefront_not_found")
+	StoreFrontIsActive     = errors.NewService(errors.ErrValidation, "storefront is active", "storefront_is_active")
+	UnknownBlockType       = errors.NewService(errors.ErrValidation, "unknown block type", "unknown_block_type")
+	InvalidBlockTitle      = errors.NewService(errors.ErrValidation, "invalid block title", "invalid_block_title")
+	InvalidBlockGamesCount = errors.NewService(errors.ErrValidation, "invalid block games count", "invalid_block_games_count")
 )
 
 func NewInternal(err error) errors.Error {
 	return errors.NewInternal(err)
+}
+
+func NewValidation(err error) error {
+	return errors.NewService(errors.ErrValidation, err.Error(), "validation")
 }
