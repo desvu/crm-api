@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"regexp"
 	"time"
 
 	"github.com/go-playground/validator/v10"
@@ -32,7 +33,7 @@ type CommonGameData struct {
 	Summary     *string
 	Description *string
 	License     *string
-	Trailer     *string
+	Trailer     *string `validate:"trailer"`
 	Tags        *[]uint
 	Developers  *[]uint
 	Publishers  *[]uint
@@ -64,6 +65,7 @@ type CreateGameData struct {
 
 func (d CreateGameData) Validate() error {
 	validate := validator.New()
+	validate.RegisterValidation("trailer", validateTrailer)
 	return validate.Struct(d)
 }
 
@@ -87,4 +89,12 @@ type RequirementsSet struct {
 	GPU       string
 	DiskSpace uint
 	RAM       uint
+}
+
+func validateTrailer(fl validator.FieldLevel) bool {
+	match, _ := regexp.MatchString(
+		`^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$`,
+		fl.Field().String(),
+	)
+	return match
 }

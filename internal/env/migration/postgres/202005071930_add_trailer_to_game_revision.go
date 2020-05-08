@@ -1,19 +1,26 @@
 package postgres
 
 import (
-	"github.com/go-pg/migrations/v7"
+	"github.com/go-pg/pg/v9/orm"
+	migrations "github.com/robinjoseph08/go-pg-migrations/v2"
 )
 
 func init() {
-	migrations.MustRegisterTx(func(db migrations.DB) error {
+	up := func(db orm.DB) error {
 		_, err := db.Exec(`
 			alter table game_revisions add column trailer text not null;
 		`)
 		return err
-	}, func(db migrations.DB) error {
+	}
+
+	down := func(db orm.DB) error {
 		_, err := db.Exec(`
 			alter table game_revisions drop column trailer;
 		`)
 		return err
-	})
+	}
+
+	opts := migrations.MigrationOptions{}
+
+	migrations.Register("202005071930_add_trailer_to_game_revision", up, down, opts)
 }
