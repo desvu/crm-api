@@ -8,7 +8,7 @@ import (
 func init() {
 	up := func(db orm.DB) error {
 		_, err := db.Exec(`
-			alter table game_revisions add column trailer text not null;
+			alter table game_revisions add column trailer text not null default '';
 		`)
 		return err
 	}
