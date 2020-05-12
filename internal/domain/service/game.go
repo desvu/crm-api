@@ -3,12 +3,13 @@ package service
 import (
 	"context"
 	"net/url"
+	"regexp"
 	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game"
-	"github.com/qilin/crm-api/pkg/errors"
+	"github.com/qilin/crm-api/internal/domain/errors"
 )
 
 //go:generate mockgen -destination=../mocks/game_service.go -package=mocks github.com/qilin/crm-api/internal/domain/service GameService
@@ -34,6 +35,7 @@ type CommonGameData struct {
 	Summary     *string
 	Description *string
 	License     *string
+	Trailer     *string `validate:"trailer"`
 	Tags        *[]uint
 	Developers  *[]uint
 	Publishers  *[]uint
@@ -66,6 +68,7 @@ type CreateGameData struct {
 
 func (d CreateGameData) Validate() error {
 	validate := validator.New()
+	validate.RegisterValidation("trailer", validateTrailer)
 	err := validate.Struct(d)
 	if err != nil {
 		return err
@@ -98,11 +101,11 @@ type SocialLink struct {
 func (d SocialLink) Validate() error {
 	u, err := url.Parse(d.URL)
 	if err != nil {
-		return errors.NewService(errors.ErrValidation, err.Error())
+		return errors.SocialLinkIncorrectURL
 	}
 
 	if u.Hostname() == "" {
-		return errors.NewService(errors.ErrValidation, "URL must contain domain name")
+		return errors.SocialLinkIncorrectURL
 	}
 
 	return nil
@@ -119,4 +122,12 @@ type RequirementsSet struct {
 	GPU       string
 	DiskSpace uint
 	RAM       uint
+}
+
+func validateTrailer(fl validator.FieldLevel) bool {
+	match, _ := regexp.MatchString(
+		`^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$`,
+		fl.Field().String(),
+	)
+	return match
 }

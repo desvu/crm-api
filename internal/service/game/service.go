@@ -48,6 +48,7 @@ func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*en
 			Summary:            data.Summary,
 			Description:        data.Description,
 			License:            data.License,
+			Trailer:            data.Trailer,
 			Tags:               data.Tags,
 			Developers:         data.Developers,
 			Publishers:         data.Publishers,
@@ -158,6 +159,10 @@ func (s *Service) Upsert(ctx context.Context, data *service.UpsertGameData) (*en
 		d.Type = *data.Type
 	}
 
+	if data.Trailer != nil {
+		d.Trailer = data.Trailer
+	}
+
 	return s.Create(ctx, d)
 }
 
@@ -193,6 +198,11 @@ func (s *Service) Publish(ctx context.Context, id string) error {
 }
 
 func (s *Service) GetByID(ctx context.Context, id string) (*entity.Game, error) {
+	_, err := uuid.Parse(id)
+	if err != nil {
+		return nil, errors.InvalidGameID
+	}
+
 	game, err := s.GameRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
