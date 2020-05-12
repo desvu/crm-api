@@ -27,5 +27,5 @@ func init() {
 
 	opts := migrations.MigrationOptions{}
 
-	migrations.Register("20200507181144_slug_in_game", up, down, opts)
+	migrations.Register("202005071811_slug_in_game", up, down, opts)
 }

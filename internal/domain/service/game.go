@@ -35,7 +35,7 @@ type CommonGameData struct {
 	Summary     *string
 	Description *string
 	License     *string
-	Trailer     *string `validate:"trailer"`
+	Trailer     *string // `validate:"trailer"`
 	Tags        *[]uint
 	Developers  *[]uint
 	Publishers  *[]uint
@@ -69,7 +69,12 @@ type CreateGameData struct {
 
 func (d CreateGameData) Validate() error {
 	validate := validator.New()
-	validate.RegisterValidation("trailer", validateTrailer)
+
+	//err := validate.RegisterValidation("trailer", validateTrailer)
+	//if err != nil {
+	//	return err
+	//}
+
 	err := validate.Struct(d)
 	if err != nil {
 		return err
@@ -149,6 +154,7 @@ func validateTrailer(fl validator.FieldLevel) bool {
 		`^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$`,
 		fl.Field().String(),
 	)
+
 	return match
 }
 
