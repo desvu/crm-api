@@ -3,12 +3,10 @@ package game
 import (
 	"context"
 
-	"github.com/qilin/crm-api/internal/domain/errors"
-
 	"github.com/google/uuid"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
-	"github.com/qilin/crm-api/internal/domain/publisher"
+	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
@@ -118,7 +116,7 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*en
 			Features:           data.Features,
 			Genres:             data.Genres,
 			Media:              data.Media,
-            SocialLinks:        data.SocialLinks,
+			SocialLinks:        data.SocialLinks,
 			SystemRequirements: data.SystemRequirements,
 			Localizations:      data.Localizations,
 		})
@@ -187,9 +185,9 @@ func (s *Service) Publish(ctx context.Context, id string) error {
 		return err
 	}
 
-	if err = s.GameStorePublisher.Publish(publisher.PublishGameStoreData{Game: game}); err != nil {
-		return err
-	}
+	//if err = s.GameStorePublisher.Publish(publisher.PublishGameStoreData{Game: game}); err != nil {
+	//	return err
+	//}
 
 	revisionStatus := game_revision.StatusPublished // TODO publishing -> published
 	_, err = s.GameRevisionService.Update(ctx, &service.UpdateGameRevisionData{
