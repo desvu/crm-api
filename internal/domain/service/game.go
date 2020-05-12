@@ -69,19 +69,26 @@ type CreateGameData struct {
 
 func (d CreateGameData) Validate() error {
 	validate := validator.New()
-	validate.RegisterValidation("trailer", validateTrailer)
+
+	if d.Trailer != nil {
+		err := validate.RegisterValidation("trailer", validateTrailer)
+		if err != nil {
+			return err
+		}
+	}
+
 	err := validate.Struct(d)
 	if err != nil {
 		return err
 	}
 
-    if d.Localizations != nil {
-        for _, l := range *d.Localizations {
-            if err := l.Validate(); err != nil {
-                return err
-            }
-        }
-    }
+	if d.Localizations != nil {
+		for _, l := range *d.Localizations {
+			if err := l.Validate(); err != nil {
+				return err
+			}
+		}
+	}
 
 	if d.SocialLinks != nil {
 		for _, l := range *d.SocialLinks {
@@ -104,14 +111,14 @@ type UpdateGameData struct {
 }
 
 func (d UpdateGameData) Validate() error {
-    if d.Localizations != nil {
-        for _, l := range *d.Localizations {
-            if err := l.Validate(); err != nil {
-                return err
-            }
-        }
-    }
-    return nil
+	if d.Localizations != nil {
+		for _, l := range *d.Localizations {
+			if err := l.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 type SocialLink struct {
