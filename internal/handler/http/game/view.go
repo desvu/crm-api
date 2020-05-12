@@ -11,14 +11,14 @@ type view struct {
 }
 
 type revision struct {
-	ID          uint    `json:"id"`
-	Status      string  `json:"status"`
-	Summary     string  `json:"summary,omitempty"`
-	Description string  `json:"description,omitempty"`
-	License     string  `json:"license,omitempty"`
-	Trailer     string  `json:"trailer,omitempty"`
-	Media       []media `json:"media,omitempty"`
-    Localization []localization `json:"localization,omitempty"`
+	ID           uint           `json:"id"`
+	Status       string         `json:"status"`
+	Summary      string         `json:"summary,omitempty"`
+	Description  string         `json:"description,omitempty"`
+	License      string         `json:"license,omitempty"`
+	Trailer      string         `json:"trailer,omitempty"`
+	Media        []media        `json:"media,omitempty"`
+	Localization []localization `json:"localization,omitempty"`
 }
 
 type media struct {
@@ -62,7 +62,7 @@ func (h Handler) view(i *entity.GameEx) view {
 
 	if len(i.Revision.Localization) > 0 {
 		for _, l := range i.Revision.Localization {
-			v.Game.Revision.Localization = append(v.Game.Revision.Localization, localization{
+			v.Revision.Localization = append(v.Revision.Localization, localization{
 				Language:  l.Language,
 				Interface: l.Interface,
 				Audio:     l.Audio,

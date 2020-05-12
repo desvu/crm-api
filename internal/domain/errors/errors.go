@@ -48,9 +48,9 @@ var (
 	InvalidBlockTitle      = errors.NewService(errors.ErrValidation, "invalid block title", "invalid_block_title")
 	InvalidBlockGamesCount = errors.NewService(errors.ErrValidation, "invalid block games count", "invalid_block_games_count")
 
-    // Localization service
-    LocalizationNotFound            = errors.NewService(errors.ErrNotFound, "localization not found")
-    InvalidLocalizationLanguageCode = errors.NewService(errors.ErrValidation, "invalid localization language code")
+	// Localization service
+	LocalizationNotFound            = errors.NewService(errors.ErrNotFound, "localization not found", "localization_not_found")
+	InvalidLocalizationLanguageCode = errors.NewService(errors.ErrValidation, "invalid localization language code", "invalid_localization_language_code")
 )
 
 func NewInternal(err error) errors.Error {
