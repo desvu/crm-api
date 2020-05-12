@@ -27,6 +27,7 @@ type reqUpsert struct {
 	Media       *[]uint      `json:"media"`
 	ReleaseDate *time.Time   `json:"release_date"`
 	SocialLinks []socialLink `json:"social_links"`
+    Localization []localization `json:"localization"`
 }
 
 func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
@@ -35,7 +36,7 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 		return nil, err
 	}
 
-	return &service.UpsertGameData{
+	data := &service.UpsertGameData{
 		ID:    req.ID,
 		Title: req.Title,
 		Slug:  req.Slug,
@@ -55,7 +56,22 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 			ReleaseDate: req.ReleaseDate,
 			SocialLinks: convertSocialLinksToServiceSocialLinks(req.SocialLinks),
 		},
-	}, nil
+	}
+
+	if len(req.Localization) > 0 {
+		localizations := make([]service.LocalizationData, len(req.Localization))
+		for i, l := range req.Localization {
+			localizations[i] = service.LocalizationData{
+				Language:  l.Language,
+				Interface: l.Interface,
+				Audio:     l.Audio,
+				Subtitles: l.Subtitles,
+			}
+		}
+		data.CommonGameData.Localizations = &localizations
+	}
+
+	return data, nil
 }
 
 func convertSocialLinksToServiceSocialLinks(links []socialLink) *[]service.SocialLink {

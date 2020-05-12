@@ -50,6 +50,10 @@ var (
 
 	// SocialLinks
 	SocialLinkIncorrectURL = errors.NewService(errors.ErrValidation, "social link incorrect url", "social_link_incorrect_url")
+
+    // Localization service
+    LocalizationNotFound            = errors.NewService(errors.ErrNotFound, "localization not found", "localization_not_found")
+    InvalidLocalizationLanguageCode = errors.NewService(errors.ErrValidation, "invalid localization language code", "invalid_localization_language_code")
 )
 
 func NewInternal(err error) errors.Error {

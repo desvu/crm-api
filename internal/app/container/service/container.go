@@ -8,6 +8,7 @@ import (
 	"github.com/qilin/crm-api/internal/service/game_revision"
 	"github.com/qilin/crm-api/internal/service/game_store_publish"
 	"github.com/qilin/crm-api/internal/service/genre"
+	"github.com/qilin/crm-api/internal/service/localization"
 	"github.com/qilin/crm-api/internal/service/publisher"
 	"github.com/qilin/crm-api/internal/service/storefront"
 	"github.com/qilin/crm-api/internal/service/tag"
@@ -26,5 +27,6 @@ func New() fx.Option {
 		game_media.New,
 		game_store_publish.New,
 		storefront.New,
+        localization.New,
 	)
 }

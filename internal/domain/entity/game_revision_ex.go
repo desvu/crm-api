@@ -8,4 +8,5 @@ type GameRevisionEx struct {
 	Features   []Feature
 	Genres     []Genre
 	Media      []GameMedia
+    Localization []Localization
 }

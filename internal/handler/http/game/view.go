@@ -19,6 +19,7 @@ type revision struct {
 	Trailer     string  `json:"trailer,omitempty"`
 	Media       []media `json:"media,omitempty"`
     SocialLinks []socialLink `json:"social_links,omitempty"`
+    Localization []localization `json:"localization,omitempty"`
 }
 
 type socialLink struct {
@@ -29,6 +30,13 @@ type media struct {
 	ID   uint   `json:"id"`
 	Type string `json:"type"`
 	URL  string `json:"url"`
+}
+
+type localization struct {
+	Language  string `json:"language"`
+	Interface bool   `json:"interface"`
+	Audio     bool   `json:"audio"`
+	Subtitles bool   `json:"subtitles"`
 }
 
 func (h Handler) view(i *entity.GameEx) view {
@@ -54,6 +62,17 @@ func (h Handler) view(i *entity.GameEx) view {
 				ID:   m.ID,
 				Type: m.Type.String(),
 				URL:  h.URLBuilder.BuildGameMedia(&m),
+			})
+		}
+	}
+
+	if len(i.Revision.Localization) > 0 {
+		for _, l := range i.Revision.Localization {
+			v.Revision.Localization = append(v.Revision.Localization, localization{
+				Language:  l.Language,
+				Interface: l.Interface,
+				Audio:     l.Audio,
+				Subtitles: l.Subtitles,
 			})
 		}
 	}
