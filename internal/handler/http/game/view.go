@@ -18,6 +18,11 @@ type revision struct {
 	License     string  `json:"license,omitempty"`
 	Trailer     string  `json:"trailer,omitempty"`
 	Media       []media `json:"media,omitempty"`
+    SocialLinks []socialLink `json:"social_links,omitempty"`
+}
+
+type socialLink struct {
+    URL string `json:"url"`
 }
 
 type media struct {
@@ -39,6 +44,7 @@ func (h Handler) view(i *entity.GameEx) view {
 			Description: i.Revision.Description,
 			License:     i.Revision.License,
 			Trailer:     i.Revision.Trailer,
+            SocialLinks: convertEntitySocialLinksToSocialLinks(i.Revision.SocialLinks),
 		},
 	}
 

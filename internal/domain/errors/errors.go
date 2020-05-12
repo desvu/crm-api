@@ -47,6 +47,9 @@ var (
 	UnknownBlockType       = errors.NewService(errors.ErrValidation, "unknown block type", "unknown_block_type")
 	InvalidBlockTitle      = errors.NewService(errors.ErrValidation, "invalid block title", "invalid_block_title")
 	InvalidBlockGamesCount = errors.NewService(errors.ErrValidation, "invalid block games count", "invalid_block_games_count")
+
+	// SocialLinks
+	SocialLinkIncorrectURL = errors.NewService(errors.ErrValidation, "social link incorrect url", "social_link_incorrect_url")
 )
 
 func NewInternal(err error) errors.Error {

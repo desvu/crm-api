@@ -17,6 +17,7 @@ type GameRevision struct {
 	ReleaseDate        time.Time
 	PublishedAt        *time.Time
 	SystemRequirements []SystemRequirements
+	SocialLinks        []SocialLink
 
 	Status    game_revision.Status
 	Platforms game.PlatformArray
