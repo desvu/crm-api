@@ -187,7 +187,31 @@ func (r GameRevisionLocalizationRepository) FindByGameRevisionID(ctx context.Con
 	return entities, nil
 }
 
+func (r GameRevisionLocalizationRepository) FindByGameRevisionIDs(ctx context.Context, gameRevisionIDs []uint) ([]entity.Localization, error) {
+	if len(gameRevisionIDs) == 0 {
+		return nil, nil
+	}
+
+	var models []model
+
+	err := r.h.ModelContext(ctx, &models).WhereIn("game_revision_id in (?)", gameRevisionIDs).Select()
+	if err != nil {
+		return nil, err
+	}
+
+	entities := make([]entity.Localization, len(models))
+	for i := range models {
+		entities[i] = *models[i].Convert()
+	}
+
+	return entities, nil
+}
+
 func (r GameRevisionLocalizationRepository) FindByGameRevisionIDAndLanguage(ctx context.Context, gameRevisionID uint, langs []string) ([]entity.Localization, error) {
+	if len(langs) == 0 {
+		return nil, nil
+	}
+
 	var models []model
 
 	err := r.h.ModelContext(ctx, &models).

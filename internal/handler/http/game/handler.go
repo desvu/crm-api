@@ -7,12 +7,17 @@ import (
 )
 
 func (h Handler) GetByFilter(c echo.Context) error {
-	game, err := h.GameService.GetExByID(c.Request().Context(), c.Param("game_id"))
+	data, err := convertGetByFilterRequest(c)
 	if err != nil {
 		return err
 	}
 
-	return response.New(c, h.view(game))
+	games, err := h.GameService.GetExByFilter(c.Request().Context(), data)
+	if err != nil {
+		return err
+	}
+
+	return response.New(c, h.viewArray(games))
 }
 
 func (h Handler) GetByID(c echo.Context) error {
@@ -44,7 +49,7 @@ func (h Handler) Publish(c echo.Context) error {
 		return err
 	}
 
-	game, err := h.GameService.GetExByID(c.Request().Context(), c.Param("game_id"))
+	game, err := h.GameService.GetExLastPublishedByID(c.Request().Context(), c.Param("game_id"))
 	if err != nil {
 		return err
 	}

@@ -45,7 +45,7 @@ func (s *Service) verifyBlock(ctx context.Context, data *entity.Block) error {
 	if err := data.Validate(); err != nil {
 		return err
 	}
-	err := s.GameRevisionService.IsGamesPublished(ctx, data.GameIDs...)
+	err := s.GameRevisionService.IsGamesPublished(ctx, data.GameIDs)
 	if err != nil {
 		return err
 	}

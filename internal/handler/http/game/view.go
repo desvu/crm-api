@@ -11,19 +11,19 @@ type view struct {
 }
 
 type revision struct {
-	ID          uint    `json:"id"`
-	Status      string  `json:"status"`
-	Summary     string  `json:"summary,omitempty"`
-	Description string  `json:"description,omitempty"`
-	License     string  `json:"license,omitempty"`
-	Trailer     string  `json:"trailer,omitempty"`
-	Media       []media `json:"media,omitempty"`
-    SocialLinks []socialLink `json:"social_links,omitempty"`
-    Localization []localization `json:"localization,omitempty"`
+	ID           uint           `json:"id"`
+	Status       string         `json:"status"`
+	Summary      string         `json:"summary,omitempty"`
+	Description  string         `json:"description,omitempty"`
+	License      string         `json:"license,omitempty"`
+	Trailer      string         `json:"trailer,omitempty"`
+	Media        []media        `json:"media,omitempty"`
+	SocialLinks  []socialLink   `json:"social_links,omitempty"`
+	Localization []localization `json:"localization,omitempty"`
 }
 
 type socialLink struct {
-    URL string `json:"url"`
+	URL string `json:"url"`
 }
 
 type media struct {
@@ -52,7 +52,7 @@ func (h Handler) view(i *entity.GameEx) view {
 			Description: i.Revision.Description,
 			License:     i.Revision.License,
 			Trailer:     i.Revision.Trailer,
-            SocialLinks: convertEntitySocialLinksToSocialLinks(i.Revision.SocialLinks),
+			SocialLinks: convertEntitySocialLinksToSocialLinks(i.Revision.SocialLinks),
 		},
 	}
 
@@ -78,4 +78,27 @@ func (h Handler) view(i *entity.GameEx) view {
 	}
 
 	return v
+}
+
+type pagination struct {
+	Total int `json:"total"`
+}
+
+type viewArray struct {
+	Games      []view     `json:"games"`
+	Pagination pagination `json:"pagination"`
+}
+
+func (h Handler) viewArray(items []entity.GameEx) viewArray {
+	var games = make([]view, len(items))
+	for i := range items {
+		games[i] = h.view(&items[i])
+	}
+
+	return viewArray{
+		Games: games,
+		Pagination: pagination{
+			Total: 0,
+		},
+	}
 }

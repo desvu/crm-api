@@ -10,24 +10,24 @@ import (
 )
 
 type reqUpsert struct {
-	ID          *string      `json:"id"`
-	Title       *string      `json:"title"`
-	Type        *string      `json:"type"`
-	Slug        *string      `json:"slug"`
-	Summary     *string      `json:"summary"`
-	Description *string      `json:"description"`
-	License     *string      `json:"license"`
-	Trailer     *string      `json:"trailer"`
-	Platforms   *[]string    `json:"platforms"`
-	Developers  *[]uint      `json:"developers"`
-	Features    *[]uint      `json:"features"`
-	Genres      *[]uint      `json:"genres"`
-	Publishers  *[]uint      `json:"publishers"`
-	Tags        *[]uint      `json:"tags"`
-	Media       *[]uint      `json:"media"`
-	ReleaseDate *time.Time   `json:"release_date"`
-	SocialLinks []socialLink `json:"social_links"`
-    Localization []localization `json:"localization"`
+	ID           *string        `json:"id"`
+	Title        *string        `json:"title"`
+	Type         *string        `json:"type"`
+	Slug         *string        `json:"slug"`
+	Summary      *string        `json:"summary"`
+	Description  *string        `json:"description"`
+	License      *string        `json:"license"`
+	Trailer      *string        `json:"trailer"`
+	Platforms    *[]string      `json:"platforms"`
+	Developers   *[]uint        `json:"developers"`
+	Features     *[]uint        `json:"features"`
+	Genres       *[]uint        `json:"genres"`
+	Publishers   *[]uint        `json:"publishers"`
+	Tags         *[]uint        `json:"tags"`
+	Media        *[]uint        `json:"media"`
+	ReleaseDate  *time.Time     `json:"release_date"`
+	SocialLinks  []socialLink   `json:"social_links"`
+	Localization []localization `json:"localization"`
 }
 
 func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
@@ -88,4 +88,21 @@ func convertEntitySocialLinksToSocialLinks(links []entity.SocialLink) []socialLi
 		list[i] = socialLink{URL: item.URL}
 	}
 	return list
+}
+
+type reqGetByFilter struct {
+	Limit  int `query:"limit"`
+	Offset int `query:"offset"`
+}
+
+func convertGetByFilterRequest(c echo.Context) (*service.GetByFilterGameDate, error) {
+	req := new(reqGetByFilter)
+	if err := c.Bind(req); err != nil {
+		return nil, err
+	}
+
+	return &service.GetByFilterGameDate{
+		Limit:  req.Limit,
+		Offset: req.Offset,
+	}, nil
 }

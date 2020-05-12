@@ -23,6 +23,7 @@ type GameService interface {
 	GetByID(ctx context.Context, id string) (*entity.Game, error)
 	GetExByID(ctx context.Context, id string) (*entity.GameEx, error)
 	GetExByIDAndRevisionID(ctx context.Context, id string, revisionID uint) (*entity.GameEx, error)
+	GetExByFilter(ctx context.Context, data *GetByFilterGameDate) ([]entity.GameEx, error)
 
 	// GetExLastPublishedByID returns last published game by id
 	GetExLastPublishedByID(ctx context.Context, id string) (*entity.GameEx, error)
@@ -159,4 +160,6 @@ func validateTrailer(fl validator.FieldLevel) bool {
 }
 
 type GetByFilterGameDate struct {
+	Limit  int
+	Offset int
 }

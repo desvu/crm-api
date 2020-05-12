@@ -49,6 +49,7 @@ func New(params Params) *echo.Echo {
 	// manage games
 	api.POST("/games", params.GameHandler.Upsert)
 	api.GET("/games/:game_id", params.GameHandler.GetByID)
+	api.GET("/games", params.GameHandler.GetByFilter)
 	api.POST("/games/:game_id/publish", params.GameHandler.Publish)
 
 	// media files upload

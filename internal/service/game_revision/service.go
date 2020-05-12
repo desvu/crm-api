@@ -134,13 +134,12 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionDa
 			}
 		}
 
-        if data.Localizations != nil {
-            err := s.LocalizationService.UpdateLocalizationsForGameRevision(tx, revision, *data.Localizations)
-            if err != nil {
-                return err
-            }
-        }
-
+		if data.Localizations != nil {
+			err := s.LocalizationService.UpdateLocalizationsForGameRevision(tx, revision, *data.Localizations)
+			if err != nil {
+				return err
+			}
+		}
 
 		return nil
 	}); err != nil {
@@ -161,6 +160,10 @@ func (s *Service) GetByID(ctx context.Context, id uint) (*entity.GameRevisionEx,
 	}
 
 	return revision, nil
+}
+
+func (s *Service) GetLastByGameIDs(ctx context.Context, gameIDs []string) ([]entity.GameRevisionEx, error) {
+	return s.GameRevisionExRepository.FindLastByGameIDs(ctx, gameIDs)
 }
 
 func (s *Service) GetByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error) {
@@ -214,16 +217,13 @@ func (s *Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entit
 	}, nil
 }
 
-func (s *Service) IsGamesPublished(ctx context.Context, ids ...string) error {
-	if len(ids) == 0 {
-		return nil
-	}
-	res, err := s.GameRevisionRepository.FindPublishedByGameIDs(ctx, ids...)
+func (s *Service) IsGamesPublished(ctx context.Context, gameIDs []string) error {
+	res, err := s.GameRevisionRepository.FindPublishedByGameIDs(ctx, gameIDs)
 	if err != nil {
 		return err
 	}
 
-	if len(res) != len(ids) {
+	if len(res) != len(gameIDs) {
 		return errors.GameNotFound // attach game id
 	}
 
