@@ -143,5 +143,5 @@ func init() {
 
 	opts := migrations.MigrationOptions{}
 
-	migrations.Register("20200507175908_added_game_tables", up, down, opts)
+	migrations.Register("202005071759_added_game_tables", up, down, opts)
 }
