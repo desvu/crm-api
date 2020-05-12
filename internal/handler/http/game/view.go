@@ -11,19 +11,20 @@ type view struct {
 }
 
 type revision struct {
-	ID          uint    `json:"id"`
-	Status      string  `json:"status"`
-	Summary     string  `json:"summary,omitempty"`
-	Description string  `json:"description,omitempty"`
-	License     string  `json:"license,omitempty"`
-	Trailer     string  `json:"trailer,omitempty"`
-	Media       []media `json:"media,omitempty"`
-    SocialLinks []socialLink `json:"social_links,omitempty"`
-    Localization []localization `json:"localization,omitempty"`
+	ID           uint           `json:"id"`
+	Status       string         `json:"status"`
+	Summary      string         `json:"summary,omitempty"`
+	Description  string         `json:"description,omitempty"`
+	License      string         `json:"license,omitempty"`
+	Trailer      string         `json:"trailer,omitempty"`
+	Media        []media        `json:"media,omitempty"`
+	SocialLinks  []socialLink   `json:"social_links,omitempty"`
+	Localization []localization `json:"localization,omitempty"`
+	Rating       []rating       `json:"rating,omitempty"`
 }
 
 type socialLink struct {
-    URL string `json:"url"`
+	URL string `json:"url"`
 }
 
 type media struct {
@@ -39,6 +40,13 @@ type localization struct {
 	Subtitles bool   `json:"subtitles"`
 }
 
+type rating struct {
+	Agency              string `json:"agency"`
+	Rating              string `json:"rating"`
+	DisplayOnlineNotice bool   `json:"display_online_notice"`
+	ShowAgeRestrict     bool   `json:"show_age_restrict"`
+}
+
 func (h Handler) view(i *entity.GameEx) view {
 	var v = view{
 		ID:    i.ID,
@@ -52,7 +60,7 @@ func (h Handler) view(i *entity.GameEx) view {
 			Description: i.Revision.Description,
 			License:     i.Revision.License,
 			Trailer:     i.Revision.Trailer,
-            SocialLinks: convertEntitySocialLinksToSocialLinks(i.Revision.SocialLinks),
+			SocialLinks: convertEntitySocialLinksToSocialLinks(i.Revision.SocialLinks),
 		},
 	}
 
@@ -73,6 +81,17 @@ func (h Handler) view(i *entity.GameEx) view {
 				Interface: l.Interface,
 				Audio:     l.Audio,
 				Subtitles: l.Subtitles,
+			})
+		}
+	}
+
+	if len(i.Revision.Rating) > 0 {
+		for _, r := range i.Revision.Rating {
+			v.Revision.Rating = append(v.Revision.Rating, rating{
+				Agency:              r.Agency.String(),
+				Rating:              r.Rating.String(),
+				DisplayOnlineNotice: r.DisplayOnlineNotice,
+				ShowAgeRestrict:     r.ShowAgeRestrict,
 			})
 		}
 	}

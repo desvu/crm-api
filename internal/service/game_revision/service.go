@@ -134,13 +134,19 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionDa
 			}
 		}
 
-        if data.Localizations != nil {
-            err := s.LocalizationService.UpdateLocalizationsForGameRevision(tx, revision, *data.Localizations)
-            if err != nil {
-                return err
-            }
-        }
+		if data.Localizations != nil {
+			err := s.LocalizationService.UpdateLocalizationsForGameRevision(tx, revision, *data.Localizations)
+			if err != nil {
+				return err
+			}
+		}
 
+		if data.Rating != nil {
+			err := s.RatingService.UpdateRatingsForGameRevision(tx, revision, *data.Rating)
+			if err != nil {
+				return err
+			}
+		}
 
 		return nil
 	}); err != nil {

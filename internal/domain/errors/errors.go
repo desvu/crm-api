@@ -51,9 +51,14 @@ var (
 	// SocialLinks
 	SocialLinkIncorrectURL = errors.NewService(errors.ErrValidation, "social link incorrect url", "social_link_incorrect_url")
 
-    // Localization service
-    LocalizationNotFound            = errors.NewService(errors.ErrNotFound, "localization not found", "localization_not_found")
-    InvalidLocalizationLanguageCode = errors.NewService(errors.ErrValidation, "invalid localization language code", "invalid_localization_language_code")
+	// Localization service
+	LocalizationNotFound            = errors.NewService(errors.ErrNotFound, "localization not found", "localization_not_found")
+	InvalidLocalizationLanguageCode = errors.NewService(errors.ErrValidation, "invalid localization language code", "invalid_localization_language_code")
+
+	// Rating service
+	RatingNotFound        = errors.NewService(errors.ErrNotFound, "rating not found", "rating_not_found")
+	RatingUndefinedAgency = errors.NewService(errors.ErrNotFound, "rating not found", "rating_undefined_agency")
+	RatingUndefinedRating = errors.NewService(errors.ErrNotFound, "rating not found", "rating_undefined_rating")
 )
 
 func NewInternal(err error) errors.Error {

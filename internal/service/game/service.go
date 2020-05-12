@@ -60,6 +60,7 @@ func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*en
 			SocialLinks:        data.SocialLinks,
 			SystemRequirements: data.SystemRequirements,
 			Localizations:      data.Localizations,
+			Rating:             data.Ratings,
 		})
 
 		if err != nil {
@@ -118,9 +119,10 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*en
 			Features:           data.Features,
 			Genres:             data.Genres,
 			Media:              data.Media,
-            SocialLinks:        data.SocialLinks,
+			SocialLinks:        data.SocialLinks,
 			SystemRequirements: data.SystemRequirements,
 			Localizations:      data.Localizations,
+			Rating:             data.Ratings,
 		})
 
 		if err != nil {

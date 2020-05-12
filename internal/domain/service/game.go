@@ -48,6 +48,7 @@ type CommonGameData struct {
 	Platforms          *game.PlatformArray
 	ReleaseDate        *time.Time
 	Localizations      *[]LocalizationData
+	Ratings            *[]RatingData
 }
 
 type UpsertGameData struct {
@@ -75,16 +76,24 @@ func (d CreateGameData) Validate() error {
 		return err
 	}
 
-    if d.Localizations != nil {
-        for _, l := range *d.Localizations {
-            if err := l.Validate(); err != nil {
-                return err
-            }
-        }
-    }
+	if d.Localizations != nil {
+		for _, l := range *d.Localizations {
+			if err := l.Validate(); err != nil {
+				return err
+			}
+		}
+	}
 
 	if d.SocialLinks != nil {
 		for _, l := range *d.SocialLinks {
+			if err := l.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+
+	if d.Ratings != nil {
+		for _, l := range *d.Ratings {
 			if err := l.Validate(); err != nil {
 				return err
 			}
@@ -104,14 +113,14 @@ type UpdateGameData struct {
 }
 
 func (d UpdateGameData) Validate() error {
-    if d.Localizations != nil {
-        for _, l := range *d.Localizations {
-            if err := l.Validate(); err != nil {
-                return err
-            }
-        }
-    }
-    return nil
+	if d.Localizations != nil {
+		for _, l := range *d.Localizations {
+			if err := l.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 type SocialLink struct {
