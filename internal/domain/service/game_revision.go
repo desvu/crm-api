@@ -29,6 +29,7 @@ type UpdateGameRevisionData struct {
 	Status             *game_revision.Status
 	Platforms          *game.PlatformArray
 	ReleaseDate        *time.Time
+	SocialLinks        *[]SocialLink
 	SystemRequirements *[]SystemRequirements
 	Localizations      *[]LocalizationData
 

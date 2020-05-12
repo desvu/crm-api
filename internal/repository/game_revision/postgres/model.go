@@ -19,6 +19,7 @@ type model struct {
 	Platforms          []uint8               `pg:"platforms,array,notnull,use_zero"`
 	ReleaseDate        time.Time             `pg:"release_date,notnull,use_zero"`
 	PublishedAt        *time.Time            `pg:"published_at"`
+	SocialLinks        *[]SocialLinks        `pg:"type:jsonb"`
 	SystemRequirements *[]SystemRequirements `pg:"type:jsonb"`
 
 	tableName struct{} `pg:"game_revisions"`
@@ -36,6 +37,7 @@ func (m model) Convert() *entity.GameRevision {
 		Platforms:          game.NewPlatformArray(m.Platforms...),
 		ReleaseDate:        m.ReleaseDate,
 		PublishedAt:        m.PublishedAt,
+		SocialLinks:        *convertSocialLinks(m.SocialLinks),
 		SystemRequirements: *convertSystemRequirements(m.SystemRequirements),
 	}
 }
@@ -52,8 +54,29 @@ func newModel(i *entity.GameRevision) (*model, error) {
 		Platforms:          i.Platforms.Values(),
 		ReleaseDate:        i.ReleaseDate,
 		PublishedAt:        i.PublishedAt,
+		SocialLinks:        newSocialLinksModel(&i.SocialLinks),
 		SystemRequirements: newSystemRequirementsModel(&i.SystemRequirements),
 	}, nil
+}
+
+func newSocialLinksModel(i *[]entity.SocialLink) *[]SocialLinks {
+	var socialLinks = make([]SocialLinks, 0)
+	for _, item := range *i {
+		socialLinks = append(socialLinks, SocialLinks{
+			URL: item.URL,
+		})
+	}
+	return &socialLinks
+}
+
+func convertSocialLinks(m *[]SocialLinks) *[]entity.SocialLink {
+	var socialLinks = make([]entity.SocialLink, 0)
+	for _, item := range *m {
+		socialLinks = append(socialLinks, entity.SocialLink{
+			URL: item.URL,
+		})
+	}
+	return &socialLinks
 }
 
 func newSystemRequirementsModel(i *[]entity.SystemRequirements) *[]SystemRequirements {
@@ -102,6 +125,10 @@ func convertSystemRequirements(m *[]SystemRequirements) *[]entity.SystemRequirem
 		systemRequirements = append(systemRequirements, requirementsSet)
 	}
 	return &systemRequirements
+}
+
+type SocialLinks struct {
+	URL string `json:"url"`
 }
 
 type SystemRequirements struct {

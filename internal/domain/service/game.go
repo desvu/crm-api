@@ -2,12 +2,14 @@ package service
 
 import (
 	"context"
+	"net/url"
 	"regexp"
 	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game"
+	"github.com/qilin/crm-api/internal/domain/errors"
 )
 
 //go:generate mockgen -destination=../mocks/game_service.go -package=mocks github.com/qilin/crm-api/internal/domain/service GameService
@@ -41,6 +43,7 @@ type CommonGameData struct {
 	Genres      *[]uint
 	Media       *[]uint
 
+	SocialLinks        *[]SocialLink
 	SystemRequirements *[]SystemRequirements
 	Platforms          *game.PlatformArray
 	ReleaseDate        *time.Time
@@ -67,10 +70,10 @@ type CreateGameData struct {
 func (d CreateGameData) Validate() error {
 	validate := validator.New()
 	validate.RegisterValidation("trailer", validateTrailer)
-    err := validate.Struct(d)
-    if err != nil {
-        return err
-    }
+	err := validate.Struct(d)
+	if err != nil {
+		return err
+	}
 
     if d.Localizations != nil {
         for _, l := range *d.Localizations {
@@ -80,7 +83,15 @@ func (d CreateGameData) Validate() error {
         }
     }
 
-    return nil
+	if d.SocialLinks != nil {
+		for _, l := range *d.SocialLinks {
+			if err := l.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }
 
 type UpdateGameData struct {
@@ -93,13 +104,30 @@ type UpdateGameData struct {
 }
 
 func (d UpdateGameData) Validate() error {
-	if d.Localizations != nil {
-		for _, l := range *d.Localizations {
-			if err := l.Validate(); err != nil {
-				return err
-			}
-		}
+    if d.Localizations != nil {
+        for _, l := range *d.Localizations {
+            if err := l.Validate(); err != nil {
+                return err
+            }
+        }
+    }
+    return nil
+}
+
+type SocialLink struct {
+	URL string
+}
+
+func (d SocialLink) Validate() error {
+	u, err := url.Parse(d.URL)
+	if err != nil {
+		return errors.SocialLinkIncorrectURL
 	}
+
+	if u.Hostname() == "" {
+		return errors.SocialLinkIncorrectURL
+	}
+
 	return nil
 }
 

@@ -47,6 +47,7 @@ message Game {
     repeated SystemRequirements systemRequirements = 15;
     repeated Localization localizations = 16;
     string trailer = 17;
+    repeated SocialLink socialLinks = 18;
 }
 
 message Tag {
@@ -93,4 +94,8 @@ message Localization {
     bool Interface = 2;
     bool Audio = 3;
     bool Subtitles = 4;
+}
+
+message SocialLink {
+    string url = 1;
 }
