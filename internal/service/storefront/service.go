@@ -117,5 +117,15 @@ func (s *Service) GetAll(ctx context.Context) ([]*entity.Storefront, error) {
 }
 
 func (s *Service) GetActive(ctx context.Context) (*entity.Storefront, error) {
-	return s.Repository.FindActive(ctx)
+	sf, err := s.Repository.FindActive(ctx)
+	if err != nil {
+		if err == errors.StoreFrontNotFound {
+			return &entity.Storefront{
+				IsActive: true,
+				Blocks:   []entity.Block{},
+			}, nil
+		}
+		return nil, err
+	}
+	return sf, nil
 }

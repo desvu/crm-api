@@ -9,22 +9,23 @@ import (
 )
 
 type reqUpsert struct {
-	ID           *string        `json:"id"`
-	Title        *string        `json:"title"`
-	Type         *string        `json:"type"`
-	Slug         *string        `json:"slug"`
-	Summary      *string        `json:"summary"`
-	Description  *string        `json:"description"`
-	License      *string        `json:"license"`
-	Platforms    *[]string      `json:"platforms"`
-	Developers   *[]uint        `json:"developers"`
-	Features     *[]uint        `json:"features"`
-	Genres       *[]uint        `json:"genres"`
-	Publishers   *[]uint        `json:"publishers"`
-	Tags         *[]uint        `json:"tags"`
-	Media        *[]uint        `json:"media"`
-	ReleaseDate  *time.Time     `json:"release_date"`
-	Localization []localization `json:"localization"`
+	ID          *string    `json:"id"`
+	Title       *string    `json:"title"`
+	Type        *string    `json:"type"`
+	Slug        *string    `json:"slug"`
+	Summary     *string    `json:"summary"`
+	Description *string    `json:"description"`
+	License     *string    `json:"license"`
+	Trailer     *string    `json:"trailer"`
+	Platforms   *[]string  `json:"platforms"`
+	Developers  *[]uint    `json:"developers"`
+	Features    *[]uint    `json:"features"`
+	Genres      *[]uint    `json:"genres"`
+	Publishers  *[]uint    `json:"publishers"`
+	Tags        *[]uint    `json:"tags"`
+	Media       *[]uint    `json:"media"`
+	ReleaseDate *time.Time `json:"release_date"`
+    Localization []localization `json:"localization"`
 }
 
 func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
@@ -42,6 +43,7 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 			Summary:     req.Summary,
 			Description: req.Description,
 			License:     req.License,
+			Trailer:     req.Trailer,
 			Tags:        req.Tags,
 			Developers:  req.Developers,
 			Publishers:  req.Publishers,

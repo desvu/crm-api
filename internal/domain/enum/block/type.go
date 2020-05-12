@@ -13,6 +13,10 @@ const (
 	Type_Catalogue20   Type = "catalog_20"
 )
 
+func (t Type) String() string {
+	return string(t)
+}
+
 func (t Type) Valid() bool {
 	switch t {
 	case

@@ -46,6 +46,7 @@ message Game {
     repeated Publisher publishers = 14;
     repeated SystemRequirements systemRequirements = 15;
     repeated Localization localizations = 16;
+    string trailer = 17;
 }
 
 message Tag {

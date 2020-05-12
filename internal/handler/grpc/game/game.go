@@ -9,7 +9,7 @@ import (
 	"github.com/qilin/crm-api/pkg/grpc/proto"
 )
 
-func (h Handler) GetBySlug(ctx context.Context, request *proto.GetBySlugRequest) (*proto.GameResponse, error) {
+func (h *Handler) GetBySlug(ctx context.Context, request *proto.GetBySlugRequest) (*proto.GameResponse, error) {
 	game, err := h.GameService.GetExBySlug(ctx, request.Slug)
 	if err != nil {
 		return nil, grpcerror.New(err)
@@ -23,7 +23,7 @@ func (h Handler) GetBySlug(ctx context.Context, request *proto.GetBySlugRequest)
 	return &proto.GameResponse{Game: result}, nil
 }
 
-func (h Handler) GetByID(ctx context.Context, request *proto.GetByIDRequest) (*proto.GameResponse, error) {
+func (h *Handler) GetByID(ctx context.Context, request *proto.GetByIDRequest) (*proto.GameResponse, error) {
 	game, err := h.GameService.GetExLastPublishedByID(ctx, request.GameID)
 	if err != nil {
 		return nil, grpcerror.New(err)
@@ -37,7 +37,7 @@ func (h Handler) GetByID(ctx context.Context, request *proto.GetByIDRequest) (*p
 	return &proto.GameResponse{Game: result}, nil
 }
 
-func (h Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Request) (*proto.GameResponse, error) {
+func (h *Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Request) (*proto.GameResponse, error) {
 	game, err := h.GameService.GetExByIDAndRevisionID(ctx, request.GameID, uint(request.RevisionID))
 	if err != nil {
 		return nil, grpcerror.New(err)
@@ -51,7 +51,7 @@ func (h Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Reques
 	return &proto.GameResponse{Game: result}, nil
 }
 
-func (h Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
+func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 	result := &proto.Game{
 		ID:          game.ID,
 		Title:       game.Title,
@@ -62,6 +62,7 @@ func (h Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		Description: game.Revision.Description,
 		License:     game.Revision.License,
 		Platforms:   game.Revision.Platforms.Strings(),
+		Trailer:     game.Revision.Trailer,
 	}
 
 	for _, item := range game.Revision.Tags {

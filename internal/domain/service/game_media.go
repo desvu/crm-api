@@ -5,10 +5,7 @@ import (
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game_media"
-	"github.com/qilin/crm-api/pkg/errors"
 )
-
-var ErrGameMediaNotFound = errors.NewService(errors.ErrNotFound, "game media not found")
 
 type GameMediaService interface {
 	Create(ctx context.Context, data *CreateGameMediaData) (*entity.GameMedia, error)

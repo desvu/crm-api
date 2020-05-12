@@ -3,8 +3,9 @@ package game_media
 import (
 	"bytes"
 	"io"
-	"net/http"
 	"strconv"
+
+	"github.com/qilin/crm-api/pkg/response"
 
 	"github.com/labstack/echo/v4"
 	"github.com/qilin/crm-api/internal/domain/enum/game_media"
@@ -52,7 +53,7 @@ func (h Handler) Upload(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, h.view(media))
+	return response.New(c, h.view(media))
 }
 
 type reqCreate struct {
@@ -81,5 +82,5 @@ func (h Handler) Create(c echo.Context) error {
 		return err
 	}
 
-	return c.JSON(http.StatusOK, h.view(media))
+	return response.New(c, h.view(media))
 }

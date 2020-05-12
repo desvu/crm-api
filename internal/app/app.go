@@ -31,7 +31,8 @@ func New() (*App, error) {
 		service.New,
 		event.New,
 		pkg.New,
-		handler.New,
+		handler.NewGrpc,
+		handler.NewHttp,
 	)
 
 	return app, nil
