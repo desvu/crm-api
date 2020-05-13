@@ -6,6 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	gameenum "github.com/qilin/crm-api/internal/domain/enum/game"
+	"github.com/qilin/crm-api/internal/domain/enum/game_rating"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
@@ -28,6 +29,7 @@ type reqUpsert struct {
 	ReleaseDate  *time.Time     `json:"release_date"`
 	SocialLinks  []socialLink   `json:"social_links"`
 	Localization []localization `json:"localization"`
+	Rating       *[]rating      `json:"rating"`
 }
 
 func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
@@ -69,6 +71,19 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 			}
 		}
 		data.CommonGameData.Localizations = &localizations
+	}
+
+	if req.Rating != nil {
+		ratings := make([]service.RatingData, len(*req.Rating))
+		for i, r := range *req.Rating {
+			ratings[i] = service.RatingData{
+				Agency:              game_rating.NewAgencyByString(r.Agency),
+				Rating:              game_rating.NewRatingByString(r.Agency, r.Rating),
+				DisplayOnlineNotice: r.DisplayOnlineNotice,
+				ShowAgeRestrict:     r.ShowAgeRestrict,
+			}
+		}
+		data.CommonGameData.Ratings = &ratings
 	}
 
 	return data, nil

@@ -48,6 +48,7 @@ message Game {
     repeated Localization localizations = 16;
     string trailer = 17;
     repeated SocialLink socialLinks = 18;
+    repeated Rating rating = 19;
 }
 
 message Tag {
@@ -98,4 +99,11 @@ message Localization {
 
 message SocialLink {
     string url = 1;
+}
+
+message Rating {
+    string Agency = 1;
+    string Rating = 2;
+    bool DisplayOnlineNotice = 3;
+    bool ShowAgeRestrict = 4;
 }

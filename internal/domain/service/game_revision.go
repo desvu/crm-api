@@ -33,6 +33,7 @@ type UpdateGameRevisionData struct {
 	SocialLinks        *[]SocialLink
 	SystemRequirements *[]SystemRequirements
 	Localizations      *[]LocalizationData
+	Rating             *[]RatingData
 
 	Tags       *[]uint
 	Developers *[]uint

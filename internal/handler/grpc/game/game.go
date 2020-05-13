@@ -101,14 +101,14 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		})
 	}
 
-    for _, item := range game.Revision.Localization {
-        result.Localizations = append(result.Localizations, &proto.Localization{
-            Language:  item.Language,
-            Interface: item.Interface,
-            Audio:     item.Audio,
-            Subtitles: item.Subtitles,
-        })
-    }
+	for _, item := range game.Revision.Localization {
+		result.Localizations = append(result.Localizations, &proto.Localization{
+			Language:  item.Language,
+			Interface: item.Interface,
+			Audio:     item.Audio,
+			Subtitles: item.Subtitles,
+		})
+	}
 
 	for _, item := range game.Revision.SocialLinks {
 		result.SocialLinks = append(result.SocialLinks, &proto.SocialLink{
@@ -138,6 +138,15 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		}
 
 		result.SystemRequirements = append(result.SystemRequirements, r)
+	}
+
+	for _, item := range game.Revision.Rating {
+		result.Rating = append(result.Rating, &proto.Rating{
+			Agency:              item.Agency.String(),
+			Rating:              item.Rating.String(),
+			DisplayOnlineNotice: item.DisplayOnlineNotice,
+			ShowAgeRestrict:     item.ShowAgeRestrict,
+		})
 	}
 
 	return result, nil
