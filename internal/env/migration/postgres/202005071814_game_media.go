@@ -40,5 +40,5 @@ func init() {
 
 	opts := migrations.MigrationOptions{}
 
-	migrations.Register("20200507181418_game_media", up, down, opts)
+	migrations.Register("202005071814_game_media", up, down, opts)
 }

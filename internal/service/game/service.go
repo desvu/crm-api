@@ -3,11 +3,10 @@ package game
 import (
 	"context"
 
-	"github.com/qilin/crm-api/internal/domain/errors"
-
 	"github.com/google/uuid"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
+	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/domain/publisher"
 	"github.com/qilin/crm-api/internal/domain/service"
 )

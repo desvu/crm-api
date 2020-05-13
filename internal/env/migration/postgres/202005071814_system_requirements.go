@@ -8,19 +8,19 @@ import (
 func init() {
 	up := func(db orm.DB) error {
 		_, err := db.Exec(`
-			alter table game_revisions add column social_links jsonb not null default '[]'::jsonb;
+			alter table game_revisions add column system_requirements jsonb not null default '[]'::jsonb;
 		`)
 		return err
 	}
 
 	down := func(db orm.DB) error {
 		_, err := db.Exec(`
-			alter table game_revisions drop column social_links;
+			alter table game_revisions drop column system_requirements;
 		`)
 		return err
 	}
 
 	opts := migrations.MigrationOptions{}
 
-	migrations.Register("20200507181459_system_requirements", up, down, opts)
+	migrations.Register("202005071814_system_requirements", up, down, opts)
 }

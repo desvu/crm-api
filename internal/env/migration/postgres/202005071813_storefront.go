@@ -46,5 +46,5 @@ func init() {
 
 	opts := migrations.MigrationOptions{}
 
-	migrations.Register("20200507181312_storefront", up, down, opts)
+	migrations.Register("202005071813_storefront", up, down, opts)
 }
