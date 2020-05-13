@@ -12,11 +12,24 @@ type storefrontList []storefrontInfo
 
 //swagger:model StorefrontInfo
 type storefrontInfo struct {
-	ID        string    `json:"id"`
-	Name      string    `json:"name"`
-	Version   uint      `json:"version"`
-	IsActive  bool      `json:"is_active"`
+	// read-only: true
+	// example: 12
+	ID string `json:"id"`
+
+	// example: Black-Friday Sales
+	Name string `json:"name"`
+
+	// read-only: true
+	// example: 4
+	Version uint `json:"version"`
+
+	// read-only: true
+	IsActive bool `json:"is_active"`
+
+	// read-only: true
 	CreatedAt time.Time `json:"created_at"`
+
+	// read-only: true
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
