@@ -6,28 +6,30 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	gameenum "github.com/qilin/crm-api/internal/domain/enum/game"
+	"github.com/qilin/crm-api/internal/domain/enum/game_rating"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
 type reqUpsert struct {
-	ID          *string      `json:"id"`
-	Title       *string      `json:"title"`
-	Type        *string      `json:"type"`
-	Slug        *string      `json:"slug"`
-	Summary     *string      `json:"summary"`
-	Description *string      `json:"description"`
-	License     *string      `json:"license"`
-	Trailer     *string      `json:"trailer"`
-	Platforms   *[]string    `json:"platforms"`
-	Developers  *[]uint      `json:"developers"`
-	Features    *[]uint      `json:"features"`
-	Genres      *[]uint      `json:"genres"`
-	Publishers  *[]uint      `json:"publishers"`
-	Tags        *[]uint      `json:"tags"`
-	Media       *[]uint      `json:"media"`
-	ReleaseDate *time.Time   `json:"release_date"`
-	SocialLinks []socialLink `json:"social_links"`
-    Localization []localization `json:"localization"`
+	ID           *string        `json:"id"`
+	Title        *string        `json:"title"`
+	Type         *string        `json:"type"`
+	Slug         *string        `json:"slug"`
+	Summary      *string        `json:"summary"`
+	Description  *string        `json:"description"`
+	License      *string        `json:"license"`
+	Trailer      *string        `json:"trailer"`
+	Platforms    *[]string      `json:"platforms"`
+	Developers   *[]uint        `json:"developers"`
+	Features     *[]uint        `json:"features"`
+	Genres       *[]uint        `json:"genres"`
+	Publishers   *[]uint        `json:"publishers"`
+	Tags         *[]uint        `json:"tags"`
+	Media        *[]uint        `json:"media"`
+	ReleaseDate  *time.Time     `json:"release_date"`
+	SocialLinks  []socialLink   `json:"social_links"`
+	Localization []localization `json:"localization"`
+	Raiting      *[]rating      `json:"raiting"`
 }
 
 func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
@@ -69,6 +71,19 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 			}
 		}
 		data.CommonGameData.Localizations = &localizations
+	}
+
+	if req.Raiting != nil {
+		ratings := make([]service.RatingData, len(*req.Raiting))
+		for i, r := range *req.Raiting {
+			ratings[i] = service.RatingData{
+				Agency:              game_rating.NewAgencyByString(r.Agency),
+				Rating:              game_rating.NewRatingByString(r.Agency, r.Rating),
+				DisplayOnlineNotice: r.DisplayOnlineNotice,
+				ShowAgeRestrict:     r.ShowAgeRestrict,
+			}
+		}
+		data.CommonGameData.Ratings = &ratings
 	}
 
 	return data, nil
