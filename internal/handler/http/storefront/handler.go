@@ -1,9 +1,9 @@
 package storefront
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/qilin/crm-api/pkg/response"
 
@@ -14,9 +14,31 @@ import (
 	perrors "github.com/qilin/crm-api/pkg/errors"
 )
 
-type requestData struct {
-	Name   string         `json:"name"`
-	Blocks []entity.Block `json:"blocks"`
+//swagger:parameters deleteStorefronts activateStorefront getStorefront
+type requestByID struct {
+	// in: path
+	// example: 12
+	ID uint `param:"id`
+}
+
+//swagger:parameters updateStorefronts
+type updateRequest struct {
+	// in: path
+	// example: 12
+	ID uint `param:"id`
+
+	// in: body
+	Data storefront
+}
+
+func (ur *updateRequest) UnmarshalJSON(b []byte) error {
+	return json.Unmarshal(b, &ur.Data)
+}
+
+//swagger:parameters createStorefronts
+type createRequest struct {
+	// in: body
+	Data storefront
 }
 
 // swagger:route GET /storefronts storefronts listStorefronts
@@ -45,14 +67,14 @@ func (h *Handler) List(c echo.Context) error {
 //     Responses:
 //       200: Storefront
 func (h *Handler) Create(c echo.Context) error {
-	var request requestData
-	if err := c.Bind(&request); err != nil {
+	var request createRequest
+	if err := c.Bind(&request.Data); err != nil {
 		return err
 	}
 
 	data := &entity.Storefront{
-		Name:   request.Name,
-		Blocks: request.Blocks,
+		Name:   request.Data.Name,
+		Blocks: request.Data.Blocks,
 	}
 
 	res, err := h.Storefronts.Create(c.Request().Context(), data)
@@ -69,7 +91,7 @@ func (h *Handler) Create(c echo.Context) error {
 	return response.New(c, h.view(res))
 }
 
-// swagger:route PUT /storefronts/:id storefronts updateStorefronts
+// swagger:route PUT /storefronts/{id} storefronts updateStorefronts
 //
 // Updates storefront page template
 //
@@ -79,20 +101,16 @@ func (h *Handler) Create(c echo.Context) error {
 //       200: Storefront
 func (h *Handler) Update(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
-	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
-	if err != nil {
-		return h.NotFound(ctx, err)
-	}
 
-	var request requestData
+	var request updateRequest
 	if err := ctx.Bind(&request); err != nil {
 		return err
 	}
 
 	data := &entity.Storefront{
-		ID:     uint(id),
-		Name:   request.Name,
-		Blocks: request.Blocks,
+		ID:     request.ID,
+		Name:   request.Data.Name,
+		Blocks: request.Data.Blocks,
 	}
 
 	res, err := h.Storefronts.Update(cnt, data)
@@ -109,7 +127,7 @@ func (h *Handler) Update(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, h.view(res))
 }
 
-// swagger:route DELETE /storefronts/:id storefronts deleteStorefronts
+// swagger:route DELETE /storefronts/{id} storefronts deleteStorefronts
 //
 // Removes storefront page template
 //
@@ -119,12 +137,13 @@ func (h *Handler) Update(ctx echo.Context) error {
 //       204:
 func (h *Handler) Delete(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
-	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
-	if err != nil {
-		return h.NotFound(ctx, err)
+
+	var req requestByID
+	if err := ctx.Bind(&req); err != nil {
+		return err
 	}
 
-	err = h.Storefronts.Delete(cnt, uint(id))
+	err := h.Storefronts.Delete(cnt, req.ID)
 	if err != nil {
 		if errors.Is(err, derrors.StoreFrontNotFound) {
 			return h.NotFound(ctx, err)
@@ -135,7 +154,7 @@ func (h *Handler) Delete(ctx echo.Context) error {
 	return ctx.NoContent(http.StatusNoContent)
 }
 
-// swagger:route GET /storefronts/:id storefronts getStorefront
+// swagger:route GET /storefronts/{id} storefronts getStorefront
 //
 // Finds storefront page template
 //
@@ -145,12 +164,12 @@ func (h *Handler) Delete(ctx echo.Context) error {
 //       200: Storefront
 func (h *Handler) Get(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
-	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
-	if err != nil {
-		return h.NotFound(ctx, err)
+	var req requestByID
+	if err := ctx.Bind(&req); err != nil {
+		return err
 	}
 
-	res, err := h.Storefronts.GetByID(cnt, uint(id))
+	res, err := h.Storefronts.GetByID(cnt, req.ID)
 	if err != nil {
 		if errors.Is(err, derrors.StoreFrontNotFound) {
 			return h.NotFound(ctx, err)
@@ -161,7 +180,7 @@ func (h *Handler) Get(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, h.view(res))
 }
 
-// swagger:route POST /storefronts/:id/activate storefronts activateStorefront
+// swagger:route POST /storefronts/{id}/activate storefronts activateStorefront
 //
 // Activates storefront page template
 //
@@ -171,12 +190,12 @@ func (h *Handler) Get(ctx echo.Context) error {
 //       204:
 func (h *Handler) Activate(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
-	id, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
-	if err != nil {
-		return h.NotFound(ctx, err)
+	var req requestByID
+	if err := ctx.Bind(&req); err != nil {
+		return err
 	}
 
-	err = h.Storefronts.Activate(cnt, uint(id))
+	err := h.Storefronts.Activate(cnt, req.ID)
 	if err != nil {
 		return err
 	}
