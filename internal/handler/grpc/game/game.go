@@ -101,6 +101,13 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		})
 	}
 
+	for _, item := range game.Revision.Media {
+		result.Media = append(result.Media, &proto.Media{
+			Type: item.Type.String(),
+			Url:  item.FilePath,
+		})
+	}
+
 	for _, item := range game.Revision.Localization {
 		result.Localizations = append(result.Localizations, &proto.Localization{
 			Language:  item.Language,
