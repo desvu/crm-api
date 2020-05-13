@@ -2,7 +2,7 @@ package game
 
 import "github.com/qilin/crm-api/internal/domain/entity"
 
-type view struct {
+type game struct {
 	ID       string   `json:"id"`
 	Title    string   `json:"title"`
 	Type     string   `json:"type"`
@@ -47,8 +47,8 @@ type rating struct {
 	ShowAgeRestrict     bool   `json:"show_age_restrict"`
 }
 
-func (h Handler) view(i *entity.GameEx) view {
-	var v = view{
+func (h Handler) view(i *entity.GameEx) game {
+	var v = game{
 		ID:    i.ID,
 		Title: i.Title,
 		Type:  i.Type.String(),
@@ -103,18 +103,18 @@ type pagination struct {
 	Total int `json:"total"`
 }
 
-type viewArray struct {
-	Games      []view     `json:"games"`
+type gameList struct {
+	Games      []game     `json:"games"`
 	Pagination pagination `json:"pagination"`
 }
 
-func (h Handler) viewArray(items []entity.GameEx) viewArray {
-	var games = make([]view, len(items))
+func (h Handler) viewArray(items []entity.GameEx) gameList {
+	var games = make([]game, len(items))
 	for i := range items {
 		games[i] = h.view(&items[i])
 	}
 
-	return viewArray{
+	return gameList{
 		Games: games,
 		Pagination: pagination{
 			Total: 0,
