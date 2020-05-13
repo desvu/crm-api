@@ -366,12 +366,19 @@ func (r GameExRepository) fetchRows(ctx context.Context, items []entity.GameRevi
 	for i := range media {
 		for j := range revisionMedia {
 			if media[i].ID == revisionMedia[j].MediaID {
-				mapRevisions[revisionMedia[j].MediaID].Media = append(
-					mapRevisions[revisionMedia[j].MediaID].Media,
+				mapRevisions[revisionMedia[j].RevisionID].Media = append(
+					mapRevisions[revisionMedia[j].RevisionID].Media,
 					media[i],
 				)
 			}
 		}
+	}
+
+	for i := range localizations {
+		mapRevisions[localizations[i].GameRevisionID].Localization = append(
+			mapRevisions[localizations[i].GameRevisionID].Localization,
+			localizations[i],
+		)
 	}
 
 	return revisions, nil
