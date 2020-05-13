@@ -49,6 +49,7 @@ message Game {
     string trailer = 17;
     repeated SocialLink socialLinks = 18;
     repeated Rating rating = 19;
+    repeated Review reviews = 21;
 }
 
 message Tag {
@@ -106,4 +107,11 @@ message Rating {
     string Rating = 2;
     bool DisplayOnlineNotice = 3;
     bool ShowAgeRestrict = 4;
+}
+
+message Review {
+    string PressName = 1;
+    string Link = 2;
+    string Score = 3;
+    string Quote = 4;
 }

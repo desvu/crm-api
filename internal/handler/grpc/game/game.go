@@ -149,5 +149,14 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		})
 	}
 
+	for _, item := range game.Revision.Review {
+		result.Reviews = append(result.Reviews, &proto.Review{
+			PressName: item.PressName,
+			Link:      item.Link,
+			Score:     item.Score,
+			Quote:     item.Quote,
+		})
+	}
+
 	return result, nil
 }

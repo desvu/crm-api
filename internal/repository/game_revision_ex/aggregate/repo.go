@@ -26,6 +26,7 @@ type RepositoryParams struct {
 	GameRevisionGenreRepository     repository.GameRevisionGenreRepository
 	GameRevisionMediaRepository     repository.GameRevisionMediaRepository
 	GameRevisionRatingRepository    repository.GameRevisionRatingRepository
+	GameRevisionReviewRepository    repository.GameRevisionReviewRepository
 	LocalizationRepository          repository.GameRevisionLocalizationRepository
 }
 
@@ -79,6 +80,7 @@ func (r GameExRepository) fetchRow(ctx context.Context, item *entity.GameRevisio
 		media         []entity.GameMedia
 		localizations []entity.Localization
 		ratings       []entity.Rating
+		reviews       []entity.Review
 	)
 
 	g, ctx := errgroup.WithContext(ctx)
@@ -164,6 +166,14 @@ func (r GameExRepository) fetchRow(ctx context.Context, item *entity.GameRevisio
 		}
 		return nil
 	})
+	g.Go(func() error {
+		var err error
+		reviews, err = r.GameRevisionReviewRepository.FindByGameRevisionID(ctx, item.ID)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
 
 	if err := g.Wait(); err != nil {
 		return nil, err
@@ -179,5 +189,6 @@ func (r GameExRepository) fetchRow(ctx context.Context, item *entity.GameRevisio
 		Media:        media,
 		Localization: localizations,
 		Rating:       ratings,
+		Review:       reviews,
 	}, nil
 }

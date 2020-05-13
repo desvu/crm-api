@@ -30,6 +30,7 @@ type reqUpsert struct {
 	SocialLinks  []socialLink   `json:"social_links"`
 	Localization []localization `json:"localization"`
 	Raiting      *[]rating      `json:"raiting"`
+	Review       *[]review      `json:"review"`
 }
 
 func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
@@ -84,6 +85,19 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 			}
 		}
 		data.CommonGameData.Ratings = &ratings
+	}
+
+	if req.Review != nil {
+		reviews := make([]service.ReviewData, len(*req.Review))
+		for i, r := range *req.Review {
+			reviews[i] = service.ReviewData{
+				PressName: r.PressName,
+				Link:      r.Link,
+				Score:     r.Score,
+				Quote:     r.Quote,
+			}
+		}
+		data.CommonGameData.Reviews = &reviews
 	}
 
 	return data, nil

@@ -148,6 +148,13 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionDa
 			}
 		}
 
+		if data.Reviews != nil {
+			err := s.ReviewService.UpdateReviewsForGameRevision(tx, revision, *data.Reviews)
+			if err != nil {
+				return err
+			}
+		}
+
 		return nil
 	}); err != nil {
 		return nil, err

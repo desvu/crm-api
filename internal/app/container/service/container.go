@@ -11,6 +11,7 @@ import (
 	"github.com/qilin/crm-api/internal/service/localization"
 	"github.com/qilin/crm-api/internal/service/publisher"
 	"github.com/qilin/crm-api/internal/service/rating"
+	"github.com/qilin/crm-api/internal/service/review"
 	"github.com/qilin/crm-api/internal/service/storefront"
 	"github.com/qilin/crm-api/internal/service/tag"
 	"go.uber.org/fx"
@@ -30,5 +31,6 @@ func New() fx.Option {
 		storefront.New,
 		localization.New,
 		rating.New,
+		review.New,
 	)
 }

@@ -21,6 +21,7 @@ type revision struct {
 	SocialLinks  []socialLink   `json:"social_links,omitempty"`
 	Localization []localization `json:"localization,omitempty"`
 	Rating       []rating       `json:"rating,omitempty"`
+	Review       []review       `json:"review,omitempty"`
 }
 
 type socialLink struct {
@@ -45,6 +46,13 @@ type rating struct {
 	Rating              string `json:"rating"`
 	DisplayOnlineNotice bool   `json:"display_online_notice"`
 	ShowAgeRestrict     bool   `json:"show_age_restrict"`
+}
+
+type review struct {
+	PressName string `json:"press_name"`
+	Link      string `json:"link"`
+	Score     string `json:"score"`
+	Quote     string `json:"quote"`
 }
 
 func (h Handler) view(i *entity.GameEx) view {
@@ -92,6 +100,17 @@ func (h Handler) view(i *entity.GameEx) view {
 				Rating:              r.Rating.String(),
 				DisplayOnlineNotice: r.DisplayOnlineNotice,
 				ShowAgeRestrict:     r.ShowAgeRestrict,
+			})
+		}
+	}
+
+	if len(i.Revision.Review) > 0 {
+		for _, r := range i.Revision.Review {
+			v.Revision.Review = append(v.Revision.Review, review{
+				PressName: r.PressName,
+				Link:      r.Link,
+				Score:     r.Score,
+				Quote:     r.Quote,
 			})
 		}
 	}
