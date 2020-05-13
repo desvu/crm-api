@@ -15,5 +15,6 @@ type GameRevisionGenreRepository interface {
 
 	FindByGenreID(ctx context.Context, genreID uint) ([]entity.GameRevisionGenre, error)
 	FindByGameRevisionID(ctx context.Context, gameRevisionID uint) ([]entity.GameRevisionGenre, error)
+	FindByGameRevisionIDs(ctx context.Context, gameRevisionIDs []uint) ([]entity.GameRevisionGenre, error)
 	FindByGameRevisionIDAndGenreIDs(ctx context.Context, gameRevisionID uint, genreID []uint) ([]entity.GameRevisionGenre, error)
 }

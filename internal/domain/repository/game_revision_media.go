@@ -13,4 +13,5 @@ type GameRevisionMediaRepository interface {
 	DeleteMultiple(ctx context.Context, items []entity.GameRevisionMedia) error
 
 	FindByRevisionID(ctx context.Context, revisionID uint) ([]entity.GameRevisionMedia, error)
+	FindByRevisionIDs(ctx context.Context, revisionIDs []uint) ([]entity.GameRevisionMedia, error)
 }
