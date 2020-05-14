@@ -30,7 +30,7 @@ type reqUpsert struct {
 	Title *string `json:"title"`
 
 	// example: desktop
-	Type *string `json:"type"`
+	Type *gameenum.Type `json:"type"`
 
 	// example: ash-of-gods
 	Slug *string `json:"slug"`
@@ -46,7 +46,7 @@ type reqUpsert struct {
 	Trailer *string `json:"trailer"`
 
 	// example: [windows, macOS]
-	Platforms *[]string `json:"platforms"`
+	Platforms *[]gameenum.Platform `json:"platforms"`
 
 	// example: [32]
 	Developers *[]uint `json:"developers"`
