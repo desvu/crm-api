@@ -54,7 +54,7 @@ func New(params Params) *echo.Echo {
 
 	// media files upload
 	api.POST("/games/:game_id/media", params.GameMediaHandler.Create)
-	api.PUT("/games/:game_id/media/:game_media_id", params.GameMediaHandler.Upload)
+	api.PUT("/games/:game_id/media/:media_id", params.GameMediaHandler.Upload)
 
 	// manage storefront templates
 	api.GET("/storefronts", params.Storefronts.List)

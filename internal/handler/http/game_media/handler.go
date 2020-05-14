@@ -3,7 +3,6 @@ package game_media
 import (
 	"bytes"
 	"io"
-	"strconv"
 
 	"github.com/qilin/crm-api/pkg/response"
 
@@ -12,9 +11,28 @@ import (
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
+//swagger:parameters reqUpload
+type reqUpload struct {
+	// in: path
+	// example: 11002485-cb51-4b29-8423-cba43f29f143
+	GameID string `param:"game_id"`
+
+	// in: path
+	// example: 43
+	MediaID uint `param:"media_id"`
+}
+
+// swagger:route POST /games/{game_id}/media/{media_id} game_media reqUpload
+//
+// Upload game media
+//
+// This endpoint returns a list of extended game structures
+//
+//     Responses:
+//       200: Media
 func (h Handler) Upload(c echo.Context) error {
-	gameMediaID, err := strconv.ParseUint(c.Param("game_media_id"), 10, 32)
-	if err != nil {
+	req := new(reqUpload)
+	if err := c.Bind(req); err != nil {
 		return err
 	}
 
@@ -38,14 +56,14 @@ func (h Handler) Upload(c echo.Context) error {
 		return err
 	}
 
-	game, err := h.GameService.GetByID(c.Request().Context(), c.Param("game_id"))
+	game, err := h.GameService.GetByID(c.Request().Context(), req.GameID)
 	if err != nil {
 		return err
 	}
 
 	media, err := h.GameMediaService.Upload(c.Request().Context(), &service.UploadGameMediaData{
 		Game:  game,
-		ID:    uint(gameMediaID),
+		ID:    req.MediaID,
 		Image: buf.Bytes(),
 	})
 
@@ -56,11 +74,29 @@ func (h Handler) Upload(c echo.Context) error {
 	return response.New(c, h.view(media))
 }
 
+//swagger:parameters reqCreate
 type reqCreate struct {
-	Type      string `json:"type"`
+	// in: path
+	// example: 11002485-cb51-4b29-8423-cba43f29f143
+	GameID string `param:"game_id"`
+
+	// in: body
+	// enum: [wideSlider vertical horizontal horizontalSmall largeSingle catalog screenshot description]
+	Type string `json:"type"`
+
+	// in: body
+	// example: png
 	Extension string `json:"extension"`
 }
 
+// swagger:route POST /games/{game_id}/media game_media reqCreate
+//
+// Create game media
+//
+// This endpoint returns a list of extended game structures
+//
+//     Responses:
+//       200: Media
 func (h Handler) Create(c echo.Context) error {
 	req := new(reqCreate)
 	if err := c.Bind(req); err != nil {
