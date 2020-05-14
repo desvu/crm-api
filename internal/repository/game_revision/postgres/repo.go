@@ -150,8 +150,7 @@ func (r GameRevisionRepository) FindLastPublishedByGameID(ctx context.Context, g
 		Where("game_id = ?", gameID).
 		Where("status = ?", game_revision.StatusPublished.Value()).
 		Order("published_at desc").
-		Limit(1).
-		Select()
+		First()
 
 	if err == pg.ErrNoRows {
 		return nil, nil
@@ -170,8 +169,7 @@ func (r GameRevisionRepository) FindDraftByGameID(ctx context.Context, gameID st
 	err := r.h.ModelContext(ctx, model).
 		Where("game_id = ?", gameID).
 		Where("status = ?", game_revision.StatusDraft.Value()).
-		Limit(1).
-		Select()
+		First()
 
 	if err == pg.ErrNoRows {
 		return nil, nil
