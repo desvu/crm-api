@@ -28,7 +28,7 @@ func (h Handler) GetByFilter(c echo.Context) error {
 	return response.New(c, h.viewArray(games))
 }
 
-// swagger:route GET /games/{id} games reqByID
+// swagger:route GET /games/{id} games reqGetByID
 //
 // Getting a game by ID
 //
@@ -72,7 +72,7 @@ func (h Handler) Upsert(c echo.Context) error {
 	return response.New(c, h.view(game))
 }
 
-// swagger:route POST /games/{id}/publish games reqByID
+// swagger:route POST /games/{id}/publish games reqPublish
 //
 // Publishing the game to the store
 //
