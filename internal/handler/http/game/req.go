@@ -19,6 +19,7 @@ type reqByID struct {
 
 //swagger:parameters reqUpsert
 type reqUpsert struct {
+	// in: body
 	// example: 11002485-cb51-4b29-8423-cba43f29f143
 	ID           *string        `json:"id"`
 	Title        *string        `json:"title"`
