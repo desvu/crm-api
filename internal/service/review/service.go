@@ -22,9 +22,6 @@ func (s Service) UpdateReviewsForGameRevision(ctx context.Context, gameRevision 
 	}
 
 	var currentReviews []entity.Review
-	if err != nil {
-		return err
-	}
 	for _, review := range currentGameReviews {
 		for _, newReview := range reviews {
 			if newReview.Link == review.Link {
@@ -33,22 +30,24 @@ func (s Service) UpdateReviewsForGameRevision(ctx context.Context, gameRevision 
 		}
 	}
 
-	err = s.ReviewRepository.DeleteMultiple(ctx, getGameReviewForDelete(currentReviews, currentGameReviews))
-	if err != nil {
-		return err
-	}
+	return s.Transactor.Transact(ctx, func(tx context.Context) error {
+		err = s.ReviewRepository.DeleteMultiple(ctx, getGameReviewForDelete(currentReviews, currentGameReviews))
+		if err != nil {
+			return err
+		}
 
-	err = s.ReviewRepository.CreateMultiple(ctx, getGameReviewForInsert(gameRevision.ID, reviews, currentGameReviews))
-	if err != nil {
-		return err
-	}
+		err = s.ReviewRepository.CreateMultiple(ctx, getGameReviewForInsert(gameRevision.ID, reviews, currentGameReviews))
+		if err != nil {
+			return err
+		}
 
-	err = s.ReviewRepository.UpdateMultiple(ctx, getGameReviewForUpdate(gameRevision.ID, reviews, currentGameReviews))
-	if err != nil {
-		return err
-	}
+		err = s.ReviewRepository.UpdateMultiple(ctx, getGameReviewForUpdate(gameRevision.ID, reviews, currentGameReviews))
+		if err != nil {
+			return err
+		}
 
-	return nil
+		return nil
+	})
 }
 
 func getGameReviewForInsert(gameID uint, newReviews []service.ReviewData, currentGameReviews []entity.Review) []entity.Review {

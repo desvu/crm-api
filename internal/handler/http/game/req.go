@@ -68,7 +68,7 @@ type reqUpsert struct {
 	ReleaseDate  *time.Time     `json:"release_date"`
 	SocialLinks  []socialLink   `json:"social_links"`
 	Localization []localization `json:"localization"`
-	Rating       *[]rating      `json:"raiting"`
+	Rating       *[]rating      `json:"rating"`
 	Review       *[]review      `json:"review"`
 }
 

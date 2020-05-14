@@ -95,47 +95,39 @@ func (h Handler) view(i *entity.GameEx) game {
 		},
 	}
 
-	if len(i.Revision.Media) > 0 {
-		for _, m := range i.Revision.Media {
-			v.Revision.Media = append(v.Revision.Media, media{
-				ID:   m.ID,
-				Type: m.Type,
-				URL:  h.URLBuilder.BuildGameMedia(&m),
-			})
-		}
+	for _, m := range i.Revision.Media {
+		v.Revision.Media = append(v.Revision.Media, media{
+			ID:   m.ID,
+			Type: m.Type,
+			URL:  h.URLBuilder.BuildGameMedia(&m),
+		})
 	}
 
-	if len(i.Revision.Localization) > 0 {
-		for _, l := range i.Revision.Localization {
-			v.Revision.Localization = append(v.Revision.Localization, localization{
-				Language:  l.Language,
-				Interface: l.Interface,
-				Audio:     l.Audio,
-				Subtitles: l.Subtitles,
-			})
-		}
+	for _, l := range i.Revision.Localization {
+		v.Revision.Localization = append(v.Revision.Localization, localization{
+			Language:  l.Language,
+			Interface: l.Interface,
+			Audio:     l.Audio,
+			Subtitles: l.Subtitles,
+		})
 	}
 
-	if len(i.Revision.Rating) > 0 {
-		for _, r := range i.Revision.Rating {
-			v.Revision.Rating = append(v.Revision.Rating, rating{
-				Agency:              r.Agency.String(),
-				Rating:              r.Rating.String(),
-				DisplayOnlineNotice: r.DisplayOnlineNotice,
-				ShowAgeRestrict:     r.ShowAgeRestrict,
-			})
-		}
+	for _, r := range i.Revision.Rating {
+		v.Revision.Rating = append(v.Revision.Rating, rating{
+			Agency:              r.Agency.String(),
+			Rating:              r.Rating.String(),
+			DisplayOnlineNotice: r.DisplayOnlineNotice,
+			ShowAgeRestrict:     r.ShowAgeRestrict,
+		})
 	}
 
-	if len(i.Revision.Review) > 0 {
-		for _, r := range i.Revision.Review {
-			v.Revision.Review = append(v.Revision.Review, review{
-				PressName: r.PressName,
-				Link:      r.Link,
-				Score:     r.Score,
-				Quote:     r.Quote,
-			})
-		}
+	for _, r := range i.Revision.Review {
+		v.Revision.Review = append(v.Revision.Review, review{
+			PressName: r.PressName,
+			Link:      r.Link,
+			Score:     r.Score,
+			Quote:     r.Quote,
+		})
 	}
 
 	return v
