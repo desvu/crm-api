@@ -29,42 +29,42 @@ func Err(err error, c echo.Context) {
 	// domain errors
 	case e.As(err, &domainError):
 		_ = c.JSON(getStatus(domainError), HTTPError{
-			Error: fmt.Sprintf("errors.com.qilin.crm.%s", domainError.Key),
+			Error: fmt.Sprintf("qilin.crm.domain.%s", domainError.Key),
 			Msg:   err.Error(), // full message with wrappers
 		})
 
 	// catch echo std errors
 	case e.Is(err, echo.ErrMethodNotAllowed):
 		_ = c.JSON(http.StatusMethodNotAllowed, HTTPError{
-			Error: "errors.com.qilin.crm.http.method_not_allowed",
-			Msg:   "Method Not Allowed",
+			Error: "qilin.crm.http.method_not_allowed",
+			Msg:   "method not allowed",
 		})
 	case e.Is(err, echo.ErrUnsupportedMediaType):
 		_ = c.JSON(http.StatusMethodNotAllowed, HTTPError{
-			Error: "errors.com.qilin.crm.http.unsupported_media_type",
-			Msg:   "Unsupported Media Type",
+			Error: "qilin.crm.http.unsupported_media_type",
+			Msg:   "unsupported media type",
 		})
 	case e.Is(err, echo.ErrNotFound):
 		_ = c.JSON(http.StatusNotFound, HTTPError{
-			Error: "errors.com.qilin.crm.http.not_found",
-			Msg:   "Not Found",
+			Error: "qilin.crm.http.not_found",
+			Msg:   "not found",
 		})
 	case e.Is(err, echo.ErrUnauthorized):
 		_ = c.JSON(http.StatusUnauthorized, HTTPError{
-			Error: "errors.com.qilin.crm.http.unauthorized",
-			Msg:   "Unauthorized",
+			Error: "qilin.crm.http.unauthorized",
+			Msg:   "unauthorized",
 		})
 	case e.As(err, &echoError):
 		// bind errors
 		if echoError.Code == http.StatusBadRequest {
 			_ = c.JSON(http.StatusBadRequest, HTTPError{
-				Error: "errors.com.qilin.crm.http.bad_request",
+				Error: "qilin.crm.http.bad_request",
 				Msg:   fmt.Sprint(echoError.Message),
 			})
 		} else {
 			zap.L().Error("Unknown error", zap.Error(err))
 			_ = c.JSON(http.StatusInternalServerError, HTTPError{
-				Error: "errors.com.qilin.crm.internal_error",
+				Error: "qilin.crm.internal_error",
 				Msg:   "internal server error",
 			})
 		}
@@ -73,7 +73,7 @@ func Err(err error, c echo.Context) {
 	default:
 		zap.L().Error("Unknown error", zap.Error(err))
 		_ = c.JSON(http.StatusInternalServerError, HTTPError{
-			Error: "errors.com.qilin.crm.internal_error",
+			Error: "qilin.crm.internal_error",
 			Msg:   "internal server error",
 		})
 

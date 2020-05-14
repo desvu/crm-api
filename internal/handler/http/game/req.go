@@ -13,6 +13,7 @@ import (
 //swagger:parameters reqGetByID reqPublish
 type reqByID struct {
 	// in: path
+	// required: true
 	// example: 11002485-cb51-4b29-8423-cba43f29f143
 	ID string `param:"game_id"`
 }

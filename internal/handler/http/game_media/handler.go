@@ -14,10 +14,12 @@ import (
 //swagger:parameters reqUpload
 type reqUpload struct {
 	// in: path
+	// required: true
 	// example: 11002485-cb51-4b29-8423-cba43f29f143
 	GameID string `param:"game_id"`
 
 	// in: path
+	// required: true
 	// example: 43
 	MediaID uint `param:"media_id"`
 }
@@ -77,6 +79,7 @@ func (h Handler) Upload(c echo.Context) error {
 //swagger:parameters reqCreate
 type reqCreate struct {
 	// in: path
+	// required: true
 	// example: 11002485-cb51-4b29-8423-cba43f29f143
 	GameID string `param:"game_id"`
 
@@ -85,9 +88,11 @@ type reqCreate struct {
 }
 
 type reqCreateBody struct {
+	// required: true
 	// enum: wideSlider,vertical,horizontal,horizontalSmall,largeSingle,catalog,screenshot,description
 	Type string `json:"type"`
 
+	// required: true
 	// example: png
 	Extension string `json:"extension"`
 }
