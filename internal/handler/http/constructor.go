@@ -1,4 +1,4 @@
-// Package classification awesome.
+// Package classification Qilin CRM API
 //
 // Documentation of Qilin CRM api.
 //
