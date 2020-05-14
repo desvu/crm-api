@@ -20,14 +20,24 @@ type reqByID struct {
 //swagger:parameters reqUpsert
 type reqUpsertWrapper struct {
 	// in: body
-	req reqUpsert
+	Data reqUpsert
 }
 type reqUpsert struct {
 	// example: 11002485-cb51-4b29-8423-cba43f29f143
-	ID           *string        `json:"id"`
-	Title        *string        `json:"title"`
-	Type         *string        `json:"type"`
-	Slug         *string        `json:"slug"`
+	ID *string `json:"id"`
+
+	// example: Ash of Gods
+	Title *string `json:"title"`
+
+	// example: desktop
+	Type *string `json:"type"`
+
+	// example: ash-of-gods
+	Slug *string `json:"slug"`
+
+	// example: Ash of Gods: Redemption is a turn-based RPG that combines tactical combat,
+	// CCG elements, and a constantly evolving story in which no one is safe from death,
+	// including the main characters.
 	Summary      *string        `json:"summary"`
 	Description  *string        `json:"description"`
 	License      *string        `json:"license"`

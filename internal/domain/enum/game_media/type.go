@@ -1,5 +1,6 @@
 package game_media
 
+//swagger:enum Type
 type Type uint
 
 const (
