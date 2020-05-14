@@ -81,7 +81,7 @@ type reqCreate struct {
 	GameID string `param:"game_id"`
 
 	// in: body
-	// Enum: [wideSlider vertical horizontal horizontalSmall largeSingle catalog screenshot description]
+	// enum: wideSlider,vertical,horizontal,horizontalSmall,largeSingle,catalog,screenshot,description
 	Type string `json:"type"`
 
 	// in: body
