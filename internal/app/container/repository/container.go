@@ -14,6 +14,7 @@ import (
 	"github.com/qilin/crm-api/internal/repository/game_revision_media"
 	"github.com/qilin/crm-api/internal/repository/game_revision_publisher"
 	"github.com/qilin/crm-api/internal/repository/game_revision_rating"
+	"github.com/qilin/crm-api/internal/repository/game_revision_review"
 	"github.com/qilin/crm-api/internal/repository/game_revision_tag"
 	"github.com/qilin/crm-api/internal/repository/game_store_publish"
 	"github.com/qilin/crm-api/internal/repository/genre"
@@ -44,5 +45,6 @@ func New() fx.Option {
 		storefront.New,
 		game_revision_localization.New,
 		game_revision_rating.New,
+		game_revision_review.New,
 	)
 }

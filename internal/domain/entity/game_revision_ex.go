@@ -10,4 +10,5 @@ type GameRevisionEx struct {
 	Media        []GameMedia
 	Localization []Localization
 	Rating       []Rating
+	Review       []Review
 }

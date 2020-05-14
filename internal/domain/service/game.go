@@ -50,6 +50,7 @@ type CommonGameData struct {
 	ReleaseDate        *time.Time
 	Localizations      *[]LocalizationData
 	Ratings            *[]RatingData
+	Reviews            *[]ReviewData
 }
 
 type UpsertGameData struct {
@@ -106,6 +107,14 @@ func (d CreateGameData) Validate() error {
 		}
 	}
 
+	if d.Reviews != nil {
+		for _, r := range *d.Reviews {
+			if err := r.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -122,6 +131,13 @@ func (d UpdateGameData) Validate() error {
 	if d.Localizations != nil {
 		for _, l := range *d.Localizations {
 			if err := l.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+	if d.Reviews != nil {
+		for _, r := range *d.Reviews {
+			if err := r.Validate(); err != nil {
 				return err
 			}
 		}

@@ -34,6 +34,7 @@ type UpdateGameRevisionData struct {
 	SystemRequirements *[]SystemRequirements
 	Localizations      *[]LocalizationData
 	Rating             *[]RatingData
+	Reviews            *[]ReviewData
 
 	Tags       *[]uint
 	Developers *[]uint
