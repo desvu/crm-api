@@ -10,21 +10,60 @@ import (
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
+//swagger:parameters reqGetByID reqPublish
+type reqByID struct {
+	// in: path
+	// example: 11002485-cb51-4b29-8423-cba43f29f143
+	ID string `param:"game_id"`
+}
+
+//swagger:parameters reqUpsert
+type reqUpsertWrapper struct {
+	// in: body
+	Data reqUpsert
+}
 type reqUpsert struct {
-	ID           *string        `json:"id"`
-	Title        *string        `json:"title"`
-	Type         *string        `json:"type"`
-	Slug         *string        `json:"slug"`
-	Summary      *string        `json:"summary"`
-	Description  *string        `json:"description"`
-	License      *string        `json:"license"`
-	Trailer      *string        `json:"trailer"`
-	Platforms    *[]string      `json:"platforms"`
-	Developers   *[]uint        `json:"developers"`
-	Features     *[]uint        `json:"features"`
-	Genres       *[]uint        `json:"genres"`
-	Publishers   *[]uint        `json:"publishers"`
-	Tags         *[]uint        `json:"tags"`
+	// example: 11002485-cb51-4b29-8423-cba43f29f143
+	ID *string `json:"id"`
+
+	// example: Ash of Gods
+	Title *string `json:"title"`
+
+	// example: desktop
+	Type *string `json:"type"`
+
+	// example: ash-of-gods
+	Slug *string `json:"slug"`
+
+	// example: Ash of Gods: Redemption is a turn-based RPG that combines tactical combat, CCG elements, and a constantly evolving story in which no one is safe from death, including the main characters.
+	Summary *string `json:"summary"`
+
+	// example: Ash of Gods is the story of three separate protagonists rising in response to a centuries-old menace once thought to be mere folklore. Captain Thorn Brenin, the bodyguard Lo Pheng, the scribe Hopper Rouley, and many others, do not yet know that the reapers have returned and intend to drown the world in blood so that they may awaken the sleeping gods.
+	Description *string `json:"description"`
+	License     *string `json:"license"`
+
+	// example: https://www.youtube.com/watch?v=k_j0fw8jh8M
+	Trailer *string `json:"trailer"`
+
+	// example: [windows, macOS]
+	Platforms *[]gameenum.Platform `json:"platforms"`
+
+	// example: [32]
+	Developers *[]uint `json:"developers"`
+
+	// example: [14, 44, 67]
+	Features *[]uint `json:"features"`
+
+	// example: [53, 23, 1]
+	Genres *[]uint `json:"genres"`
+
+	// example: [1]
+	Publishers *[]uint `json:"publishers"`
+
+	// example: []
+	Tags *[]uint `json:"tags"`
+
+	// example: [2, 5, 8, 9]
 	Media        *[]uint        `json:"media"`
 	ReleaseDate  *time.Time     `json:"release_date"`
 	SocialLinks  []socialLink   `json:"social_links"`

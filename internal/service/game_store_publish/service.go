@@ -13,7 +13,7 @@ type Service struct {
 	ServiceParams
 }
 
-func (s Service) Create(ctx context.Context, data *service.CreateGameStorePublishData) (*entity.GameStorePublish, error) {
+func (s *Service) Create(ctx context.Context, data *service.CreateGameStorePublishData) (*entity.GameStorePublish, error) {
 	gsp := &entity.GameStorePublish{
 		GameID: data.GameID,
 		Body:   data.Body,
@@ -27,7 +27,7 @@ func (s Service) Create(ctx context.Context, data *service.CreateGameStorePublis
 	return gsp, nil
 }
 
-func (s Service) Update(ctx context.Context, data *service.UpdateGameStorePublishData) (*entity.GameStorePublish, error) {
+func (s *Service) Update(ctx context.Context, data *service.UpdateGameStorePublishData) (*entity.GameStorePublish, error) {
 	gsp, err := s.GetExistByID(ctx, data.ID)
 	if err != nil {
 		return nil, err
@@ -41,11 +41,11 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGameStorePublis
 	return gsp, nil
 }
 
-func (s Service) GetByID(ctx context.Context, id uint) (*entity.GameStorePublish, error) {
+func (s *Service) GetByID(ctx context.Context, id uint) (*entity.GameStorePublish, error) {
 	return s.GameStorePublishRepository.FindByID(ctx, id)
 }
 
-func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.GameStorePublish, error) {
+func (s *Service) GetExistByID(ctx context.Context, id uint) (*entity.GameStorePublish, error) {
 	gsp, err := s.GetByID(ctx, id)
 	if err != nil {
 		return nil, err

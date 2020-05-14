@@ -13,7 +13,7 @@ type Service struct {
 	ServiceParams
 }
 
-func (s Service) Create(ctx context.Context, data *service.CreateGenreData) (*entity.Genre, error) {
+func (s *Service) Create(ctx context.Context, data *service.CreateGenreData) (*entity.Genre, error) {
 	genre := &entity.Genre{
 		Name: data.Name,
 	}
@@ -25,7 +25,7 @@ func (s Service) Create(ctx context.Context, data *service.CreateGenreData) (*en
 	return genre, nil
 }
 
-func (s Service) Update(ctx context.Context, data *service.UpdateGenreData) (*entity.Genre, error) {
+func (s *Service) Update(ctx context.Context, data *service.UpdateGenreData) (*entity.Genre, error) {
 	genre, err := s.GetExistByID(ctx, data.ID)
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func (s Service) Update(ctx context.Context, data *service.UpdateGenreData) (*en
 	return genre, nil
 }
 
-func (s Service) Delete(ctx context.Context, id uint) error {
+func (s *Service) Delete(ctx context.Context, id uint) error {
 	genre, err := s.GetExistByID(ctx, id)
 	if err != nil {
 		return err
@@ -50,11 +50,11 @@ func (s Service) Delete(ctx context.Context, id uint) error {
 	return s.GenreRepository.Delete(ctx, genre)
 }
 
-func (s Service) GetByID(ctx context.Context, id uint) (*entity.Genre, error) {
+func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Genre, error) {
 	return s.GenreRepository.FindByID(ctx, id)
 }
 
-func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Genre, error) {
+func (s *Service) GetExistByID(ctx context.Context, id uint) (*entity.Genre, error) {
 	genre, err := s.GenreRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -67,11 +67,11 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Genre, erro
 	return genre, nil
 }
 
-func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Genre, error) {
+func (s *Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Genre, error) {
 	return s.GenreRepository.FindByIDs(ctx, ids)
 }
 
-func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Genre, error) {
+func (s *Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Genre, error) {
 	gameGenres, err := s.GameRevisionGenreRepository.FindByGameRevisionID(ctx, gameID)
 	if err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity
 	return s.GetByIDs(ctx, entity.NewGameRevisionGenreArray(gameGenres).IDs())
 }
 
-func (s Service) UpdateGenresForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, genreIDs []uint) error {
+func (s *Service) UpdateGenresForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, genreIDs []uint) error {
 	genres, err := s.GetByIDs(ctx, genreIDs)
 	if err != nil {
 		return err

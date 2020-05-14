@@ -1,19 +1,42 @@
 package game
 
-import "github.com/qilin/crm-api/internal/domain/entity"
+import (
+	"github.com/qilin/crm-api/internal/domain/entity"
+	gameenum "github.com/qilin/crm-api/internal/domain/enum/game"
+	"github.com/qilin/crm-api/internal/domain/enum/game_media"
+	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
+)
 
+//swagger:model Game
 type game struct {
-	ID       string   `json:"id"`
-	Title    string   `json:"title"`
-	Type     string   `json:"type"`
-	Slug     string   `json:"slug"`
+	// read-only: true
+	// example: b6fa8b92-8d5b-42e5-a7e8-3e5dabb2ca51
+	ID string `json:"id"`
+
+	// example: Ash of Gods
+	Title string `json:"title"`
+
+	// example: desktop
+	Type gameenum.Type `json:"type"`
+
+	// example: ash-of-gods
+	Slug string `json:"slug"`
+
 	Revision revision `json:"revision"`
 }
 
 type revision struct {
-	ID           uint           `json:"id"`
-	Status       string         `json:"status"`
-	Summary      string         `json:"summary,omitempty"`
+	// read-only: true
+	// example: 43
+	ID uint `json:"id"`
+
+	// example: published
+	Status game_revision.Status `json:"status"`
+
+	// example: Summary game
+	Summary string `json:"summary,omitempty"`
+
+	// example: Description game
 	Description  string         `json:"description,omitempty"`
 	License      string         `json:"license,omitempty"`
 	Trailer      string         `json:"trailer,omitempty"`
@@ -29,9 +52,9 @@ type socialLink struct {
 }
 
 type media struct {
-	ID   uint   `json:"id"`
-	Type string `json:"type"`
-	URL  string `json:"url"`
+	ID   uint            `json:"id"`
+	Type game_media.Type `json:"type"`
+	URL  string          `json:"url"`
 }
 
 type localization struct {
@@ -59,11 +82,11 @@ func (h Handler) view(i *entity.GameEx) game {
 	var v = game{
 		ID:    i.ID,
 		Title: i.Title,
-		Type:  i.Type.String(),
+		Type:  i.Type,
 		Slug:  i.Slug,
 		Revision: revision{
 			ID:          i.Revision.ID,
-			Status:      i.Revision.Status.String(),
+			Status:      i.Revision.Status,
 			Summary:     i.Revision.Summary,
 			Description: i.Revision.Description,
 			License:     i.Revision.License,
@@ -76,7 +99,7 @@ func (h Handler) view(i *entity.GameEx) game {
 		for _, m := range i.Revision.Media {
 			v.Revision.Media = append(v.Revision.Media, media{
 				ID:   m.ID,
-				Type: m.Type.String(),
+				Type: m.Type,
 				URL:  h.URLBuilder.BuildGameMedia(&m),
 			})
 		}
@@ -122,6 +145,7 @@ type pagination struct {
 	Total int `json:"total"`
 }
 
+//swagger:model GameList
 type gameList struct {
 	Games      []game     `json:"games"`
 	Pagination pagination `json:"pagination"`

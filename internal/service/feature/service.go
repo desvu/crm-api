@@ -12,7 +12,7 @@ type Service struct {
 	ServiceParams
 }
 
-func (s Service) Create(ctx context.Context, data *service.CreateFeatureData) (*entity.Feature, error) {
+func (s *Service) Create(ctx context.Context, data *service.CreateFeatureData) (*entity.Feature, error) {
 	feature := &entity.Feature{
 		Name: data.Name,
 		Icon: data.Icon,
@@ -25,7 +25,7 @@ func (s Service) Create(ctx context.Context, data *service.CreateFeatureData) (*
 	return feature, nil
 }
 
-func (s Service) Update(ctx context.Context, data *service.UpdateFeatureData) (*entity.Feature, error) {
+func (s *Service) Update(ctx context.Context, data *service.UpdateFeatureData) (*entity.Feature, error) {
 	feature, err := s.GetExistByID(ctx, data.ID)
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func (s Service) Update(ctx context.Context, data *service.UpdateFeatureData) (*
 	return feature, nil
 }
 
-func (s Service) Delete(ctx context.Context, id uint) error {
+func (s *Service) Delete(ctx context.Context, id uint) error {
 	feature, err := s.GetExistByID(ctx, id)
 	if err != nil {
 		return err
@@ -50,11 +50,11 @@ func (s Service) Delete(ctx context.Context, id uint) error {
 	return s.FeatureRepository.Delete(ctx, feature)
 }
 
-func (s Service) GetByID(ctx context.Context, id uint) (*entity.Feature, error) {
+func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Feature, error) {
 	return s.FeatureRepository.FindByID(ctx, id)
 }
 
-func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Feature, error) {
+func (s *Service) GetExistByID(ctx context.Context, id uint) (*entity.Feature, error) {
 	feature, err := s.FeatureRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -67,11 +67,11 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Feature, er
 	return feature, nil
 }
 
-func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Feature, error) {
+func (s *Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Feature, error) {
 	return s.FeatureRepository.FindByIDs(ctx, ids)
 }
 
-func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Feature, error) {
+func (s *Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Feature, error) {
 	gameFeatures, err := s.GameRevisionFeatureRepository.FindByGameRevisionID(ctx, gameID)
 	if err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity
 	return s.GetByIDs(ctx, entity.NewGameRevisionFeatureArray(gameFeatures).IDs())
 }
 
-func (s Service) UpdateFeaturesForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, featureIDs []uint) error {
+func (s *Service) UpdateFeaturesForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, featureIDs []uint) error {
 	features, err := s.GetByIDs(ctx, featureIDs)
 	if err != nil {
 		return err

@@ -1,0 +1,42 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+jobs:
+  test:
+    name: Docs
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Install Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13.4
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Download swagger
+        run: sudo curl -L "https://github.com/go-swagger/go-swagger/releases/download/v0.23.0/swagger_linux_amd64" -o /usr/local/bin/swagger
+
+      - name: Grant exec permissions to swagger
+        run: sudo chmod +x /usr/local/bin/swagger
+
+      - name: Generate swagger 2.0 spec
+        run: swagger generate spec -m -o ./swagger.json
+
+      - name: Create directory for docs
+        run: mkdir doc
+
+      - name: Generate html docs
+        uses: seeebiii/redoc-cli-github-action@v9
+        with:
+          args: 'bundle swagger.json -o doc/index.html'
+
+      - name: Deploy docs to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          ACCESS_TOKEN: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: doc

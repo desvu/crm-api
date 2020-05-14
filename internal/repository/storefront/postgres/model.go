@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/block"
 )
 
 type storefront struct {
@@ -22,15 +23,22 @@ type storefront struct {
 }
 
 type version struct {
-	StorefrontID uint           `pg:"storefront_id,pk,fk"`
-	ID           uint           `pg:"id,use_zero,pk"`
-	Blocks       []entity.Block `pg:"blocks,use_zero"`
-	CreatedAt    time.Time      `pg:"created_at,default:now()"`
+	StorefrontID uint      `pg:"storefront_id,pk,fk"`
+	ID           uint      `pg:"id,use_zero,pk"`
+	Blocks       []sfblock `pg:"blocks,use_zero"`
+	CreatedAt    time.Time `pg:"created_at,default:now()"`
 
 	// relations
 	// Activation *activation
 
 	tableName struct{} `pg:"storefront_versions"`
+}
+
+type sfblock struct {
+	Type    block.Type  `json:"type"`
+	Title   block.Title `json:"title"`
+	Filter  string      `json:"filter"`
+	GameIDs []string    `json:"games"`
 }
 
 type activation struct {
@@ -49,9 +57,17 @@ func newStorefront(i *entity.Storefront) (*storefront, error) {
 		Version: version{
 			StorefrontID: i.ID,
 			ID:           i.Version,
-			Blocks:       i.Blocks,
+			Blocks:       modelBlocks(i.Blocks),
 		},
 	}, nil
+}
+
+func modelBlocks(b []entity.Block) []sfblock {
+	var res []sfblock
+	for i := range b {
+		res = append(res, sfblock(b[i]))
+	}
+	return res
 }
 
 func (s *storefront) Convert() *entity.Storefront {
@@ -61,7 +77,15 @@ func (s *storefront) Convert() *entity.Storefront {
 		IsActive:  s.IsActive,
 		CreatedAt: s.CreatedAt,
 		Version:   s.Version.ID,
-		Blocks:    s.Version.Blocks,
+		Blocks:    s.convertBlocks(),
 		UpdatedAt: s.Version.CreatedAt,
 	}
+}
+
+func (s *storefront) convertBlocks() []entity.Block {
+	var res []entity.Block
+	for i := range s.Version.Blocks {
+		res = append(res, entity.Block(s.Version.Blocks[i]))
+	}
+	return res
 }
