@@ -2,18 +2,36 @@ package game
 
 import "github.com/qilin/crm-api/internal/domain/entity"
 
+//swagger:model Game
 type game struct {
-	ID       string   `json:"id"`
-	Title    string   `json:"title"`
-	Type     string   `json:"type"`
-	Slug     string   `json:"slug"`
+	// read-only: true
+	// example: b6fa8b92-8d5b-42e5-a7e8-3e5dabb2ca51
+	ID string `json:"id"`
+
+	// example: Ash of Gods
+	Title string `json:"title"`
+
+	// example: desktop
+	Type string `json:"type"`
+
+	// example: ash-of-gods
+	Slug string `json:"slug"`
+
 	Revision revision `json:"revision"`
 }
 
 type revision struct {
-	ID           uint           `json:"id"`
-	Status       string         `json:"status"`
-	Summary      string         `json:"summary,omitempty"`
+	// read-only: true
+	// example: 43
+	ID uint `json:"id"`
+
+	// example: published
+	Status string `json:"status"`
+
+	// example: Summary game
+	Summary string `json:"summary,omitempty"`
+
+	// example: Description game
 	Description  string         `json:"description,omitempty"`
 	License      string         `json:"license,omitempty"`
 	Trailer      string         `json:"trailer,omitempty"`
@@ -103,6 +121,7 @@ type pagination struct {
 	Total int `json:"total"`
 }
 
+//swagger:model GameList
 type gameList struct {
 	Games      []game     `json:"games"`
 	Pagination pagination `json:"pagination"`
