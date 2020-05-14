@@ -31,29 +31,18 @@ type Storefront struct {
 }
 
 // Block is storefront template page block
-//
-// swagger: model
 type Block struct {
 	// Type is how block must be rendered
-	//
-	// required: true
-	// example: basic_layout_2
-	Type block.Type `json:"type"`
+	Type block.Type
 
 	// Title is user facing title for page block
-	//
-	// example: special-offer
-	Title block.Title `json:"title"`
+	Title block.Title
 
 	// Filter is query to catalog for 'view more' button
-	//
-	// example: /catalog?genre=racing
-	Filter string `json:"filter"`
+	Filter string
 
 	// GameIDs is list of games identifiers
-	//
-	// example: ["c6afe465-f6c0-46aa-84f2-471ab2280960","a62a08fe-457f-480c-a417-f1e872485df9","401b8160-1d71-47c2-b232-7e05c129ef15","e31c1a39-143b-49db-87cf-b4525beacfdd"]
-	GameIDs []string `json:"games"`
+	GameIDs []string
 }
 
 func (b *Block) Validate() error {

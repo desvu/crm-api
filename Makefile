@@ -1,6 +1,10 @@
 .PHONY: grpcgen
 grpcgen: ## generate protobuf files
-	 @protoc pkg/grpc/proto/*.proto --go_out=plugins=grpc:.
+	 protoc pkg/grpc/proto/*.proto --go_out=plugins=grpc:.
+
+.PHONY: swaggergen
+swaggergen: ## generate swagger api documentation
+	 swagger generate spec -m -o ./swagger.json
 
 .PHONY: up
 up: ## build and run service in docker

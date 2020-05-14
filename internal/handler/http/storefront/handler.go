@@ -74,7 +74,7 @@ func (h *Handler) Create(c echo.Context) error {
 
 	data := &entity.Storefront{
 		Name:   request.Data.Name,
-		Blocks: request.Data.Blocks,
+		Blocks: request.Data.GetBlocks(),
 	}
 
 	res, err := h.Storefronts.Create(c.Request().Context(), data)
@@ -110,7 +110,7 @@ func (h *Handler) Update(ctx echo.Context) error {
 	data := &entity.Storefront{
 		ID:     request.ID,
 		Name:   request.Data.Name,
-		Blocks: request.Data.Blocks,
+		Blocks: request.Data.GetBlocks(),
 	}
 
 	res, err := h.Storefronts.Update(cnt, data)
