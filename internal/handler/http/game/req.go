@@ -18,46 +18,31 @@ type reqByID struct {
 }
 
 //swagger:parameters reqUpsert
+type reqUpsertWrapper struct {
+	// in: body
+	req reqUpsert
+}
 type reqUpsert struct {
-	// in: body
 	// example: 11002485-cb51-4b29-8423-cba43f29f143
-	ID *string `json:"id"`
-	// in: body
-	Title *string `json:"title"`
-	// in: body
-	Type *string `json:"type"`
-	// in: body
-	Slug *string `json:"slug"`
-	// in: body
-	Summary *string `json:"summary"`
-	// in: body
-	Description *string `json:"description"`
-	// in: body
-	License *string `json:"license"`
-	// in: body
-	Trailer *string `json:"trailer"`
-	// in: body
-	Platforms *[]string `json:"platforms"`
-	// in: body
-	Developers *[]uint `json:"developers"`
-	// in: body
-	Features *[]uint `json:"features"`
-	// in: body
-	Genres *[]uint `json:"genres"`
-	// in: body
-	Publishers *[]uint `json:"publishers"`
-	// in: body
-	Tags *[]uint `json:"tags"`
-	// in: body
-	Media *[]uint `json:"media"`
-	// in: body
-	ReleaseDate *time.Time `json:"release_date"`
-	// in: body
-	SocialLinks []socialLink `json:"social_links"`
-	// in: body
+	ID           *string        `json:"id"`
+	Title        *string        `json:"title"`
+	Type         *string        `json:"type"`
+	Slug         *string        `json:"slug"`
+	Summary      *string        `json:"summary"`
+	Description  *string        `json:"description"`
+	License      *string        `json:"license"`
+	Trailer      *string        `json:"trailer"`
+	Platforms    *[]string      `json:"platforms"`
+	Developers   *[]uint        `json:"developers"`
+	Features     *[]uint        `json:"features"`
+	Genres       *[]uint        `json:"genres"`
+	Publishers   *[]uint        `json:"publishers"`
+	Tags         *[]uint        `json:"tags"`
+	Media        *[]uint        `json:"media"`
+	ReleaseDate  *time.Time     `json:"release_date"`
+	SocialLinks  []socialLink   `json:"social_links"`
 	Localization []localization `json:"localization"`
-	// in: body
-	Rating *[]rating `json:"rating"`
+	Rating       *[]rating      `json:"rating"`
 }
 
 func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
