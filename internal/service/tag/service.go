@@ -13,7 +13,7 @@ type Service struct {
 	ServiceParams
 }
 
-func (s Service) Create(ctx context.Context, data *service.CreateTagData) (*entity.Tag, error) {
+func (s *Service) Create(ctx context.Context, data *service.CreateTagData) (*entity.Tag, error) {
 	tag := &entity.Tag{
 		Name: data.Name,
 	}
@@ -25,7 +25,7 @@ func (s Service) Create(ctx context.Context, data *service.CreateTagData) (*enti
 	return tag, nil
 }
 
-func (s Service) Update(ctx context.Context, data *service.UpdateTagData) (*entity.Tag, error) {
+func (s *Service) Update(ctx context.Context, data *service.UpdateTagData) (*entity.Tag, error) {
 	tag, err := s.GetExistByID(ctx, data.ID)
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func (s Service) Update(ctx context.Context, data *service.UpdateTagData) (*enti
 	return tag, nil
 }
 
-func (s Service) Delete(ctx context.Context, id uint) error {
+func (s *Service) Delete(ctx context.Context, id uint) error {
 	tag, err := s.GetExistByID(ctx, id)
 	if err != nil {
 		return err
@@ -50,11 +50,11 @@ func (s Service) Delete(ctx context.Context, id uint) error {
 	return s.TagRepository.Delete(ctx, tag)
 }
 
-func (s Service) GetByID(ctx context.Context, id uint) (*entity.Tag, error) {
+func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Tag, error) {
 	return s.TagRepository.FindByID(ctx, id)
 }
 
-func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Tag, error) {
+func (s *Service) GetExistByID(ctx context.Context, id uint) (*entity.Tag, error) {
 	tag, err := s.TagRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -67,11 +67,11 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Tag, error)
 	return tag, nil
 }
 
-func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Tag, error) {
+func (s *Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Tag, error) {
 	return s.TagRepository.FindByIDs(ctx, ids)
 }
 
-func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Tag, error) {
+func (s *Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Tag, error) {
 	gameTags, err := s.GameRevisionTagRepository.FindByGameRevisionID(ctx, gameID)
 	if err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity
 	return s.GetByIDs(ctx, entity.NewGameRevisionTagArray(gameTags).IDs())
 }
 
-func (s Service) UpdateTagsForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, tagIDs []uint) error {
+func (s *Service) UpdateTagsForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, tagIDs []uint) error {
 	tags, err := s.GetByIDs(ctx, tagIDs)
 	if err != nil {
 		return err

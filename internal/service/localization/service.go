@@ -12,11 +12,11 @@ type Service struct {
 	ServiceParams
 }
 
-func (s Service) GetByID(ctx context.Context, id uint) (*entity.Localization, error) {
+func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Localization, error) {
 	return s.LocalizationRepository.FindByID(ctx, id)
 }
 
-func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Localization, error) {
+func (s *Service) GetExistByID(ctx context.Context, id uint) (*entity.Localization, error) {
 	genre, err := s.LocalizationRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -29,15 +29,15 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Localizatio
 	return genre, nil
 }
 
-func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Localization, error) {
+func (s *Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Localization, error) {
 	return s.LocalizationRepository.FindByIDs(ctx, ids)
 }
 
-func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Localization, error) {
+func (s *Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Localization, error) {
 	return s.LocalizationRepository.FindByGameRevisionID(ctx, gameID)
 }
 
-func (s Service) UpdateLocalizationsForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, localizations []service.LocalizationData) error {
+func (s *Service) UpdateLocalizationsForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, localizations []service.LocalizationData) error {
 	langs := make([]string, len(localizations))
 	for i, l := range localizations {
 		langs[i] = l.Language
