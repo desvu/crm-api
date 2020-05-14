@@ -3,11 +3,12 @@ package game
 import (
 	"context"
 
+	"github.com/qilin/crm-api/internal/domain/repository"
+
 	"github.com/google/uuid"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 	"github.com/qilin/crm-api/internal/domain/errors"
-	"github.com/qilin/crm-api/internal/domain/publisher"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
@@ -190,9 +191,9 @@ func (s *Service) Publish(ctx context.Context, id string) error {
 		return err
 	}
 
-	if err = s.GameStorePublisher.Publish(publisher.PublishGameStoreData{Game: game}); err != nil {
-		return err
-	}
+	//if err = s.GameStorePublisher.Publish(publisher.PublishGameStoreData{Game: game}); err != nil {
+	//	return err
+	//}
 
 	revisionStatus := game_revision.StatusPublished // TODO publishing -> published
 	_, err = s.GameRevisionService.Update(ctx, &service.UpdateGameRevisionData{
@@ -303,6 +304,35 @@ func (s *Service) GetExByIDAndRevisionID(ctx context.Context, id string, revisio
 		Game:     *game,
 		Revision: revision,
 	}, nil
+}
+
+func (s *Service) GetExByFilter(ctx context.Context, data *service.GetByFilterGameDate) ([]entity.GameEx, error) {
+	games, err := s.GameRepository.FindByFilter(ctx, &repository.FindByFilterGameDate{
+		Limit:  data.Limit,
+		Offset: data.Offset,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	revisions, err := s.GameRevisionService.GetLastByGameIDs(ctx, entity.NewGameArray(games).IDs())
+	if err != nil {
+		return nil, err
+	}
+
+	var gamesEx []entity.GameEx
+	for i := range games {
+		for j := range revisions {
+			if games[i].ID == revisions[j].GameID {
+				gamesEx = append(gamesEx, entity.GameEx{
+					Game:     games[i],
+					Revision: &revisions[j],
+				})
+			}
+		}
+	}
+
+	return gamesEx, nil
 }
 
 func (s *Service) checkNoExistGameBySlug(ctx context.Context, slug string) error {

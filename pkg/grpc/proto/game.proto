@@ -49,7 +49,13 @@ message Game {
     string trailer = 17;
     repeated SocialLink socialLinks = 18;
     repeated Rating rating = 19;
+    repeated Media media = 20;
     repeated Review reviews = 21;
+}
+
+message Media {
+    string type = 1;
+    string url = 2;
 }
 
 message Tag {

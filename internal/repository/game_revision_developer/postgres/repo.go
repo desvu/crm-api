@@ -114,6 +114,26 @@ func (r GameRevisionDeveloperRepository) FindByGameRevisionID(ctx context.Contex
 	return entities, nil
 }
 
+func (r GameRevisionDeveloperRepository) FindByGameRevisionIDs(ctx context.Context, gameRevisionIDs []uint) ([]entity.GameRevisionDeveloper, error) {
+	if len(gameRevisionIDs) == 0 {
+		return nil, nil
+	}
+
+	var models []model
+
+	err := r.h.ModelContext(ctx, &models).WhereIn("game_revision_id in (?)", gameRevisionIDs).Select()
+	if err != nil {
+		return nil, err
+	}
+
+	entities := make([]entity.GameRevisionDeveloper, len(models))
+	for i := range models {
+		entities[i] = *models[i].Convert()
+	}
+
+	return entities, nil
+}
+
 func (r GameRevisionDeveloperRepository) FindByDeveloperID(ctx context.Context, developerID uint) ([]entity.GameRevisionDeveloper, error) {
 	var models []model
 

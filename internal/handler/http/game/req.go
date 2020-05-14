@@ -29,7 +29,7 @@ type reqUpsert struct {
 	ReleaseDate  *time.Time     `json:"release_date"`
 	SocialLinks  []socialLink   `json:"social_links"`
 	Localization []localization `json:"localization"`
-	Raiting      *[]rating      `json:"raiting"`
+	Rating       *[]rating      `json:"raiting"`
 	Review       *[]review      `json:"review"`
 }
 
@@ -74,9 +74,9 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 		data.CommonGameData.Localizations = &localizations
 	}
 
-	if req.Raiting != nil {
-		ratings := make([]service.RatingData, len(*req.Raiting))
-		for i, r := range *req.Raiting {
+	if req.Rating != nil {
+		ratings := make([]service.RatingData, len(*req.Rating))
+		for i, r := range *req.Rating {
 			ratings[i] = service.RatingData{
 				Agency:              game_rating.NewAgencyByString(r.Agency),
 				Rating:              game_rating.NewRatingByString(r.Agency, r.Rating),
@@ -117,4 +117,21 @@ func convertEntitySocialLinksToSocialLinks(links []entity.SocialLink) []socialLi
 		list[i] = socialLink{URL: item.URL}
 	}
 	return list
+}
+
+type reqGetByFilter struct {
+	Limit  int `query:"limit"`
+	Offset int `query:"offset"`
+}
+
+func convertGetByFilterRequest(c echo.Context) (*service.GetByFilterGameDate, error) {
+	req := new(reqGetByFilter)
+	if err := c.Bind(req); err != nil {
+		return nil, err
+	}
+
+	return &service.GetByFilterGameDate{
+		Limit:  req.Limit,
+		Offset: req.Offset,
+	}, nil
 }

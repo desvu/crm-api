@@ -1,5 +1,6 @@
 package block
 
+//swagger:enum Title
 type Title string
 
 const (

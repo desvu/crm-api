@@ -1,5 +1,6 @@
 package block
 
+//swagger:enum Type
 type Type string
 
 const (

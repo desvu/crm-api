@@ -134,3 +134,18 @@ func (mr *MockGameRevisionFeatureRepositoryMockRecorder) FindByGameRevisionIDAnd
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByGameRevisionIDAndFeatureIDs", reflect.TypeOf((*MockGameRevisionFeatureRepository)(nil).FindByGameRevisionIDAndFeatureIDs), arg0, arg1, arg2)
 }
+
+// FindByGameRevisionIDs mocks base method
+func (m *MockGameRevisionFeatureRepository) FindByGameRevisionIDs(arg0 context.Context, arg1 []uint) ([]entity.GameRevisionFeature, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByGameRevisionIDs", arg0, arg1)
+	ret0, _ := ret[0].([]entity.GameRevisionFeature)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByGameRevisionIDs indicates an expected call of FindByGameRevisionIDs
+func (mr *MockGameRevisionFeatureRepositoryMockRecorder) FindByGameRevisionIDs(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByGameRevisionIDs", reflect.TypeOf((*MockGameRevisionFeatureRepository)(nil).FindByGameRevisionIDs), arg0, arg1)
+}

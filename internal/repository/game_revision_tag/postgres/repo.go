@@ -106,6 +106,26 @@ func (r GameRevisionTagRepository) FindByGameRevisionID(ctx context.Context, gam
 	return entities, nil
 }
 
+func (r GameRevisionTagRepository) FindByGameRevisionIDs(ctx context.Context, gameRevisionIDs []uint) ([]entity.GameRevisionTag, error) {
+	if len(gameRevisionIDs) == 0 {
+		return nil, nil
+	}
+
+	var models []model
+
+	err := r.h.ModelContext(ctx, &models).WhereIn("game_revision_id in (?)", gameRevisionIDs).Select()
+	if err != nil {
+		return nil, err
+	}
+
+	entities := make([]entity.GameRevisionTag, len(models))
+	for i := range models {
+		entities[i] = *models[i].Convert()
+	}
+
+	return entities, nil
+}
+
 func (r GameRevisionTagRepository) FindByTagID(ctx context.Context, tagID uint) ([]entity.GameRevisionTag, error) {
 	var models []model
 
@@ -123,6 +143,10 @@ func (r GameRevisionTagRepository) FindByTagID(ctx context.Context, tagID uint) 
 }
 
 func (r GameRevisionTagRepository) FindByGameRevisionIDAndTagIDs(ctx context.Context, gameRevisionID uint, tagIDs []uint) ([]entity.GameRevisionTag, error) {
+	if len(tagIDs) == 0 {
+		return nil, nil
+	}
+
 	var models []model
 
 	err := r.h.ModelContext(ctx, &models).

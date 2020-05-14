@@ -176,6 +176,10 @@ func (s *Service) GetByID(ctx context.Context, id uint) (*entity.GameRevisionEx,
 	return revision, nil
 }
 
+func (s *Service) GetLastByGameIDs(ctx context.Context, gameIDs []string) ([]entity.GameRevisionEx, error) {
+	return s.GameRevisionExRepository.FindLastByGameIDs(ctx, gameIDs)
+}
+
 func (s *Service) GetByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error) {
 	revision, err := s.GameRevisionExRepository.FindByID(ctx, id)
 	if err != nil {
@@ -227,16 +231,13 @@ func (s *Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entit
 	}, nil
 }
 
-func (s *Service) IsGamesPublished(ctx context.Context, ids ...string) error {
-	if len(ids) == 0 {
-		return nil
-	}
-	res, err := s.GameRevisionRepository.FindPublishedByGameIDs(ctx, ids...)
+func (s *Service) IsGamesPublished(ctx context.Context, gameIDs []string) error {
+	res, err := s.GameRevisionRepository.FindPublishedByGameIDs(ctx, gameIDs)
 	if err != nil {
 		return err
 	}
 
-	if len(res) != len(ids) {
+	if len(res) != len(gameIDs) {
 		return errors.GameNotFound // attach game id
 	}
 
