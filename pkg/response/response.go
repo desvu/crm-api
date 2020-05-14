@@ -10,6 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
+//swagger:model
 type HTTPError struct {
 	Error string `json:"error"`
 	Msg   string `json:"msg"`
@@ -20,34 +21,47 @@ func New(c echo.Context, value interface{}) error {
 }
 
 func Err(err error, c echo.Context) {
-	switch v := e.Cause(err).(type) {
-
+	var (
+		domainError errors.Error
+		echoError   *echo.HTTPError
+	)
+	switch {
 	// domain errors
-	case errors.Error:
-		_ = c.JSON(getStatus(v), HTTPError{
-			Error: fmt.Sprintf("errors.com.qilin.crm.%s", v.Key),
-			Msg:   getMsg(v),
+	case e.As(err, &domainError):
+		_ = c.JSON(getStatus(domainError), HTTPError{
+			Error: fmt.Sprintf("errors.com.qilin.crm.%s", domainError.Key),
+			Msg:   err.Error(), // full message with wrappers
 		})
 
 	// catch echo std errors
-	case *echo.HTTPError:
-		switch v {
-		case echo.ErrMethodNotAllowed:
-			_ = c.JSON(http.StatusMethodNotAllowed, HTTPError{
-				Error: fmt.Sprintf("errors.com.qilin.crm.http.method_not_allowed"),
-				Msg:   fmt.Sprint(v.Message),
+	case e.Is(err, echo.ErrMethodNotAllowed):
+		_ = c.JSON(http.StatusMethodNotAllowed, HTTPError{
+			Error: "errors.com.qilin.crm.http.method_not_allowed",
+			Msg:   "Method Not Allowed",
+		})
+	case e.Is(err, echo.ErrUnsupportedMediaType):
+		_ = c.JSON(http.StatusMethodNotAllowed, HTTPError{
+			Error: "errors.com.qilin.crm.http.unsupported_media_type",
+			Msg:   "Unsupported Media Type",
+		})
+	case e.Is(err, echo.ErrNotFound):
+		_ = c.JSON(http.StatusNotFound, HTTPError{
+			Error: "errors.com.qilin.crm.http.not_found",
+			Msg:   "Not Found",
+		})
+	case e.Is(err, echo.ErrUnauthorized):
+		_ = c.JSON(http.StatusUnauthorized, HTTPError{
+			Error: "errors.com.qilin.crm.http.unauthorized",
+			Msg:   "Unauthorized",
+		})
+	case e.As(err, &echoError):
+		// bind errors
+		if echoError.Code == http.StatusBadRequest {
+			_ = c.JSON(http.StatusBadRequest, HTTPError{
+				Error: "errors.com.qilin.crm.http.bad_request",
+				Msg:   fmt.Sprint(echoError.Message),
 			})
-		case echo.ErrNotFound:
-			_ = c.JSON(http.StatusNotFound, HTTPError{
-				Error: fmt.Sprintf("errors.com.qilin.crm.http.resource_not_found"),
-				Msg:   fmt.Sprint(v.Message),
-			})
-		case echo.ErrUnauthorized:
-			_ = c.JSON(http.StatusUnauthorized, HTTPError{
-				Error: fmt.Sprintf("errors.com.qilin.crm.http.unauthorized"),
-				Msg:   fmt.Sprint(v.Message),
-			})
-		default:
+		} else {
 			zap.L().Error("Unknown error", zap.Error(err))
 			_ = c.JSON(http.StatusInternalServerError, HTTPError{
 				Error: "errors.com.qilin.crm.internal_error",
@@ -55,12 +69,14 @@ func Err(err error, c echo.Context) {
 			})
 		}
 
+	// unknown errors
 	default:
 		zap.L().Error("Unknown error", zap.Error(err))
 		_ = c.JSON(http.StatusInternalServerError, HTTPError{
 			Error: "errors.com.qilin.crm.internal_error",
 			Msg:   "internal server error",
 		})
+
 	}
 }
 
@@ -76,14 +92,5 @@ func getStatus(err errors.Error) int {
 		return http.StatusInternalServerError
 	default:
 		return http.StatusInternalServerError
-	}
-}
-
-func getMsg(err errors.Error) string {
-	switch err.Type {
-	case errors.ErrInternal:
-		return "internal server error"
-	default:
-		return err.Err.Error()
 	}
 }
