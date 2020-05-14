@@ -33,16 +33,16 @@ type Storefront struct {
 // Block is storefront template page block
 type Block struct {
 	// Type is how block must be rendered
-	Type block.Type `json:"type"`
+	Type block.Type
 
 	// Title is user facing title for page block
-	Title block.Title `json:"title"`
+	Title block.Title
 
 	// Filter is query to catalog for 'view more' button
-	Filter string `json:"filter"`
+	Filter string
 
 	// GameIDs is list of games identifiers
-	GameIDs []string `json:"games"`
+	GameIDs []string
 }
 
 func (b *Block) Validate() error {
