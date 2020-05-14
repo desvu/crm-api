@@ -32,7 +32,7 @@ jobs:
           args: 'bundle swagger.json -o index.html'
 
       - name: Upload docs
-          uses: actions/upload-artifact@v1
-          with:
-            name: docs
-            path: index.html
+        uses: actions/upload-artifact@v1
+        with:
+          name: docs
+          path: index.html
