@@ -18,5 +18,6 @@ type GameRevisionLocalizationRepository interface {
 	FindByID(ctx context.Context, id uint) (*entity.Localization, error)
 	FindByIDs(ctx context.Context, ids []uint) ([]entity.Localization, error)
 	FindByGameRevisionID(ctx context.Context, gameRevisionID uint) ([]entity.Localization, error)
+	FindByGameRevisionIDs(ctx context.Context, gameRevisionIDs []uint) ([]entity.Localization, error)
 	FindByGameRevisionIDAndLanguage(ctx context.Context, gameRevisionID uint, langs []string) ([]entity.Localization, error)
 }

@@ -120,6 +120,21 @@ func (mr *MockGameRevisionPublisherRepositoryMockRecorder) FindByGameRevisionIDA
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByGameRevisionIDAndPublisherIDs", reflect.TypeOf((*MockGameRevisionPublisherRepository)(nil).FindByGameRevisionIDAndPublisherIDs), arg0, arg1, arg2)
 }
 
+// FindByGameRevisionIDs mocks base method
+func (m *MockGameRevisionPublisherRepository) FindByGameRevisionIDs(arg0 context.Context, arg1 []uint) ([]entity.GameRevisionPublisher, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByGameRevisionIDs", arg0, arg1)
+	ret0, _ := ret[0].([]entity.GameRevisionPublisher)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByGameRevisionIDs indicates an expected call of FindByGameRevisionIDs
+func (mr *MockGameRevisionPublisherRepositoryMockRecorder) FindByGameRevisionIDs(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByGameRevisionIDs", reflect.TypeOf((*MockGameRevisionPublisherRepository)(nil).FindByGameRevisionIDs), arg0, arg1)
+}
+
 // FindByPublisherID mocks base method
 func (m *MockGameRevisionPublisherRepository) FindByPublisherID(arg0 context.Context, arg1 uint) ([]entity.GameRevisionPublisher, error) {
 	m.ctrl.T.Helper()

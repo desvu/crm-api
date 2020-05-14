@@ -15,5 +15,6 @@ type GameRevisionFeatureRepository interface {
 
 	FindByFeatureID(ctx context.Context, featureID uint) ([]entity.GameRevisionFeature, error)
 	FindByGameRevisionID(ctx context.Context, gameRevisionID uint) ([]entity.GameRevisionFeature, error)
+	FindByGameRevisionIDs(ctx context.Context, gameRevisionIDs []uint) ([]entity.GameRevisionFeature, error)
 	FindByGameRevisionIDAndFeatureIDs(ctx context.Context, gameRevisionID uint, featureIDs []uint) ([]entity.GameRevisionFeature, error)
 }

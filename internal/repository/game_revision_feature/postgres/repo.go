@@ -114,6 +114,26 @@ func (r GameRevisionFeatureRepository) FindByGameRevisionID(ctx context.Context,
 	return entities, nil
 }
 
+func (r GameRevisionFeatureRepository) FindByGameRevisionIDs(ctx context.Context, gameRevisionIDs []uint) ([]entity.GameRevisionFeature, error) {
+	if len(gameRevisionIDs) == 0 {
+		return nil, nil
+	}
+
+	var models []model
+
+	err := r.h.ModelContext(ctx, &models).WhereIn("game_revision_id in (?)", gameRevisionIDs).Select()
+	if err != nil {
+		return nil, errors.Wrap(err, "load features failed")
+	}
+
+	entities := make([]entity.GameRevisionFeature, len(models))
+	for i := range models {
+		entities[i] = *models[i].Convert()
+	}
+
+	return entities, nil
+}
+
 func (r GameRevisionFeatureRepository) FindByFeatureID(ctx context.Context, featureID uint) ([]entity.GameRevisionFeature, error) {
 	var models []model
 

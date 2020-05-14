@@ -83,9 +83,13 @@ func (r GameRevisionRepository) FindByID(ctx context.Context, id uint) (*entity.
 }
 
 func (r GameRevisionRepository) FindByIDs(ctx context.Context, ids []uint) ([]entity.GameRevision, error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+
 	var models []model
 
-	err := r.h.ModelContext(ctx, &models).Where("id in (?)", pg.In(ids)).Select()
+	err := r.h.ModelContext(ctx, &models).WhereIn("id in (?)", ids).Select()
 	if err != nil {
 		return nil, errors.NewInternal(err)
 	}
@@ -114,6 +118,31 @@ func (r GameRevisionRepository) FindByGameID(ctx context.Context, gameID string)
 	return entities, nil
 }
 
+func (r GameRevisionRepository) FindLastByGameIDs(ctx context.Context, gameIDs []string) ([]entity.GameRevision, error) {
+	if len(gameIDs) == 0 {
+		return nil, nil
+	}
+
+	var models []model
+
+	err := r.h.ModelContext(ctx, &models).
+		DistinctOn("game_id").
+		WhereIn("game_id in (?)", gameIDs).
+		Order("game_id", "id desc").
+		Select()
+
+	if err != nil {
+		return nil, errors.NewInternal(err)
+	}
+
+	entities := make([]entity.GameRevision, len(models))
+	for i := range models {
+		entities[i] = *models[i].Convert()
+	}
+
+	return entities, nil
+}
+
 func (r GameRevisionRepository) FindLastPublishedByGameID(ctx context.Context, gameID string) (*entity.GameRevision, error) {
 	model := new(model)
 
@@ -121,7 +150,7 @@ func (r GameRevisionRepository) FindLastPublishedByGameID(ctx context.Context, g
 		Where("game_id = ?", gameID).
 		Where("status = ?", game_revision.StatusPublished.Value()).
 		Order("published_at desc").
-		Select()
+		First()
 
 	if err == pg.ErrNoRows {
 		return nil, nil
@@ -140,7 +169,7 @@ func (r GameRevisionRepository) FindDraftByGameID(ctx context.Context, gameID st
 	err := r.h.ModelContext(ctx, model).
 		Where("game_id = ?", gameID).
 		Where("status = ?", game_revision.StatusDraft.Value()).
-		Select()
+		First()
 
 	if err == pg.ErrNoRows {
 		return nil, nil
@@ -172,11 +201,15 @@ func (r GameRevisionRepository) FindByIDAndGameID(ctx context.Context, id uint, 
 	return model.Convert(), nil
 }
 
-func (r GameRevisionRepository) FindPublishedByGameIDs(ctx context.Context, ids ...string) ([]string, error) {
+func (r GameRevisionRepository) FindPublishedByGameIDs(ctx context.Context, gameIDs []string) ([]string, error) {
+	if len(gameIDs) == 0 {
+		return nil, nil
+	}
+
 	var res []string
 	err := r.h.ModelContext(ctx, (*model)(nil)).
 		Column("game_id").
-		Where("game_id in (?)", pg.In(ids)).
+		WhereIn("game_id in (?)", gameIDs).
 		Where("status = ?", game_revision.StatusPublished.Value()).
 		Group("game_id").
 		Select(&res)

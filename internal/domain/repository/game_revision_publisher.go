@@ -15,5 +15,6 @@ type GameRevisionPublisherRepository interface {
 
 	FindByPublisherID(ctx context.Context, publisherID uint) ([]entity.GameRevisionPublisher, error)
 	FindByGameRevisionID(ctx context.Context, gameRevisionID uint) ([]entity.GameRevisionPublisher, error)
+	FindByGameRevisionIDs(ctx context.Context, gameRevisionIDs []uint) ([]entity.GameRevisionPublisher, error)
 	FindByGameRevisionIDAndPublisherIDs(ctx context.Context, gameRevisionID uint, publisherIDs []uint) ([]entity.GameRevisionPublisher, error)
 }

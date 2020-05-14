@@ -15,5 +15,6 @@ type GameRevisionTagRepository interface {
 
 	FindByTagID(ctx context.Context, tagID uint) ([]entity.GameRevisionTag, error)
 	FindByGameRevisionID(ctx context.Context, gameRevisionID uint) ([]entity.GameRevisionTag, error)
+	FindByGameRevisionIDs(ctx context.Context, gameRevisionIDs []uint) ([]entity.GameRevisionTag, error)
 	FindByGameRevisionIDAndTagIDs(ctx context.Context, gameRevisionID uint, tagIDs []uint) ([]entity.GameRevisionTag, error)
 }

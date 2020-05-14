@@ -100,3 +100,23 @@ func (r GameRevisionMediaRepository) FindByRevisionID(ctx context.Context, revis
 
 	return entities, nil
 }
+
+func (r GameRevisionMediaRepository) FindByRevisionIDs(ctx context.Context, revisionIDs []uint) ([]entity.GameRevisionMedia, error) {
+	if len(revisionIDs) == 0 {
+		return nil, nil
+	}
+
+	var models []model
+
+	err := r.h.ModelContext(ctx, &models).WhereIn("revision_id in (?)", revisionIDs).Select()
+	if err != nil {
+		return nil, errors.NewInternal(err)
+	}
+
+	entities := make([]entity.GameRevisionMedia, len(models))
+	for i := range models {
+		entities[i] = *models[i].Convert()
+	}
+
+	return entities, nil
+}
