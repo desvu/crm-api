@@ -24,7 +24,7 @@ type reqUpload struct {
 
 // swagger:route POST /games/{game_id}/media/{media_id} game_media reqUpload
 //
-// Upload game media
+// Upload
 //
 // This endpoint returns a list of extended game structures
 //
@@ -81,7 +81,7 @@ type reqCreate struct {
 	GameID string `param:"game_id"`
 
 	// in: body
-	// enum: [wideSlider vertical horizontal horizontalSmall largeSingle catalog screenshot description]
+	// Enum: [wideSlider vertical horizontal horizontalSmall largeSingle catalog screenshot description]
 	Type string `json:"type"`
 
 	// in: body
@@ -91,7 +91,7 @@ type reqCreate struct {
 
 // swagger:route POST /games/{game_id}/media game_media reqCreate
 //
-// Create game media
+// Create
 //
 // This endpoint returns a list of extended game structures
 //

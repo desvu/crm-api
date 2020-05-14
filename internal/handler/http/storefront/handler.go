@@ -18,14 +18,14 @@ import (
 type requestByID struct {
 	// in: path
 	// example: 12
-	ID uint `param:"id`
+	ID uint `param:"id"`
 }
 
 //swagger:parameters updateStorefronts
 type updateRequest struct {
 	// in: path
 	// example: 12
-	ID uint `param:"id`
+	ID uint `param:"id"`
 
 	// in: body
 	Data storefront
