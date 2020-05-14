@@ -16,6 +16,8 @@ type model struct {
 	License            string                `pg:"license,notnull,use_zero"`
 	Trailer            string                `pg:"trailer,notnull,use_zero"`
 	Status             uint8                 `pg:"status,notnull,use_zero"`
+	Controller         uint8                 `pg:"controller,notnull,use_zero"`
+	PlayTime           uint                  `pg:"play_time,notnull,use_zero"`
 	Platforms          []uint8               `pg:"platforms,array,notnull,use_zero"`
 	ReleaseDate        time.Time             `pg:"release_date,notnull,use_zero"`
 	PublishedAt        *time.Time            `pg:"published_at"`
@@ -39,6 +41,8 @@ func (m model) Convert() *entity.GameRevision {
 		PublishedAt:        m.PublishedAt,
 		SocialLinks:        *convertSocialLinks(m.SocialLinks),
 		SystemRequirements: *convertSystemRequirements(m.SystemRequirements),
+		Controller:         game.NewController(m.Controller),
+		PlayTime:           m.PlayTime,
 	}
 }
 
@@ -56,6 +60,8 @@ func newModel(i *entity.GameRevision) (*model, error) {
 		PublishedAt:        i.PublishedAt,
 		SocialLinks:        newSocialLinksModel(&i.SocialLinks),
 		SystemRequirements: newSystemRequirementsModel(&i.SystemRequirements),
+		Controller:         i.Controller.Value(),
+		PlayTime:           i.PlayTime,
 	}, nil
 }
 

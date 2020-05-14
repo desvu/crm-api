@@ -63,6 +63,8 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		License:     game.Revision.License,
 		Platforms:   game.Revision.Platforms.Strings(),
 		Trailer:     game.Revision.Trailer,
+		Controller:  game.Revision.Controller.String(),
+		PlayTime:    uint32(game.Revision.PlayTime),
 	}
 
 	for _, item := range game.Revision.Tags {

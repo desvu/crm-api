@@ -51,6 +51,8 @@ message Game {
     repeated Rating rating = 19;
     repeated Media media = 20;
     repeated Review reviews = 21;
+    string controller = 22;
+    uint32 playTime = 23;
 }
 
 message Media {

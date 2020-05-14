@@ -14,6 +14,8 @@ type GameRevision struct {
 	Description        string
 	License            string
 	Trailer            string
+	Controller         game.Controller
+	PlayTime           uint
 	ReleaseDate        time.Time
 	PublishedAt        *time.Time
 	SystemRequirements []SystemRequirements

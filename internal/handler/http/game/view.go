@@ -40,6 +40,8 @@ type revision struct {
 	Description  string         `json:"description,omitempty"`
 	License      string         `json:"license,omitempty"`
 	Trailer      string         `json:"trailer,omitempty"`
+	Controller   string         `json:"controller,omitempty"`
+	PlayTime     uint           `json:"play_time,omitempty"`
 	Media        []media        `json:"media,omitempty"`
 	SocialLinks  []socialLink   `json:"social_links,omitempty"`
 	Localization []localization `json:"localization,omitempty"`
@@ -91,6 +93,8 @@ func (h Handler) view(i *entity.GameEx) game {
 			Description: i.Revision.Description,
 			License:     i.Revision.License,
 			Trailer:     i.Revision.Trailer,
+			Controller:  i.Revision.Controller.String(),
+			PlayTime:    i.Revision.PlayTime,
 			SocialLinks: convertEntitySocialLinksToSocialLinks(i.Revision.SocialLinks),
 		},
 	}

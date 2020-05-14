@@ -37,6 +37,7 @@ type CommonGameData struct {
 	Description *string
 	License     *string
 	Trailer     *string // `validate:"trailer"`
+	PlayTime    *uint
 	Tags        *[]uint
 	Developers  *[]uint
 	Publishers  *[]uint
@@ -44,6 +45,7 @@ type CommonGameData struct {
 	Genres      *[]uint
 	Media       *[]uint
 
+	Controller         *game.Controller
 	SocialLinks        *[]SocialLink
 	SystemRequirements *[]SystemRequirements
 	Platforms          *game.PlatformArray

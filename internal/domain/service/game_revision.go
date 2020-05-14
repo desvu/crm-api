@@ -26,7 +26,9 @@ type UpdateGameRevisionData struct {
 	Description *string
 	License     *string
 	Trailer     *string
+	PlayTime    *uint
 
+	Controller         *game.Controller
 	Status             *game_revision.Status
 	Platforms          *game.PlatformArray
 	ReleaseDate        *time.Time

@@ -48,6 +48,14 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionDa
 		revision.ReleaseDate = *data.ReleaseDate
 	}
 
+	if data.Controller != nil {
+		revision.Controller = *data.Controller
+	}
+
+	if data.PlayTime != nil {
+		revision.PlayTime = *data.PlayTime
+	}
+
 	if data.Platforms != nil {
 		revision.Platforms = *data.Platforms
 	}
