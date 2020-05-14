@@ -45,6 +45,7 @@ type createRequest struct {
 // This endpoint lists all storefront page template
 //
 //     Responses:
+//       default: HTTPError
 //       200: StorefrontList
 //       400: HTTPError
 //       404: HTTPError
@@ -65,6 +66,7 @@ func (h *Handler) List(c echo.Context) error {
 // This endpoint creates new storefront page template
 //
 //     Responses:
+//       default: HTTPError
 //       200: Storefront
 //       400: HTTPError
 //       404: HTTPError
@@ -95,6 +97,7 @@ func (h *Handler) Create(c echo.Context) error {
 // This endpoint updates storefront page template
 //
 //     Responses:
+//       default: HTTPError
 //       200: Storefront
 //       400: HTTPError
 //       404: HTTPError
@@ -128,6 +131,7 @@ func (h *Handler) Update(ctx echo.Context) error {
 // This endpoint removes storefront page template
 //
 //     Responses:
+//       default: HTTPError
 //       204:
 //       400: HTTPError
 //       404: HTTPError
@@ -155,6 +159,7 @@ func (h *Handler) Delete(ctx echo.Context) error {
 // This endpoint finds storefront page template
 //
 //     Responses:
+//       default: HTTPError
 //       200: Storefront
 //       400: HTTPError
 //       404: HTTPError
@@ -181,6 +186,7 @@ func (h *Handler) Get(ctx echo.Context) error {
 // This endpoint activates storefront page template
 //
 //     Responses:
+//       default: HTTPError
 //       204:
 //       400: HTTPError
 //       404: HTTPError
@@ -199,8 +205,3 @@ func (h *Handler) Activate(ctx echo.Context) error {
 
 	return ctx.NoContent(http.StatusNoContent)
 }
-
-// func (h *Handler) NotFound(ctx echo.Context, err error) error {
-// 	// ignore error
-// 	return ctx.JSON(http.StatusNotFound, echo.Map{}) // TODO struct
-// }
