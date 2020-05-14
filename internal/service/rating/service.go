@@ -12,11 +12,11 @@ type Service struct {
 	ServiceParams
 }
 
-func (s Service) GetByID(ctx context.Context, id uint) (*entity.Rating, error) {
+func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Rating, error) {
 	return s.RatingRepository.FindByID(ctx, id)
 }
 
-func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Rating, error) {
+func (s *Service) GetExistByID(ctx context.Context, id uint) (*entity.Rating, error) {
 	rating, err := s.RatingRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -29,15 +29,15 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Rating, err
 	return rating, nil
 }
 
-func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Rating, error) {
+func (s *Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Rating, error) {
 	return s.RatingRepository.FindByIDs(ctx, ids)
 }
 
-func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Rating, error) {
+func (s *Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Rating, error) {
 	return s.RatingRepository.FindByGameRevisionID(ctx, gameID)
 }
 
-func (s Service) UpdateRatingsForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, ratings []service.RatingData) error {
+func (s *Service) UpdateRatingsForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, ratings []service.RatingData) error {
 	agencies := make([]uint8, len(ratings))
 	for i, l := range ratings {
 		agencies[i] = l.Agency.Value()

@@ -15,7 +15,7 @@ type Service struct {
 	ServiceParams
 }
 
-func (s Service) Create(ctx context.Context, data *service.CreateGameMediaData) (*entity.GameMedia, error) {
+func (s *Service) Create(ctx context.Context, data *service.CreateGameMediaData) (*entity.GameMedia, error) {
 	fileName := fmt.Sprintf("%s.%s", uuid.New().String(), data.Extension)
 	filePath := fmt.Sprintf("/game/%s/media/%s", data.Game.ID, fileName)
 
@@ -32,7 +32,7 @@ func (s Service) Create(ctx context.Context, data *service.CreateGameMediaData) 
 	return gameMedia, nil
 }
 
-func (s Service) Upload(ctx context.Context, data *service.UploadGameMediaData) (*entity.GameMedia, error) {
+func (s *Service) Upload(ctx context.Context, data *service.UploadGameMediaData) (*entity.GameMedia, error) {
 	gameMedia, err := s.GetByID(ctx, data.ID)
 	if err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ func (s Service) Upload(ctx context.Context, data *service.UploadGameMediaData) 
 	return gameMedia, nil
 }
 
-func (s Service) Delete(ctx context.Context, id uint) error {
+func (s *Service) Delete(ctx context.Context, id uint) error {
 	cover, err := s.GetByID(ctx, id)
 	if err != nil {
 		return err
@@ -73,7 +73,7 @@ func (s Service) Delete(ctx context.Context, id uint) error {
 	return s.GameMediaRepository.Delete(ctx, cover)
 }
 
-func (s Service) GetByID(ctx context.Context, id uint) (*entity.GameMedia, error) {
+func (s *Service) GetByID(ctx context.Context, id uint) (*entity.GameMedia, error) {
 	cover, err := s.GameMediaRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -86,11 +86,11 @@ func (s Service) GetByID(ctx context.Context, id uint) (*entity.GameMedia, error
 	return cover, nil
 }
 
-func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.GameMedia, error) {
+func (s *Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.GameMedia, error) {
 	return s.GameMediaRepository.FindByIDs(ctx, ids)
 }
 
-func (s Service) GetByRevision(ctx context.Context, revision *entity.GameRevision) ([]entity.GameMedia, error) {
+func (s *Service) GetByRevision(ctx context.Context, revision *entity.GameRevision) ([]entity.GameMedia, error) {
 	revisionMedia, err := s.GameRevisionMediaRepository.FindByRevisionID(ctx, revision.ID)
 	if err != nil {
 		return nil, err
@@ -103,7 +103,7 @@ func (s Service) GetByRevision(ctx context.Context, revision *entity.GameRevisio
 	return s.GetByIDs(ctx, entity.NewGameRevisionMediaArray(revisionMedia).MediaIDs())
 }
 
-func (s Service) UpdateForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, mediaIDs []uint) error {
+func (s *Service) UpdateForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, mediaIDs []uint) error {
 	media, err := s.GetByIDs(ctx, mediaIDs)
 	if err != nil {
 		return err

@@ -13,7 +13,7 @@ type Service struct {
 	ServiceParams
 }
 
-func (s Service) Create(ctx context.Context, data *service.CreatePublisherData) (*entity.Publisher, error) {
+func (s *Service) Create(ctx context.Context, data *service.CreatePublisherData) (*entity.Publisher, error) {
 	publisher := &entity.Publisher{
 		Name: data.Name,
 	}
@@ -25,7 +25,7 @@ func (s Service) Create(ctx context.Context, data *service.CreatePublisherData) 
 	return publisher, nil
 }
 
-func (s Service) Update(ctx context.Context, data *service.UpdatePublisherData) (*entity.Publisher, error) {
+func (s *Service) Update(ctx context.Context, data *service.UpdatePublisherData) (*entity.Publisher, error) {
 	publisher, err := s.GetExistByID(ctx, data.ID)
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func (s Service) Update(ctx context.Context, data *service.UpdatePublisherData) 
 	return publisher, nil
 }
 
-func (s Service) Delete(ctx context.Context, id uint) error {
+func (s *Service) Delete(ctx context.Context, id uint) error {
 	publisher, err := s.GetExistByID(ctx, id)
 	if err != nil {
 		return err
@@ -50,11 +50,11 @@ func (s Service) Delete(ctx context.Context, id uint) error {
 	return s.PublisherRepository.Delete(ctx, publisher)
 }
 
-func (s Service) GetByID(ctx context.Context, id uint) (*entity.Publisher, error) {
+func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Publisher, error) {
 	return s.PublisherRepository.FindByID(ctx, id)
 }
 
-func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Publisher, error) {
+func (s *Service) GetExistByID(ctx context.Context, id uint) (*entity.Publisher, error) {
 	publisher, err := s.PublisherRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -67,11 +67,11 @@ func (s Service) GetExistByID(ctx context.Context, id uint) (*entity.Publisher, 
 	return publisher, nil
 }
 
-func (s Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Publisher, error) {
+func (s *Service) GetByIDs(ctx context.Context, ids []uint) ([]entity.Publisher, error) {
 	return s.PublisherRepository.FindByIDs(ctx, ids)
 }
 
-func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Publisher, error) {
+func (s *Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity.Publisher, error) {
 	gamePublishers, err := s.GameRevisionPublisherRepository.FindByGameRevisionID(ctx, gameID)
 	if err != nil {
 		return nil, err
@@ -80,7 +80,7 @@ func (s Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entity
 	return s.GetByIDs(ctx, entity.NewGameRevisionPublisherArray(gamePublishers).IDs())
 }
 
-func (s Service) UpdatePublishersForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, publisherIDs []uint) error {
+func (s *Service) UpdatePublishersForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, publisherIDs []uint) error {
 	publishers, err := s.GetByIDs(ctx, publisherIDs)
 	if err != nil {
 		return err
