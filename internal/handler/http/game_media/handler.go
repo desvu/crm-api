@@ -81,10 +81,13 @@ type reqCreate struct {
 	GameID string `param:"game_id"`
 
 	// in: body
+	Body reqCreateBody
+}
+
+type reqCreateBody struct {
 	// enum: wideSlider,vertical,horizontal,horizontalSmall,largeSingle,catalog,screenshot,description
 	Type string `json:"type"`
 
-	// in: body
 	// example: png
 	Extension string `json:"extension"`
 }
@@ -103,6 +106,11 @@ func (h Handler) Create(c echo.Context) error {
 		return err
 	}
 
+	reqBody := new(reqCreateBody)
+	if err := c.Bind(req); err != nil {
+		return err
+	}
+
 	game, err := h.GameService.GetByID(c.Request().Context(), c.Param("game_id"))
 	if err != nil {
 		return err
@@ -110,8 +118,8 @@ func (h Handler) Create(c echo.Context) error {
 
 	media, err := h.GameMediaService.Create(c.Request().Context(), &service.CreateGameMediaData{
 		Game:      game,
-		Type:      game_media.NewTypeByString(req.Type),
-		Extension: req.Extension,
+		Type:      game_media.NewTypeByString(reqBody.Type),
+		Extension: reqBody.Extension,
 	})
 
 	if err != nil {
