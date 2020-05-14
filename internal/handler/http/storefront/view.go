@@ -18,7 +18,8 @@ type storefrontInfo struct {
 	ID string `json:"id"`
 
 	// example: Black-Friday Sales
-	Name string `json:"name"`
+	// required: true
+	Name string `json:"name" validate:"required"`
 
 	// read-only: true
 	// example: 4

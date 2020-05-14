@@ -77,6 +77,10 @@ func (h *Handler) Create(c echo.Context) error {
 		return err
 	}
 
+	if err := c.Validate(&request.Data); err != nil {
+		return err
+	}
+
 	data := &entity.Storefront{
 		Name:   request.Data.Name,
 		Blocks: request.Data.GetBlocks(),
