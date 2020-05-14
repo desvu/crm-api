@@ -10,6 +10,13 @@ import (
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
+//swagger:parameters reqByID
+type reqByID struct {
+	// in: path
+	// example: 11002485-cb51-4b29-8423-cba43f29f143
+	ID string `param:"game_id"`
+}
+
 type reqUpsert struct {
 	ID           *string        `json:"id"`
 	Title        *string        `json:"title"`

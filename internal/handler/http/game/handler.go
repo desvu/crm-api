@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// swagger:route GET /games games
+// swagger:route GET /games games reqGetByFilter
 //
 // Getting a list of games by filter
 //
@@ -28,7 +28,7 @@ func (h Handler) GetByFilter(c echo.Context) error {
 	return response.New(c, h.viewArray(games))
 }
 
-// swagger:route GET /games/{id} games
+// swagger:route GET /games/{id} games reqByID
 //
 // Getting a game by ID
 //
@@ -37,7 +37,12 @@ func (h Handler) GetByFilter(c echo.Context) error {
 //     Responses:
 //       200: Game
 func (h Handler) GetByID(c echo.Context) error {
-	game, err := h.GameService.GetExByID(c.Request().Context(), c.Param("game_id"))
+	var req reqByID
+	if err := c.Bind(&req); err != nil {
+		return err
+	}
+
+	game, err := h.GameService.GetExByID(c.Request().Context(), req.ID)
 	if err != nil {
 		return err
 	}
@@ -67,7 +72,7 @@ func (h Handler) Upsert(c echo.Context) error {
 	return response.New(c, h.view(game))
 }
 
-// swagger:route POST /games/{id}/publish games
+// swagger:route POST /games/{id}/publish games reqByID
 //
 // Publishing the game to the store
 //
@@ -76,12 +81,17 @@ func (h Handler) Upsert(c echo.Context) error {
 //     Responses:
 //       200: Game
 func (h Handler) Publish(c echo.Context) error {
-	err := h.GameService.Publish(c.Request().Context(), c.Param("game_id"))
+	var req reqByID
+	if err := c.Bind(&req); err != nil {
+		return err
+	}
+
+	err := h.GameService.Publish(c.Request().Context(), req.ID)
 	if err != nil {
 		return err
 	}
 
-	game, err := h.GameService.GetExLastPublishedByID(c.Request().Context(), c.Param("game_id"))
+	game, err := h.GameService.GetExLastPublishedByID(c.Request().Context(), req.ID)
 	if err != nil {
 		return err
 	}
