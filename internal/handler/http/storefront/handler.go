@@ -2,7 +2,6 @@ package storefront
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 
 	"github.com/qilin/crm-api/pkg/response"
@@ -10,8 +9,6 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
-	derrors "github.com/qilin/crm-api/internal/domain/errors"
-	perrors "github.com/qilin/crm-api/pkg/errors"
 )
 
 //swagger:parameters deleteStorefronts activateStorefront getStorefront
@@ -48,7 +45,11 @@ type createRequest struct {
 // This endpoint lists all storefront page template
 //
 //     Responses:
+//       default: HTTPError
 //       200: StorefrontList
+//       400: HTTPError
+//       404: HTTPError
+//       500: HTTPError
 func (h *Handler) List(c echo.Context) error {
 	res, err := h.Storefronts.GetAll(c.Request().Context())
 	if err != nil {
@@ -65,10 +66,18 @@ func (h *Handler) List(c echo.Context) error {
 // This endpoint creates new storefront page template
 //
 //     Responses:
+//       default: HTTPError
 //       200: Storefront
+//       400: HTTPError
+//       404: HTTPError
+//       500: HTTPError
 func (h *Handler) Create(c echo.Context) error {
 	var request createRequest
 	if err := c.Bind(&request.Data); err != nil {
+		return err
+	}
+
+	if err := c.Validate(&request.Data); err != nil {
 		return err
 	}
 
@@ -79,12 +88,6 @@ func (h *Handler) Create(c echo.Context) error {
 
 	res, err := h.Storefronts.Create(c.Request().Context(), data)
 	if err != nil {
-		var x perrors.Error
-		if errors.As(err, &x) {
-			if x.Type != perrors.ErrInternal {
-				return c.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
-			}
-		}
 		return err
 	}
 
@@ -98,7 +101,11 @@ func (h *Handler) Create(c echo.Context) error {
 // This endpoint updates storefront page template
 //
 //     Responses:
+//       default: HTTPError
 //       200: Storefront
+//       400: HTTPError
+//       404: HTTPError
+//       500: HTTPError
 func (h *Handler) Update(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
 
@@ -115,12 +122,6 @@ func (h *Handler) Update(ctx echo.Context) error {
 
 	res, err := h.Storefronts.Update(cnt, data)
 	if err != nil {
-		var x perrors.Error
-		if errors.As(err, &x) {
-			if x.Type != perrors.ErrInternal {
-				return ctx.JSON(http.StatusBadRequest, echo.Map{"error": err.Error()})
-			}
-		}
 		return err
 	}
 
@@ -134,7 +135,11 @@ func (h *Handler) Update(ctx echo.Context) error {
 // This endpoint removes storefront page template
 //
 //     Responses:
+//       default: HTTPError
 //       204:
+//       400: HTTPError
+//       404: HTTPError
+//       500: HTTPError
 func (h *Handler) Delete(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
 
@@ -145,9 +150,6 @@ func (h *Handler) Delete(ctx echo.Context) error {
 
 	err := h.Storefronts.Delete(cnt, req.ID)
 	if err != nil {
-		if errors.Is(err, derrors.StoreFrontNotFound) {
-			return h.NotFound(ctx, err)
-		}
 		return err
 	}
 
@@ -161,7 +163,11 @@ func (h *Handler) Delete(ctx echo.Context) error {
 // This endpoint finds storefront page template
 //
 //     Responses:
+//       default: HTTPError
 //       200: Storefront
+//       400: HTTPError
+//       404: HTTPError
+//       500: HTTPError
 func (h *Handler) Get(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
 	var req requestByID
@@ -171,9 +177,6 @@ func (h *Handler) Get(ctx echo.Context) error {
 
 	res, err := h.Storefronts.GetByID(cnt, req.ID)
 	if err != nil {
-		if errors.Is(err, derrors.StoreFrontNotFound) {
-			return h.NotFound(ctx, err)
-		}
 		return err
 	}
 
@@ -187,7 +190,11 @@ func (h *Handler) Get(ctx echo.Context) error {
 // This endpoint activates storefront page template
 //
 //     Responses:
+//       default: HTTPError
 //       204:
+//       400: HTTPError
+//       404: HTTPError
+//       500: HTTPError
 func (h *Handler) Activate(ctx echo.Context) error {
 	cnt := ctx.Request().Context()
 	var req requestByID
@@ -201,9 +208,4 @@ func (h *Handler) Activate(ctx echo.Context) error {
 	}
 
 	return ctx.NoContent(http.StatusNoContent)
-}
-
-func (h *Handler) NotFound(ctx echo.Context, err error) error {
-	// ignore error
-	return ctx.JSON(http.StatusNotFound, echo.Map{}) // TODO struct
 }

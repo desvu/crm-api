@@ -6,6 +6,7 @@ require (
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-pg/migrations/v7 v7.1.10 // indirect
 	github.com/go-pg/pg/v9 v9.1.6
+	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.2.0
 	github.com/go-redis/redis/v7 v7.2.0
 	github.com/golang/mock v1.4.3
@@ -33,5 +34,6 @@ require (
 	google.golang.org/genproto v0.0.0-20191216164720-4f79533eabd1 // indirect
 	google.golang.org/grpc v1.28.1
 	google.golang.org/protobuf v1.21.0
+	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 )

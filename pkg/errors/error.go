@@ -20,6 +20,15 @@ func NewService(t Type, msg string, key string) Error {
 	}
 }
 
+func NewAPI(t Type, msg string, key string) Error {
+	return Error{
+		Err:   errors.WithStack(errors.New(msg)),
+		Key:   key,
+		Type:  t,
+		Layer: API,
+	}
+}
+
 func NewInternal(err error) Error {
 	return Error{
 		Err:   errors.WithStack(err),

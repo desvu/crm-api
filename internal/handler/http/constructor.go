@@ -39,6 +39,7 @@ func New(params Params) *echo.Echo {
 	e.HideBanner = true
 	e.HidePort = true
 	e.HTTPErrorHandler = response.Err
+	e.Validator = NewValidator()
 
 	// Middleware
 	e.Use(middleware.Logger())
