@@ -26,13 +26,17 @@ jobs:
       - name: Generate swagger 2.0 spec
         run: swagger generate spec -m -o ./swagger.json
 
+      - name: Create directory for docs
+        run: mkdir doc
+
       - name: Generate html docs
         uses: seeebiii/redoc-cli-github-action@v9
         with:
-          args: 'bundle swagger.json -o index.html'
+          args: 'bundle swagger.json -o doc/index.html'
 
-      - name: Upload docs
-        uses: actions/upload-artifact@v1
+      - name: Deploy docs to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
-          name: docs
-          path: index.html
+          ACCESS_TOKEN: ${{ secrets.REPOSITORY_ACCESS_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: doc
