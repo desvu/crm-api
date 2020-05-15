@@ -46,6 +46,9 @@ type reqUpsert struct {
 	// example: https://www.youtube.com/watch?v=k_j0fw8jh8M
 	Trailer *string `json:"trailer"`
 
+	// example: 360
+	PlayTime *uint `json:"play_time"`
+
 	// example: [windows, macOS]
 	Platforms *[]gameenum.Platform `json:"platforms"`
 
@@ -65,12 +68,12 @@ type reqUpsert struct {
 	Tags *[]uint `json:"tags"`
 
 	// example: [2, 5, 8, 9]
-	Media        *[]uint        `json:"media"`
-	ReleaseDate  *time.Time     `json:"release_date"`
-	SocialLinks  []socialLink   `json:"social_links"`
-	Localization []localization `json:"localization"`
-	Rating       *[]rating      `json:"rating"`
-	Review       *[]review      `json:"review"`
+	Media        *[]uint         `json:"media"`
+	ReleaseDate  *time.Time      `json:"release_date"`
+	SocialLinks  *[]socialLink   `json:"social_links"`
+	Localization *[]localization `json:"localization"`
+	Rating       *[]rating       `json:"rating"`
+	Review       *[]review       `json:"review"`
 }
 
 func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
@@ -89,21 +92,22 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 			Description: req.Description,
 			License:     req.License,
 			Trailer:     req.Trailer,
+			PlayTime:    req.PlayTime,
 			Tags:        req.Tags,
 			Developers:  req.Developers,
 			Publishers:  req.Publishers,
 			Features:    req.Features,
 			Genres:      req.Genres,
 			Media:       req.Media,
-			Platforms:   nil,
+			Platforms:   nil, // todo ?
 			ReleaseDate: req.ReleaseDate,
 			SocialLinks: convertSocialLinksToServiceSocialLinks(req.SocialLinks),
 		},
 	}
 
-	if len(req.Localization) > 0 {
-		localizations := make([]service.LocalizationData, len(req.Localization))
-		for i, l := range req.Localization {
+	if req.Localization != nil {
+		localizations := make([]service.LocalizationData, len(*req.Localization))
+		for i, l := range *req.Localization {
 			localizations[i] = service.LocalizationData{
 				Language:  l.Language,
 				Interface: l.Interface,
@@ -143,9 +147,12 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 	return data, nil
 }
 
-func convertSocialLinksToServiceSocialLinks(links []socialLink) *[]service.SocialLink {
-	list := make([]service.SocialLink, len(links))
-	for i, item := range links {
+func convertSocialLinksToServiceSocialLinks(links *[]socialLink) *[]service.SocialLink {
+	if links == nil {
+		return nil
+	}
+	list := make([]service.SocialLink, len(*links))
+	for i, item := range *links {
 		list[i] = service.SocialLink{URL: item.URL}
 	}
 	return &list

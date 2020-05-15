@@ -37,6 +37,7 @@ type CommonGameData struct {
 	Description *string
 	License     *string
 	Trailer     *string // `validate:"trailer"`
+	PlayTime    *uint
 	Tags        *[]uint
 	Developers  *[]uint
 	Publishers  *[]uint
@@ -108,6 +109,9 @@ func (d CreateGameData) Validate() error {
 	}
 
 	if d.Reviews != nil {
+		if len(*d.Reviews) > 3 {
+			return errors.ReviewMax3Available
+		}
 		for _, r := range *d.Reviews {
 			if err := r.Validate(); err != nil {
 				return err
@@ -136,6 +140,9 @@ func (d UpdateGameData) Validate() error {
 		}
 	}
 	if d.Reviews != nil {
+		if len(*d.Reviews) > 3 {
+			return errors.ReviewMax3Available
+		}
 		for _, r := range *d.Reviews {
 			if err := r.Validate(); err != nil {
 				return err
