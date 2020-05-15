@@ -199,7 +199,7 @@ func getResultImage(src []byte, t game_media.Type) ([]byte, error) {
 		return nil, errors.InvalidMediaResolution
 	}
 
-	if !checkAspectRation(img.Bounds().Dx(), img.Bounds().Dy(), t) {
+	if !checkAspectRatio(img.Bounds().Dx(), img.Bounds().Dy(), t) {
 		return nil, errors.InvalidMediaAspectRatio
 	}
 
@@ -228,7 +228,7 @@ func checkResolution(w, h int, t game_media.Type) bool {
 	return true
 }
 
-func checkAspectRation(w, h int, t game_media.Type) bool {
+func checkAspectRatio(w, h int, t game_media.Type) bool {
 	aspectWidth, aspectHeight := getAspectRatio(w, h)
 
 	if !t.IsNeedValidate {
