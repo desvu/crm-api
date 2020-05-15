@@ -50,6 +50,10 @@ func (s *Service) Delete(ctx context.Context, id uint) error {
 	return s.FeatureRepository.Delete(ctx, feature)
 }
 
+func (s *Service) GetAll(ctx context.Context) ([]entity.Feature, error) {
+	return s.FeatureRepository.FindAll(ctx)
+}
+
 func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Feature, error) {
 	return s.FeatureRepository.FindByID(ctx, id)
 }

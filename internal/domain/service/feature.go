@@ -13,6 +13,7 @@ type FeatureService interface {
 	Update(ctx context.Context, data *UpdateFeatureData) (*entity.Feature, error)
 	Delete(ctx context.Context, id uint) error
 
+	GetAll(ctx context.Context) ([]entity.Feature, error)
 	GetByID(ctx context.Context, id uint) (*entity.Feature, error)
 	GetExistByID(ctx context.Context, id uint) (*entity.Feature, error)
 	GetByIDs(ctx context.Context, ids []uint) ([]entity.Feature, error)

@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/qilin/crm-api/internal/handler/http"
+	"github.com/qilin/crm-api/internal/handler/http/feature"
 	"github.com/qilin/crm-api/internal/handler/http/genre"
 	"github.com/qilin/crm-api/internal/handler/http/storefront"
 	"github.com/qilin/crm-api/internal/handler/http/tag"
@@ -14,5 +15,6 @@ func NewHttp() fx.Option {
 		storefront.NewHandler,
 		tag.NewHandler,
 		genre.NewHandler,
+		feature.NewHandler,
 	)
 }

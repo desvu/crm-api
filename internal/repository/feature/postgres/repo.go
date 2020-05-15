@@ -64,6 +64,22 @@ func (r FeatureRepository) Delete(ctx context.Context, i *entity.Feature) error 
 	return nil
 }
 
+func (r FeatureRepository) FindAll(ctx context.Context) ([]entity.Feature, error) {
+	var models []model
+
+	err := r.h.ModelContext(ctx, &models).Select()
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]entity.Feature, len(models))
+	for i := range models {
+		result[i] = *models[i].Convert()
+	}
+
+	return result, nil
+}
+
 func (r FeatureRepository) FindByID(ctx context.Context, id uint) (*entity.Feature, error) {
 	model := new(model)
 

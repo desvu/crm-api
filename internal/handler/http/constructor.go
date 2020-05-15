@@ -19,6 +19,7 @@ package http
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/qilin/crm-api/internal/handler/http/feature"
 	"github.com/qilin/crm-api/internal/handler/http/game"
 	"github.com/qilin/crm-api/internal/handler/http/game_media"
 	"github.com/qilin/crm-api/internal/handler/http/genre"
@@ -34,6 +35,7 @@ type Params struct {
 	Storefronts      *storefront.Handler
 	GameMediaHandler game_media.Handler
 	GameHandler      game.Handler
+	FeatureHandler   feature.Handler
 	GenreHandler     genre.Handler
 	TagHandler       tag.Handler
 }
@@ -56,6 +58,9 @@ func New(params Params) *echo.Echo {
 
 	// genres
 	api.GET("/genres", params.GenreHandler.List)
+
+	// features
+	api.GET("/features", params.FeatureHandler.List)
 
 	// manage games
 	api.POST("/games", params.GameHandler.Upsert)
