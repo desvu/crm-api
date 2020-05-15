@@ -57,8 +57,8 @@ var (
 
 	// Rating service
 	RatingNotFound        = errors.NewService(errors.ErrNotFound, "rating not found", "rating_not_found")
-	RatingUndefinedAgency = errors.NewService(errors.ErrNotFound, "rating not found", "rating_undefined_agency")
-	RatingUndefinedRating = errors.NewService(errors.ErrNotFound, "rating not found", "rating_undefined_rating")
+	RatingUndefinedAgency = errors.NewService(errors.ErrNotFound, "undefined agency", "rating_undefined_agency")
+	RatingUndefinedRating = errors.NewService(errors.ErrNotFound, "undefined rating", "rating_undefined_rating")
 )
 
 func NewInternal(err error) errors.Error {
