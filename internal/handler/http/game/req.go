@@ -166,8 +166,14 @@ func convertEntitySocialLinksToSocialLinks(links []entity.SocialLink) []socialLi
 	return list
 }
 
+//swagger:parameters reqGetByFilter
 type reqGetByFilter struct {
-	Limit  int `query:"limit"`
+	// in: query
+	// example: 30
+	Limit int `query:"limit"`
+
+	// in: body
+	// example: 20
 	Offset int `query:"offset"`
 }
 
