@@ -34,7 +34,7 @@ func newModel(i *entity.GameMedia) *model {
 	return &model{
 		ID:         i.ID,
 		GameID:     i.GameID,
-		Type:       i.Type.Value(),
+		Type:       i.Type.ID,
 		FilePath:   i.FilePath,
 		IsUploaded: i.IsUploaded,
 		CreatedAt:  i.CreatedAt,

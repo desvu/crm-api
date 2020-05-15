@@ -50,6 +50,10 @@ func (s *Service) Delete(ctx context.Context, id uint) error {
 	return s.TagRepository.Delete(ctx, tag)
 }
 
+func (s *Service) GetAll(ctx context.Context) ([]entity.Tag, error) {
+	return s.TagRepository.FindAll(ctx)
+}
+
 func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Tag, error) {
 	return s.TagRepository.FindByID(ctx, id)
 }

@@ -12,6 +12,7 @@ type FeatureRepository interface {
 	Update(ctx context.Context, i *entity.Feature) error
 	Delete(ctx context.Context, i *entity.Feature) error
 
+	FindAll(ctx context.Context) ([]entity.Feature, error)
 	FindByID(ctx context.Context, id uint) (*entity.Feature, error)
 	FindByIDs(ctx context.Context, ids []uint) ([]entity.Feature, error)
 }

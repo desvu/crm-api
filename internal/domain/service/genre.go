@@ -12,6 +12,7 @@ type GenreService interface {
 	Update(ctx context.Context, data *UpdateGenreData) (*entity.Genre, error)
 	Delete(ctx context.Context, id uint) error
 
+	GetAll(ctx context.Context) ([]entity.Genre, error)
 	GetByID(ctx context.Context, id uint) (*entity.Genre, error)
 	GetExistByID(ctx context.Context, id uint) (*entity.Genre, error)
 	GetByIDs(ctx context.Context, ids []uint) ([]entity.Genre, error)

@@ -104,7 +104,7 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 
 	for _, item := range game.Revision.Media {
 		result.Media = append(result.Media, &proto.Media{
-			Type: item.Type.String(),
+			Type: item.Type.Name,
 			Url:  item.FilePath,
 		})
 	}

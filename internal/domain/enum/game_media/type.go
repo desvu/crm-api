@@ -1,89 +1,194 @@
 package game_media
 
-//swagger:enum Type
-type Type uint
-
-const (
-	TypeUndefined       Type = 0
-	TypeWideSlider      Type = 1
-	TypeVertical        Type = 2
-	TypeHorizontal      Type = 3
-	TypeHorizontalSmall Type = 4
-	TypeLargeSingle     Type = 5
-	TypeCatalog         Type = 6
-	TypeScreenshot      Type = 7
-	TypeDescription     Type = 8
-)
+type Type struct {
+	ID             uint
+	Name           string
+	IsNeedResize   bool
+	ResultWidth    int
+	ResultHeight   int
+	IsNeedValidate bool
+	AspectHeight   int
+	AspectWidth    int
+}
 
 func NewType(t uint) Type {
 	switch t {
 	case 1:
-		return TypeWideSlider
+		return Type{
+			ID:             1,
+			Name:           "wideSlider",
+			IsNeedResize:   true,
+			ResultWidth:    1064,
+			ResultHeight:   560,
+			IsNeedValidate: true,
+			AspectWidth:    16,
+			AspectHeight:   9,
+		}
 	case 2:
-		return TypeVertical
+		return Type{
+			ID:             2,
+			Name:           "vertical",
+			IsNeedResize:   true,
+			ResultWidth:    200,
+			ResultHeight:   266,
+			IsNeedValidate: true,
+			AspectWidth:    3,
+			AspectHeight:   4,
+		}
 	case 3:
-		return TypeHorizontal
+		return Type{
+			ID:             3,
+			Name:           "horizontal",
+			IsNeedResize:   true,
+			ResultWidth:    524,
+			ResultHeight:   294,
+			IsNeedValidate: true,
+			AspectWidth:    16,
+			AspectHeight:   9,
+		}
 	case 4:
-		return TypeHorizontalSmall
+		return Type{
+			ID:             4,
+			Name:           "horizontalSmall",
+			IsNeedResize:   true,
+			ResultWidth:    254,
+			ResultHeight:   142,
+			IsNeedValidate: true,
+			AspectWidth:    16,
+			AspectHeight:   9,
+		}
 	case 5:
-		return TypeLargeSingle
+		return Type{
+			ID:             5,
+			Name:           "largeSingle",
+			IsNeedResize:   true,
+			ResultWidth:    744,
+			ResultHeight:   410,
+			IsNeedValidate: true,
+			AspectWidth:    16,
+			AspectHeight:   9,
+		}
 	case 6:
-		return TypeCatalog
+		return Type{
+			ID:             6,
+			Name:           "catalog",
+			IsNeedResize:   true,
+			ResultWidth:    88,
+			ResultHeight:   50,
+			IsNeedValidate: true,
+			AspectWidth:    16,
+			AspectHeight:   9,
+		}
 	case 7:
-		return TypeScreenshot
+		return Type{
+			ID:             7,
+			Name:           "screenshot",
+			IsNeedResize:   true,
+			ResultWidth:    1064,
+			ResultHeight:   562,
+			IsNeedValidate: true,
+			AspectWidth:    16,
+			AspectHeight:   9,
+		}
 	case 8:
-		return TypeDescription
+		return Type{
+			ID:   8,
+			Name: "description",
+		}
 	default:
-		return TypeUndefined
+		return Type{
+			Name: "undefined",
+		}
 	}
 }
 
 func NewTypeByString(t string) Type {
 	switch t {
 	case "wideSlider":
-		return TypeWideSlider
+		return Type{
+			ID:             1,
+			Name:           "wideSlider",
+			IsNeedResize:   true,
+			ResultWidth:    1064,
+			ResultHeight:   560,
+			IsNeedValidate: true,
+			AspectWidth:    16,
+			AspectHeight:   9,
+		}
 	case "vertical":
-		return TypeVertical
+		return Type{
+			ID:             2,
+			Name:           "vertical",
+			IsNeedResize:   true,
+			ResultWidth:    200,
+			ResultHeight:   266,
+			IsNeedValidate: true,
+			AspectWidth:    3,
+			AspectHeight:   4,
+		}
 	case "horizontal":
-		return TypeHorizontal
+		return Type{
+			ID:             3,
+			Name:           "horizontal",
+			IsNeedResize:   true,
+			ResultWidth:    524,
+			ResultHeight:   294,
+			IsNeedValidate: true,
+			AspectWidth:    16,
+			AspectHeight:   9,
+		}
 	case "horizontalSmall":
-		return TypeHorizontalSmall
+		return Type{
+			ID:             4,
+			Name:           "horizontalSmall",
+			IsNeedResize:   true,
+			ResultWidth:    254,
+			ResultHeight:   142,
+			IsNeedValidate: true,
+			AspectWidth:    16,
+			AspectHeight:   9,
+		}
 	case "largeSingle":
-		return TypeLargeSingle
+		return Type{
+			ID:             5,
+			Name:           "largeSingle",
+			IsNeedResize:   true,
+			ResultWidth:    744,
+			ResultHeight:   410,
+			IsNeedValidate: true,
+			AspectWidth:    16,
+			AspectHeight:   9,
+		}
 	case "catalog":
-		return TypeCatalog
+		return Type{
+			ID:             6,
+			Name:           "catalog",
+			IsNeedResize:   true,
+			ResultWidth:    88,
+			ResultHeight:   50,
+			IsNeedValidate: true,
+			AspectWidth:    16,
+			AspectHeight:   9,
+		}
 	case "screenshot":
-		return TypeScreenshot
+		return Type{
+			ID:             7,
+			Name:           "screenshot",
+			IsNeedResize:   true,
+			ResultWidth:    1064,
+			ResultHeight:   562,
+			IsNeedValidate: true,
+			AspectWidth:    16,
+			AspectHeight:   9,
+		}
 	case "description":
-		return TypeDescription
+		return Type{
+			ID:   8,
+			Name: "description",
+		}
 	default:
-		return TypeUndefined
-	}
-}
-
-func (t Type) Value() uint {
-	return uint(t)
-}
-
-func (t Type) String() string {
-	switch t {
-	case TypeWideSlider:
-		return "wideSlider"
-	case TypeVertical:
-		return "vertical"
-	case TypeHorizontal:
-		return "horizontal"
-	case TypeHorizontalSmall:
-		return "horizontalSmall"
-	case TypeLargeSingle:
-		return "largeSingle"
-	case TypeCatalog:
-		return "catalog"
-	case TypeScreenshot:
-		return "screenshot"
-	case TypeDescription:
-		return "description"
-	default:
-		return "undefined"
+		return Type{
+			Name: "undefined",
+		}
 	}
 }

@@ -50,6 +50,10 @@ func (s *Service) Delete(ctx context.Context, id uint) error {
 	return s.GenreRepository.Delete(ctx, genre)
 }
 
+func (s *Service) GetAll(ctx context.Context) ([]entity.Genre, error) {
+	return s.GenreRepository.FindAll(ctx)
+}
+
 func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Genre, error) {
 	return s.GenreRepository.FindByID(ctx, id)
 }

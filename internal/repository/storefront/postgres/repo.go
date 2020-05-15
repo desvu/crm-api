@@ -164,6 +164,7 @@ func (r StorefrontRepository) FindAll(ctx context.Context) ([]*entity.Storefront
 
 	return result, nil
 }
+
 func (r StorefrontRepository) lastActive() *orm.Query {
 	return r.h.GetConnection().Model((*activation)(nil)).Column("storefront_id").Order("timestamp desc").Limit(1)
 }

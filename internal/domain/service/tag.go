@@ -12,6 +12,7 @@ type TagService interface {
 	Update(ctx context.Context, data *UpdateTagData) (*entity.Tag, error)
 	Delete(ctx context.Context, id uint) error
 
+	GetAll(ctx context.Context) ([]entity.Tag, error)
 	GetByID(ctx context.Context, id uint) (*entity.Tag, error)
 	GetExistByID(ctx context.Context, id uint) (*entity.Tag, error)
 	GetByIDs(ctx context.Context, ids []uint) ([]entity.Tag, error)
