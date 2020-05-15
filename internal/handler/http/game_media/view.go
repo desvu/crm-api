@@ -23,7 +23,7 @@ type media struct {
 func (h Handler) view(i *entity.GameMedia) media {
 	return media{
 		ID:         i.ID,
-		Type:       i.Type.String(),
+		Type:       i.Type.Name,
 		GameID:     i.GameID,
 		IsUploaded: i.IsUploaded,
 		URL:        h.URLBuilder.BuildGameMedia(i),

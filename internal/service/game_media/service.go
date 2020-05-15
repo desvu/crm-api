@@ -1,13 +1,16 @@
 package game_media
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 
-	"github.com/qilin/crm-api/internal/domain/errors"
-
+	"github.com/disintegration/imaging"
 	"github.com/google/uuid"
+	"github.com/h2non/filetype"
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/game_media"
+	"github.com/qilin/crm-api/internal/domain/errors"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
@@ -16,13 +19,10 @@ type Service struct {
 }
 
 func (s *Service) Create(ctx context.Context, data *service.CreateGameMediaData) (*entity.GameMedia, error) {
-	fileName := fmt.Sprintf("%s.%s", uuid.New().String(), data.Extension)
-	filePath := fmt.Sprintf("/game/%s/media/%s", data.Game.ID, fileName)
-
 	gameMedia := &entity.GameMedia{
 		GameID:   data.Game.ID,
 		Type:     data.Type,
-		FilePath: filePath,
+		FilePath: fmt.Sprintf("/game/%s/media/%s.jpg", data.Game.ID, uuid.New().String()),
 	}
 
 	if err := s.GameMediaRepository.Create(ctx, gameMedia); err != nil {
@@ -38,12 +38,17 @@ func (s *Service) Upload(ctx context.Context, data *service.UploadGameMediaData)
 		return nil, err
 	}
 
+	src, err := getResultImage(data.Image, gameMedia.Type)
+	if err != nil {
+		return nil, err
+	}
+
 	w, err := s.Env.Storage.Bucket.NewWriter(ctx, gameMedia.FilePath, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = w.Write(data.Image)
+	_, err = w.Write(src)
 	if err != nil {
 		return nil, err
 	}
@@ -173,4 +178,98 @@ func getGameMediaForDelete(newMediaIDs []uint, currentGameMedia []entity.GameRev
 	}
 
 	return gameMedia
+}
+
+func getResultImage(src []byte, t game_media.Type) ([]byte, error) {
+	kind, err := filetype.Match(src)
+	if err != nil {
+		return nil, err
+	}
+
+	if kind.MIME.Value != "image/png" {
+		return nil, errors.InvalidMediaMIMEType
+	}
+
+	img, err := imaging.Decode(bytes.NewReader(src))
+	if err != nil {
+		return nil, err
+	}
+
+	if !checkResolution(img.Bounds().Dx(), img.Bounds().Dy(), t) {
+		return nil, errors.InvalidMediaResolution
+	}
+
+	if !checkAspectRatio(img.Bounds().Dx(), img.Bounds().Dy(), t) {
+		return nil, errors.InvalidMediaAspectRatio
+	}
+
+	if !t.IsNeedResize {
+		return src, nil
+	}
+
+	buf := new(bytes.Buffer)
+	err = imaging.Encode(buf, imaging.Resize(img, t.ResultWidth, t.ResultHeight, imaging.Lanczos), imaging.JPEG)
+	if err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+func checkResolution(w, h int, t game_media.Type) bool {
+	if !t.IsNeedValidate {
+		return true
+	}
+
+	if w < t.ResultWidth || h != t.ResultHeight {
+		return false
+	}
+
+	return true
+}
+
+func checkAspectRatio(w, h int, t game_media.Type) bool {
+	aspectWidth, aspectHeight := getAspectRatio(w, h)
+
+	if !t.IsNeedValidate {
+		return true
+	}
+
+	if aspectWidth != t.AspectWidth || aspectHeight != t.AspectHeight {
+		return false
+	}
+
+	return true
+}
+
+func getAspectRatio(w, h int) (int, int) {
+	if w == h {
+		return 1, 1
+	}
+
+	var (
+		dividend int
+		divisor  int
+	)
+
+	if h > w {
+		dividend = h
+		divisor = w
+	} else {
+		dividend = w
+		divisor = h
+	}
+
+	var gcd = -1
+	for gcd == -1 {
+		remainder := dividend % divisor
+		if remainder == 0 {
+			gcd = divisor
+		} else {
+			dividend = divisor
+			divisor = remainder
+		}
+	}
+
+	return w / gcd, h / gcd
 }

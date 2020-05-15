@@ -95,10 +95,6 @@ type reqCreateBody struct {
 	// required: true
 	// enum: wideSlider,vertical,horizontal,horizontalSmall,largeSingle,catalog,screenshot,description
 	Type string `json:"type"`
-
-	// required: true
-	// example: png
-	Extension string `json:"extension"`
 }
 
 // swagger:route POST /games/{game_id}/media game_media reqCreate
@@ -110,13 +106,13 @@ type reqCreateBody struct {
 //     Responses:
 //       200: Media
 func (h Handler) Create(c echo.Context) error {
-	req := new(reqCreate)
-	if err := c.Bind(req); err != nil {
-		return err
-	}
+	//req := new(reqCreate)
+	//if err := c.Bind(req); err != nil {
+	//	return err
+	//}
 
 	reqBody := new(reqCreateBody)
-	if err := c.Bind(req); err != nil {
+	if err := c.Bind(reqBody); err != nil {
 		return err
 	}
 
@@ -126,9 +122,8 @@ func (h Handler) Create(c echo.Context) error {
 	}
 
 	media, err := h.GameMediaService.Create(c.Request().Context(), &service.CreateGameMediaData{
-		Game:      game,
-		Type:      game_media.NewTypeByString(reqBody.Type),
-		Extension: reqBody.Extension,
+		Game: game,
+		Type: game_media.NewTypeByString(reqBody.Type),
 	})
 
 	if err != nil {

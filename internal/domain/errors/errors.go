@@ -38,8 +38,11 @@ var (
 	InvalidTagIDs = errors.NewService(errors.ErrValidation, "invalid tag ids", "invalid_tag_ids")
 
 	// GameMedia service
-	MediaNotFound   = errors.NewService(errors.ErrNotFound, "media not found", "media_not_found")
-	InvalidMediaIDs = errors.NewService(errors.ErrValidation, "invalid media ids", "invalid_media_ids")
+	MediaNotFound           = errors.NewService(errors.ErrNotFound, "media not found", "media_not_found")
+	InvalidMediaIDs         = errors.NewService(errors.ErrValidation, "invalid media ids", "invalid_media_ids")
+	InvalidMediaMIMEType    = errors.NewService(errors.ErrValidation, "invalid media mime type", "invalid_media_mime_type")
+	InvalidMediaResolution  = errors.NewService(errors.ErrValidation, "invalid media resolution", "invalid_media_resolution")
+	InvalidMediaAspectRatio = errors.NewService(errors.ErrValidation, "invalid media aspect ratio", "invalid_media_aspect_ratio")
 
 	// StoreFront service
 	StoreFrontNotFound     = errors.NewService(errors.ErrNotFound, "storefront not found", "storefront_not_found")
