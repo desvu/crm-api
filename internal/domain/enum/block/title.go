@@ -4,7 +4,6 @@ package block
 type Title string
 
 const (
-	TitleUndefined    Title = "undefined"
 	TitleSpecialOffer Title = "special-offer"
 	TitleGamesOnSale  Title = "games-on-sale"
 	TitleNewGames     Title = "new-games"
@@ -18,9 +17,12 @@ func (t Title) String() string {
 }
 
 func (t Title) Valid() bool {
+	// special case not defined
+	if t == "" {
+		return true
+	}
 	switch t {
 	case
-		TitleUndefined,
 		TitleSpecialOffer,
 		TitleGamesOnSale,
 		TitleNewGames,
