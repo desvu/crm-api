@@ -12,6 +12,7 @@ type GenreRepository interface {
 	Update(ctx context.Context, i *entity.Genre) error
 	Delete(ctx context.Context, i *entity.Genre) error
 
+	FindAll(ctx context.Context) ([]entity.Genre, error)
 	FindByID(ctx context.Context, id uint) (*entity.Genre, error)
 	FindByIDs(ctx context.Context, ids []uint) ([]entity.Genre, error)
 }

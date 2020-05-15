@@ -19,9 +19,12 @@ package http
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/qilin/crm-api/internal/handler/http/feature"
 	"github.com/qilin/crm-api/internal/handler/http/game"
 	"github.com/qilin/crm-api/internal/handler/http/game_media"
+	"github.com/qilin/crm-api/internal/handler/http/genre"
 	"github.com/qilin/crm-api/internal/handler/http/storefront"
+	"github.com/qilin/crm-api/internal/handler/http/tag"
 	"github.com/qilin/crm-api/pkg/response"
 	"go.uber.org/fx"
 )
@@ -32,6 +35,9 @@ type Params struct {
 	Storefronts      *storefront.Handler
 	GameMediaHandler game_media.Handler
 	GameHandler      game.Handler
+	FeatureHandler   feature.Handler
+	GenreHandler     genre.Handler
+	TagHandler       tag.Handler
 }
 
 func New(params Params) *echo.Echo {
@@ -46,6 +52,15 @@ func New(params Params) *echo.Echo {
 	e.Use(middleware.Recover())
 
 	api := e.Group("/api/v1")
+
+	// tags
+	api.GET("/tags", params.TagHandler.List)
+
+	// genres
+	api.GET("/genres", params.GenreHandler.List)
+
+	// features
+	api.GET("/features", params.FeatureHandler.List)
 
 	// manage games
 	api.POST("/games", params.GameHandler.Upsert)

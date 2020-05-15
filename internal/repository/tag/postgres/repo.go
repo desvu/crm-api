@@ -63,6 +63,22 @@ func (r TagRepository) Delete(ctx context.Context, i *entity.Tag) error {
 	return nil
 }
 
+func (r TagRepository) FindAll(ctx context.Context) ([]entity.Tag, error) {
+	var models []model
+
+	err := r.h.ModelContext(ctx, &models).Select()
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]entity.Tag, len(models))
+	for i := range models {
+		result[i] = *models[i].Convert()
+	}
+
+	return result, nil
+}
+
 func (r TagRepository) FindByID(ctx context.Context, id uint) (*entity.Tag, error) {
 	model := new(model)
 
