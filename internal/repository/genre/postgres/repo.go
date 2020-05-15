@@ -63,6 +63,22 @@ func (r GenreRepository) Delete(ctx context.Context, i *entity.Genre) error {
 	return nil
 }
 
+func (r GenreRepository) FindAll(ctx context.Context) ([]entity.Genre, error) {
+	var models []model
+
+	err := r.h.ModelContext(ctx, &models).Select()
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]entity.Genre, len(models))
+	for i := range models {
+		result[i] = *models[i].Convert()
+	}
+
+	return result, nil
+}
+
 func (r GenreRepository) FindByID(ctx context.Context, id uint) (*entity.Genre, error) {
 	model := new(model)
 

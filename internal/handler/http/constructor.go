@@ -21,6 +21,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/qilin/crm-api/internal/handler/http/game"
 	"github.com/qilin/crm-api/internal/handler/http/game_media"
+	"github.com/qilin/crm-api/internal/handler/http/genre"
 	"github.com/qilin/crm-api/internal/handler/http/storefront"
 	"github.com/qilin/crm-api/internal/handler/http/tag"
 	"github.com/qilin/crm-api/pkg/response"
@@ -33,6 +34,7 @@ type Params struct {
 	Storefronts      *storefront.Handler
 	GameMediaHandler game_media.Handler
 	GameHandler      game.Handler
+	GenreHandler     genre.Handler
 	TagHandler       tag.Handler
 }
 
@@ -49,8 +51,11 @@ func New(params Params) *echo.Echo {
 
 	api := e.Group("/api/v1")
 
-	// collections
+	// tags
 	api.GET("/tags", params.TagHandler.List)
+
+	// genres
+	api.GET("/genres", params.GenreHandler.List)
 
 	// manage games
 	api.POST("/games", params.GameHandler.Upsert)
