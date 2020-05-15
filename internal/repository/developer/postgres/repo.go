@@ -4,7 +4,9 @@ import (
 	"context"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/repository"
 	"github.com/qilin/crm-api/internal/env"
+	"github.com/qilin/crm-api/pkg/errors"
 	"github.com/qilin/crm-api/pkg/repository/handler/sql"
 )
 
@@ -84,6 +86,28 @@ func (r DeveloperRepository) FindByIDs(ctx context.Context, ids []uint) ([]entit
 	err := r.h.ModelContext(ctx, &models).WhereIn("id in (?)", ids).Select()
 	if err != nil {
 		return nil, err
+	}
+
+	entities := make([]entity.Developer, len(models))
+	for i := range models {
+		entities[i] = *models[i].Convert()
+	}
+
+	return entities, nil
+}
+
+func (r DeveloperRepository) FindByFilter(ctx context.Context, data *repository.FindByFilterDeveloperDate) ([]entity.Developer, error) {
+	var models []model
+
+	q := r.h.ModelContext(ctx, &models).
+		Limit(data.Limit)
+
+	if data.Offset != 0 {
+		q.Offset(data.Offset)
+	}
+
+	if err := q.Select(); err != nil {
+		return nil, errors.NewInternal(err)
 	}
 
 	entities := make([]entity.Developer, len(models))

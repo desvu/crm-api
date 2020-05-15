@@ -19,6 +19,7 @@ package http
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/qilin/crm-api/internal/handler/http/developer"
 	"github.com/qilin/crm-api/internal/handler/http/game"
 	"github.com/qilin/crm-api/internal/handler/http/game_media"
 	"github.com/qilin/crm-api/internal/handler/http/storefront"
@@ -32,6 +33,7 @@ type Params struct {
 	Storefronts      *storefront.Handler
 	GameMediaHandler game_media.Handler
 	GameHandler      game.Handler
+	DeveloperHandler developer.Handler
 }
 
 func New(params Params) *echo.Echo {
@@ -46,6 +48,9 @@ func New(params Params) *echo.Echo {
 	e.Use(middleware.Recover())
 
 	api := e.Group("/api/v1")
+
+	// developers
+	api.GET("/developers", params.DeveloperHandler.List)
 
 	// manage games
 	api.POST("/games", params.GameHandler.Upsert)
