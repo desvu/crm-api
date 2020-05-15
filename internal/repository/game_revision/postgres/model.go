@@ -87,18 +87,22 @@ func newSystemRequirementsModel(i *[]entity.SystemRequirements) *[]SystemRequire
 	for _, item := range *i {
 		requirementsSet := SystemRequirements{
 			Platform: item.Platform.Value(),
-			Minimal: RequirementsSetModel{
+		}
+		if item.Minimal != nil {
+			requirementsSet.Minimal = &RequirementsSetModel{
 				CPU:       item.Minimal.CPU,
 				GPU:       item.Minimal.GPU,
 				DiskSpace: item.Minimal.DiskSpace,
 				RAM:       item.Minimal.RAM,
-			},
-			Recommended: RequirementsSetModel{
+			}
+		}
+		if item.Recommended != nil {
+			requirementsSet.Recommended = &RequirementsSetModel{
 				CPU:       item.Recommended.CPU,
 				GPU:       item.Recommended.GPU,
 				DiskSpace: item.Recommended.DiskSpace,
 				RAM:       item.Recommended.RAM,
-			},
+			}
 		}
 
 		systemRequirements = append(systemRequirements, requirementsSet)
@@ -111,18 +115,22 @@ func convertSystemRequirements(m *[]SystemRequirements) *[]entity.SystemRequirem
 	for _, item := range *m {
 		requirementsSet := entity.SystemRequirements{
 			Platform: game.NewPlatform(item.Platform),
-			Minimal: &entity.RequirementsSet{
+		}
+		if item.Minimal != nil {
+			requirementsSet.Minimal = &entity.RequirementsSet{
 				CPU:       item.Minimal.CPU,
 				GPU:       item.Minimal.GPU,
 				DiskSpace: item.Minimal.DiskSpace,
 				RAM:       item.Minimal.RAM,
-			},
-			Recommended: &entity.RequirementsSet{
+			}
+		}
+		if item.Recommended != nil {
+			requirementsSet.Recommended = &entity.RequirementsSet{
 				CPU:       item.Recommended.CPU,
 				GPU:       item.Recommended.GPU,
 				DiskSpace: item.Recommended.DiskSpace,
 				RAM:       item.Recommended.RAM,
-			},
+			}
 		}
 
 		systemRequirements = append(systemRequirements, requirementsSet)
@@ -135,9 +143,9 @@ type SocialLinks struct {
 }
 
 type SystemRequirements struct {
-	Platform    uint8                `json:"platform"`
-	Minimal     RequirementsSetModel `json:"minimal"`
-	Recommended RequirementsSetModel `json:"recommended"`
+	Platform    uint8                 `json:"platform"`
+	Minimal     *RequirementsSetModel `json:"minimal"`
+	Recommended *RequirementsSetModel `json:"recommended"`
 }
 
 type RequirementsSetModel struct {

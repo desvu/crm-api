@@ -15,8 +15,6 @@ import (
 //     Responses:
 //       default: HTTPError
 //       200: FeatureList
-//       400: HTTPError
-//       404: HTTPError
 //       500: HTTPError
 func (h *Handler) List(c echo.Context) error {
 	res, err := h.Feature.GetAll(c.Request().Context())

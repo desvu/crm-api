@@ -14,6 +14,7 @@ import (
 //
 //     Responses:
 //       200: GameList
+//       500: HTTPError
 func (h Handler) GetByFilter(c echo.Context) error {
 	data, err := convertGetByFilterRequest(c)
 	if err != nil {
@@ -36,6 +37,9 @@ func (h Handler) GetByFilter(c echo.Context) error {
 //
 //     Responses:
 //       200: Game
+//       400: HTTPError
+//       404: HTTPError
+//       500: HTTPError
 func (h Handler) GetByID(c echo.Context) error {
 	var req reqByID
 	if err := c.Bind(&req); err != nil {
@@ -58,6 +62,9 @@ func (h Handler) GetByID(c echo.Context) error {
 //
 //     Responses:
 //       200: Game
+//       400: HTTPError
+//       404: HTTPError
+//       500: HTTPError
 func (h Handler) Upsert(c echo.Context) error {
 	data, err := convertUpsertRequest(c)
 	if err != nil {
@@ -80,6 +87,9 @@ func (h Handler) Upsert(c echo.Context) error {
 //
 //     Responses:
 //       200: Game
+//       400: HTTPError
+//       404: HTTPError
+//       500: HTTPError
 func (h Handler) Publish(c echo.Context) error {
 	var req reqByID
 	if err := c.Bind(&req); err != nil {

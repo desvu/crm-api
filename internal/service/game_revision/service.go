@@ -71,21 +71,26 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionDa
 			if platforms[item.Platform] {
 				return nil, errors.GameRevisionUniqueSystemRequirements
 			}
-			systemRequirements = append(systemRequirements, entity.SystemRequirements{
+			set := entity.SystemRequirements{
 				Platform: item.Platform,
-				Minimal: &entity.RequirementsSet{
+			}
+			if item.Minimal != nil {
+				set.Minimal = &entity.RequirementsSet{
 					CPU:       item.Minimal.CPU,
 					GPU:       item.Minimal.GPU,
 					DiskSpace: item.Minimal.DiskSpace,
 					RAM:       item.Minimal.RAM,
-				},
-				Recommended: &entity.RequirementsSet{
+				}
+			}
+			if item.Recommended != nil {
+				set.Recommended = &entity.RequirementsSet{
 					CPU:       item.Recommended.CPU,
 					GPU:       item.Recommended.GPU,
 					DiskSpace: item.Recommended.DiskSpace,
 					RAM:       item.Recommended.RAM,
-				},
-			})
+				}
+			}
+			systemRequirements = append(systemRequirements, set)
 			platforms[item.Platform] = true
 		}
 		revision.SystemRequirements = systemRequirements

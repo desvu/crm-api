@@ -37,18 +37,20 @@ type revision struct {
 	Summary string `json:"summary,omitempty"`
 
 	// example: Description game
-	Description  string         `json:"description,omitempty"`
-	License      string         `json:"license,omitempty"`
-	Trailer      string         `json:"trailer,omitempty"`
-	PlayTime     uint           `json:"play_time,omitempty"`
-	Media        []media        `json:"media,omitempty"`
-	SocialLinks  []socialLink   `json:"social_links,omitempty"`
-	Localization []localization `json:"localization,omitempty"`
-	Rating       []rating       `json:"rating,omitempty"`
-	Review       []review       `json:"review,omitempty"`
+	Description        string               `json:"description,omitempty"`
+	License            string               `json:"license,omitempty"`
+	Trailer            string               `json:"trailer,omitempty"`
+	PlayTime           uint                 `json:"play_time,omitempty"`
+	Media              []media              `json:"media,omitempty"`
+	SocialLinks        []socialLink         `json:"social_links,omitempty"`
+	Localization       []localization       `json:"localization,omitempty"`
+	Rating             []rating             `json:"rating,omitempty"`
+	Review             []review             `json:"review,omitempty"`
+	SystemRequirements []systemRequirements `json:"system_requirements,omitempty"`
 }
 
 type socialLink struct {
+	// required: true
 	URL string `json:"url"`
 }
 
@@ -59,24 +61,53 @@ type media struct {
 }
 
 type localization struct {
-	Language  string `json:"language"`
-	Interface bool   `json:"interface"`
-	Audio     bool   `json:"audio"`
-	Subtitles bool   `json:"subtitles"`
+	// required: true
+	Language string `json:"language"`
+	// required: true
+	Interface bool `json:"interface"`
+	// required: true
+	Audio bool `json:"audio"`
+	// required: true
+	Subtitles bool `json:"subtitles"`
 }
 
 type rating struct {
-	Agency              string `json:"agency"`
-	Rating              string `json:"rating"`
-	DisplayOnlineNotice bool   `json:"display_online_notice"`
-	ShowAgeRestrict     bool   `json:"show_age_restrict"`
+	// required: true
+	Agency string `json:"agency"`
+	// required: true
+	Rating string `json:"rating"`
+	// required: true
+	DisplayOnlineNotice bool `json:"display_online_notice"`
+	// required: true
+	ShowAgeRestrict bool `json:"show_age_restrict"`
 }
 
 type review struct {
+	// required: true
 	PressName string `json:"press_name"`
-	Link      string `json:"link"`
-	Score     string `json:"score"`
-	Quote     string `json:"quote"`
+	// required: true
+	Link string `json:"link"`
+	// required: true
+	Score string `json:"score"`
+	// required: true
+	Quote string `json:"quote"`
+}
+
+type systemRequirements struct {
+	// required: true
+	// example: windows
+	Platform string `json:"platform"`
+	// example: {"cpu": "i5", "gpu": "GTC 1050", "disk_space": 6500, "ram": 6000}
+	Minimal *requirementsSet `json:"minimal,omitempty"`
+	// example: {"cpu": "i7", "gpu": "GTC 1080", "disk_space": 6500, "ram": 8000}
+	Recommended *requirementsSet `json:"recommended,omitempty"`
+}
+
+type requirementsSet struct {
+	CPU       string `json:"cpu"`
+	GPU       string `json:"gpu"`
+	DiskSpace uint   `json:"disk_space"`
+	RAM       uint   `json:"ram"`
 }
 
 func (h Handler) view(i *entity.GameEx) game {
@@ -130,6 +161,29 @@ func (h Handler) view(i *entity.GameEx) game {
 			Score:     r.Score,
 			Quote:     r.Quote,
 		})
+	}
+
+	for _, r := range i.Revision.SystemRequirements {
+		set := systemRequirements{
+			Platform: r.Platform.String(),
+		}
+		if r.Minimal != nil {
+			set.Minimal = &requirementsSet{
+				CPU:       r.Minimal.CPU,
+				GPU:       r.Minimal.GPU,
+				DiskSpace: r.Minimal.DiskSpace,
+				RAM:       r.Minimal.RAM,
+			}
+		}
+		if r.Recommended != nil {
+			set.Recommended = &requirementsSet{
+				CPU:       r.Recommended.CPU,
+				GPU:       r.Recommended.GPU,
+				DiskSpace: r.Recommended.DiskSpace,
+				RAM:       r.Recommended.RAM,
+			}
+		}
+		v.Revision.SystemRequirements = append(v.Revision.SystemRequirements, set)
 	}
 
 	return v
