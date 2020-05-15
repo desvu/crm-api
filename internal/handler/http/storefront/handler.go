@@ -114,6 +114,10 @@ func (h *Handler) Update(ctx echo.Context) error {
 		return err
 	}
 
+	if err := c.Validate(&request.Data); err != nil {
+		return err
+	}
+
 	data := &entity.Storefront{
 		ID:     request.ID,
 		Name:   request.Data.Name,
