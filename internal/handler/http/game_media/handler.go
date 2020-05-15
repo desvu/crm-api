@@ -22,6 +22,10 @@ type reqUpload struct {
 	// required: true
 	// example: 43
 	MediaID uint `param:"media_id"`
+
+	// in: formData
+	// swagger:file image
+	File interface{}
 }
 
 // swagger:route POST /games/{game_id}/media/{media_id} game_media reqUpload
