@@ -172,7 +172,7 @@ type reqGetByFilter struct {
 	// example: 30
 	Limit int `query:"limit"`
 
-	// in: body
+	// in: query
 	// example: 20
 	Offset int `query:"offset"`
 }
