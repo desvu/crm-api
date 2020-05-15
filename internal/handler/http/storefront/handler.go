@@ -71,13 +71,13 @@ func (h *Handler) List(c echo.Context) error {
 //       400: HTTPError
 //       404: HTTPError
 //       500: HTTPError
-func (h *Handler) Create(c echo.Context) error {
+func (h *Handler) Create(ctx echo.Context) error {
 	var request createRequest
-	if err := c.Bind(&request.Data); err != nil {
+	if err := ctx.Bind(&request.Data); err != nil {
 		return err
 	}
 
-	if err := c.Validate(&request.Data); err != nil {
+	if err := ctx.Validate(&request.Data); err != nil {
 		return err
 	}
 
@@ -86,12 +86,12 @@ func (h *Handler) Create(c echo.Context) error {
 		Blocks: request.Data.GetBlocks(),
 	}
 
-	res, err := h.Storefronts.Create(c.Request().Context(), data)
+	res, err := h.Storefronts.Create(ctx.Request().Context(), data)
 	if err != nil {
 		return err
 	}
 
-	return response.New(c, h.view(res))
+	return response.New(ctx, h.view(res))
 }
 
 // swagger:route PUT /storefronts/{id} storefronts updateStorefronts
@@ -114,7 +114,7 @@ func (h *Handler) Update(ctx echo.Context) error {
 		return err
 	}
 
-	if err := c.Validate(&request.Data); err != nil {
+	if err := ctx.Validate(&request.Data); err != nil {
 		return err
 	}
 
