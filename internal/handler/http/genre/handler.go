@@ -6,15 +6,15 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// swagger:route GET /tags tags listTags
+// swagger:route GET /genres genres listGenres
 //
-// Lists all available tags
+// Lists all available genres
 //
-// This endpoint lists all available tags
+// This endpoint lists all available genres
 //
 //     Responses:
 //       default: HTTPError
-//       200: TagList
+//       200: GenreList
 //       400: HTTPError
 //       404: HTTPError
 //       500: HTTPError
