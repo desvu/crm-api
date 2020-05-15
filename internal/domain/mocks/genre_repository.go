@@ -62,6 +62,21 @@ func (mr *MockGenreRepositoryMockRecorder) Delete(arg0, arg1 interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockGenreRepository)(nil).Delete), arg0, arg1)
 }
 
+// FindAll mocks base method
+func (m *MockGenreRepository) FindAll(arg0 context.Context) ([]entity.Genre, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindAll", arg0)
+	ret0, _ := ret[0].([]entity.Genre)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindAll indicates an expected call of FindAll
+func (mr *MockGenreRepositoryMockRecorder) FindAll(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockGenreRepository)(nil).FindAll), arg0)
+}
+
 // FindByID mocks base method
 func (m *MockGenreRepository) FindByID(arg0 context.Context, arg1 uint) (*entity.Genre, error) {
 	m.ctrl.T.Helper()
