@@ -49,9 +49,6 @@ type reqUpsert struct {
 	// example: 360
 	PlayTime *uint `json:"play_time"`
 
-	// example: full
-	Controller *string `json:"controller"`
-
 	// example: [windows, macOS]
 	Platforms *[]gameenum.Platform `json:"platforms"`
 
@@ -96,7 +93,6 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 			License:     req.License,
 			Trailer:     req.Trailer,
 			PlayTime:    req.PlayTime,
-			Controller:  gameenum.NewControllerPointerByStringPointer(req.Controller),
 			Tags:        req.Tags,
 			Developers:  req.Developers,
 			Publishers:  req.Publishers,

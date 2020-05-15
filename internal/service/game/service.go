@@ -62,7 +62,6 @@ func (s *Service) Create(ctx context.Context, data *service.CreateGameData) (*en
 			Localizations:      data.Localizations,
 			Rating:             data.Ratings,
 			Reviews:            data.Reviews,
-			Controller:         data.Controller,
 			PlayTime:           data.PlayTime,
 		})
 
@@ -127,7 +126,6 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*en
 			Localizations:      data.Localizations,
 			Rating:             data.Ratings,
 			Reviews:            data.Reviews,
-			Controller:         data.Controller,
 			PlayTime:           data.PlayTime,
 		})
 
@@ -179,10 +177,6 @@ func (s *Service) Upsert(ctx context.Context, data *service.UpsertGameData) (*en
 
 	if data.PlayTime != nil {
 		d.PlayTime = data.PlayTime
-	}
-
-	if data.Controller != nil {
-		d.Controller = data.Controller
 	}
 
 	return s.Create(ctx, d)

@@ -45,7 +45,6 @@ type CommonGameData struct {
 	Genres      *[]uint
 	Media       *[]uint
 
-	Controller         *game.Controller
 	SocialLinks        *[]SocialLink
 	SystemRequirements *[]SystemRequirements
 	Platforms          *game.PlatformArray
