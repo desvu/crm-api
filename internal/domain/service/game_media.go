@@ -20,9 +20,8 @@ type GameMediaService interface {
 }
 
 type CreateGameMediaData struct {
-	Game      *entity.Game
-	Type      game_media.Type
-	Extension string
+	Game *entity.Game
+	Type game_media.Type
 }
 
 type UploadGameMediaData struct {
