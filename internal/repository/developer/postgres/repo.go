@@ -96,7 +96,7 @@ func (r DeveloperRepository) FindByIDs(ctx context.Context, ids []uint) ([]entit
 	return entities, nil
 }
 
-func (r DeveloperRepository) FindByFilter(ctx context.Context, data *repository.FindByFilterDeveloperDate) ([]entity.Developer, error) {
+func (r DeveloperRepository) FindByFilter(ctx context.Context, data *repository.FindByFilterDeveloperData) ([]entity.Developer, error) {
 	var models []model
 
 	q := r.h.ModelContext(ctx, &models).

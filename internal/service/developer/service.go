@@ -81,7 +81,7 @@ func (s *Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entit
 }
 
 func (s *Service) GetByFilter(ctx context.Context, data *service.GetByFilterDeveloperData) ([]entity.Developer, error) {
-	return s.DeveloperRepository.FindByFilter(ctx, &repository.FindByFilterDeveloperDate{
+	return s.DeveloperRepository.FindByFilter(ctx, &repository.FindByFilterDeveloperData{
 		Limit:  data.Limit,
 		Offset: data.Offset,
 	})

@@ -22,6 +22,7 @@ import (
 	"github.com/qilin/crm-api/internal/handler/http/developer"
 	"github.com/qilin/crm-api/internal/handler/http/game"
 	"github.com/qilin/crm-api/internal/handler/http/game_media"
+	"github.com/qilin/crm-api/internal/handler/http/publisher"
 	"github.com/qilin/crm-api/internal/handler/http/storefront"
 	"github.com/qilin/crm-api/pkg/response"
 	"go.uber.org/fx"
@@ -34,6 +35,7 @@ type Params struct {
 	GameMediaHandler game_media.Handler
 	GameHandler      game.Handler
 	DeveloperHandler developer.Handler
+	PublisherHandler publisher.Handler
 }
 
 func New(params Params) *echo.Echo {
@@ -51,6 +53,9 @@ func New(params Params) *echo.Echo {
 
 	// developers
 	api.GET("/developers", params.DeveloperHandler.List)
+
+	// publishers
+	api.GET("/publishers", params.PublisherHandler.List)
 
 	// manage games
 	api.POST("/games", params.GameHandler.Upsert)
