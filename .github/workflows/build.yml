@@ -5,7 +5,7 @@ on:
       - master
 jobs:
   tests:
-    name: Docs
+    name: Tests
     runs-on: ubuntu-latest
     steps:
       - name: Install Go
