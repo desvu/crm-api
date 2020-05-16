@@ -23,17 +23,21 @@ type reqUpsertWrapper struct {
 	// in: body
 	Data reqUpsert
 }
+
 type reqUpsert struct {
 	// example: 11002485-cb51-4b29-8423-cba43f29f143
 	ID *string `json:"id"`
 
 	// example: Ash of Gods
+	// required: true
 	Title *string `json:"title"`
 
 	// example: desktop
+	// required: true
 	Type *string `json:"type"`
 
 	// example: ash-of-gods
+	// required: true
 	Slug *string `json:"slug"`
 
 	// example: Ash of Gods: Redemption is a turn-based RPG that combines tactical combat, CCG elements, and a constantly evolving story in which no one is safe from death, including the main characters.
@@ -41,7 +45,9 @@ type reqUpsert struct {
 
 	// example: Ash of Gods is the story of three separate protagonists rising in response to a centuries-old menace once thought to be mere folklore. Captain Thorn Brenin, the bodyguard Lo Pheng, the scribe Hopper Rouley, and many others, do not yet know that the reapers have returned and intend to drown the world in blood so that they may awaken the sleeping gods.
 	Description *string `json:"description"`
-	License     *string `json:"license"`
+
+	//
+	License *string `json:"license"`
 
 	// example: https://www.youtube.com/watch?v=k_j0fw8jh8M
 	Trailer *string `json:"trailer"`
@@ -64,16 +70,29 @@ type reqUpsert struct {
 	// example: [1]
 	Publishers *[]uint `json:"publishers"`
 
-	// example: []
+	// example: [12, 17, 19]
 	Tags *[]uint `json:"tags"`
 
 	// example: [2, 5, 8, 9]
-	Media        *[]uint         `json:"media"`
-	ReleaseDate  *time.Time      `json:"release_date"`
-	SocialLinks  *[]socialLink   `json:"social_links"`
+	Media *[]uint `json:"media"`
+
+	//
+	ReleaseDate *time.Time `json:"release_date"`
+
+	// example: [{"url": "https://www.facebook.com/AshOfGods/"},{"url":"https://www.reddit.com/r/ashofgods/"}]
+	SocialLinks *[]socialLink `json:"social_links"`
+
+	// example: [{"language": "eng", "interface": true, "audio": true, "subtitles": true}]
 	Localization *[]localization `json:"localization"`
-	Rating       *[]rating       `json:"rating"`
-	Review       *[]review       `json:"review"`
+
+	// example: [{"agency": "CERO", "rating": "A", "display_online_notice": true, "show_age_restrict": true}]
+	Rating *[]rating `json:"rating"`
+
+	// example: [{ "press_name": "IGN", "link": "https://www.ign.com/articles/2013/09/16/grand-theft-auto-v-review", "score": "10/10", "quote": "Grand Theft Auto V is not only a preposterously enjoyable video game, but also an intelligent and sharp-tongued satire of contemporary America." }]
+	Review *[]review `json:"review"`
+
+	// example: [{"platform": "windows", "minimal": {"cpu": "i5", "gpu": "GTC 1050", "disk_space": 6500, "ram": 6000}, "recommended": {"cpu": "i7", "gpu": "GTC 1080", "disk_space": 6500, "ram": 8000}}]
+	SystemRequirements *[]systemRequirements `json:"system_requirements"`
 }
 
 func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
@@ -142,6 +161,32 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 			}
 		}
 		data.CommonGameData.Reviews = &reviews
+	}
+
+	if req.SystemRequirements != nil {
+		requirements := make([]service.SystemRequirements, len(*req.SystemRequirements))
+		for i, r := range *req.SystemRequirements {
+			requirements[i] = service.SystemRequirements{
+				Platform: gameenum.NewPlatformByString(r.Platform),
+			}
+			if r.Minimal != nil {
+				requirements[i].Minimal = &service.RequirementsSet{
+					CPU:       r.Minimal.CPU,
+					GPU:       r.Minimal.GPU,
+					DiskSpace: r.Minimal.DiskSpace,
+					RAM:       r.Minimal.RAM,
+				}
+			}
+			if r.Recommended != nil {
+				requirements[i].Recommended = &service.RequirementsSet{
+					CPU:       r.Recommended.CPU,
+					GPU:       r.Recommended.GPU,
+					DiskSpace: r.Recommended.DiskSpace,
+					RAM:       r.Recommended.RAM,
+				}
+			}
+		}
+		data.CommonGameData.SystemRequirements = &requirements
 	}
 
 	return data, nil

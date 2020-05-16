@@ -43,7 +43,7 @@ type storefront struct {
 
 // Block is storefront template page block
 //
-// swagger: model StorefrontBlock
+// swagger:model StorefrontBlock
 type sfblock struct {
 	// Type is how block must be rendered
 	//
