@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/qilin/crm-api/internal/domain/errors"
+	"github.com/qilin/crm-api/internal/domain/repository"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/service"
@@ -78,6 +79,13 @@ func (s *Service) GetByGameRevisionID(ctx context.Context, gameID uint) ([]entit
 	}
 
 	return s.GetByIDs(ctx, entity.NewGameRevisionPublisherArray(gamePublishers).IDs())
+}
+
+func (s *Service) GetByFilter(ctx context.Context, data *service.GetByFilterPublisherData) ([]entity.Publisher, error) {
+	return s.PublisherRepository.FindByFilter(ctx, &repository.FindByFilterPublisherData{
+		Limit:  data.Limit,
+		Offset: data.Offset,
+	})
 }
 
 func (s *Service) UpdatePublishersForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, publisherIDs []uint) error {

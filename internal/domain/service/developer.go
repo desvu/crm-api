@@ -16,6 +16,7 @@ type DeveloperService interface {
 	GetExistByID(ctx context.Context, id uint) (*entity.Developer, error)
 	GetByIDs(ctx context.Context, ids []uint) ([]entity.Developer, error)
 	GetByGameRevisionID(ctx context.Context, gameRevisionID uint) ([]entity.Developer, error)
+	GetByFilter(ctx context.Context, data *GetByFilterDeveloperData) ([]entity.Developer, error)
 
 	UpdateDevelopersForGameRevision(ctx context.Context, gameRevision *entity.GameRevision, developerIDs []uint) error
 }
@@ -27,4 +28,9 @@ type CreateDeveloperData struct {
 type UpdateDeveloperData struct {
 	ID   uint
 	Name string
+}
+
+type GetByFilterDeveloperData struct {
+	Limit  int
+	Offset int
 }

@@ -14,4 +14,10 @@ type PublisherRepository interface {
 
 	FindByID(ctx context.Context, id uint) (*entity.Publisher, error)
 	FindByIDs(ctx context.Context, ids []uint) ([]entity.Publisher, error)
+	FindByFilter(ctx context.Context, data *FindByFilterPublisherData) ([]entity.Publisher, error)
+}
+
+type FindByFilterPublisherData struct {
+	Limit  int
+	Offset int
 }
