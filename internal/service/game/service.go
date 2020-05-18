@@ -127,6 +127,12 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameData) (*en
 			Rating:             data.Ratings,
 			Reviews:            data.Reviews,
 			PlayTime:           data.PlayTime,
+			Platforms:          data.Platforms,
+			ReleaseDate:        data.ReleaseDate,
+			Trailer:            data.Trailer,
+			License:            data.License,
+			Description:        data.Description,
+			Summary:            data.Summary,
 		})
 
 		if err != nil {
