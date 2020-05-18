@@ -31,6 +31,7 @@ type revision struct {
 	ID uint `json:"id"`
 
 	// example: published
+	// enum: draft,publishing,published
 	Status game_revision.Status `json:"status"`
 
 	// example: Summary game
