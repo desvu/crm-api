@@ -64,6 +64,21 @@ func (mr *MockDeveloperServiceMockRecorder) Delete(arg0, arg1 interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockDeveloperService)(nil).Delete), arg0, arg1)
 }
 
+// GetByFilter mocks base method
+func (m *MockDeveloperService) GetByFilter(arg0 context.Context, arg1 *service.GetByFilterDeveloperData) ([]entity.Developer, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByFilter", arg0, arg1)
+	ret0, _ := ret[0].([]entity.Developer)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByFilter indicates an expected call of GetByFilter
+func (mr *MockDeveloperServiceMockRecorder) GetByFilter(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByFilter", reflect.TypeOf((*MockDeveloperService)(nil).GetByFilter), arg0, arg1)
+}
+
 // GetByGameRevisionID mocks base method
 func (m *MockDeveloperService) GetByGameRevisionID(arg0 context.Context, arg1 uint) ([]entity.Developer, error) {
 	m.ctrl.T.Helper()

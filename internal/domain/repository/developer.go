@@ -14,4 +14,10 @@ type DeveloperRepository interface {
 
 	FindByID(ctx context.Context, id uint) (*entity.Developer, error)
 	FindByIDs(ctx context.Context, ids []uint) ([]entity.Developer, error)
+	FindByFilter(ctx context.Context, data *FindByFilterDeveloperData) ([]entity.Developer, error)
+}
+
+type FindByFilterDeveloperData struct {
+	Limit  int
+	Offset int
 }
