@@ -7,7 +7,7 @@ import (
 //swagger:model PublisherList
 type publisherList []publisher
 
-//swagger:model genre
+//swagger:model publisher
 type publisher struct {
 	// example: 12
 	ID uint `json:"id"`

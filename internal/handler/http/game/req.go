@@ -78,7 +78,7 @@ type reqUpsert struct {
 	// example: [2, 5, 8, 9]
 	Media *[]uint `json:"media"`
 
-	//
+	// example: 2020-01-02T00:00:00Z
 	ReleaseDate *time.Time `json:"release_date"`
 
 	// example: [{"url": "https://www.facebook.com/AshOfGods/"},{"url":"https://www.reddit.com/r/ashofgods/"}]

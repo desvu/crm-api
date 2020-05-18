@@ -7,7 +7,7 @@ import (
 //swagger:model FeatureList
 type featureList []feature
 
-//swagger:model genre
+//swagger:model feature
 type feature struct {
 	// example: 12
 	ID uint `json:"id"`
