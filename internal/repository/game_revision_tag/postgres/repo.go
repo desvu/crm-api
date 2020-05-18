@@ -44,7 +44,7 @@ func (r GameRevisionTagRepository) CreateMultiple(ctx context.Context, items []e
 		models[i] = *m
 	}
 
-	_, err := r.h.ModelContext(ctx, models).Insert()
+	_, err := r.h.ModelContext(ctx, &models).Insert()
 	if err != nil {
 		return err
 	}
@@ -82,7 +82,7 @@ func (r GameRevisionTagRepository) DeleteMultiple(ctx context.Context, items []e
 		models[i] = *m
 	}
 
-	_, err := r.h.ModelContext(ctx, models).Delete()
+	_, err := r.h.ModelContext(ctx, &models).Delete()
 	if err != nil {
 		return err
 	}
