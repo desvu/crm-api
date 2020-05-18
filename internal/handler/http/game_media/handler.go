@@ -28,7 +28,7 @@ type reqUpload struct {
 	File interface{}
 }
 
-// swagger:route POST /games/{game_id}/media/{media_id} game_media reqUpload
+// swagger:route PUT /games/{game_id}/media/{media_id} game_media reqUpload
 //
 // Upload
 //
