@@ -34,6 +34,10 @@ func (r GameRevisionTagRepository) Create(ctx context.Context, i *entity.GameRev
 }
 
 func (r GameRevisionTagRepository) CreateMultiple(ctx context.Context, items []entity.GameRevisionTag) error {
+	if len(items) == 0 {
+		return nil
+	}
+
 	models := make([]model, len(items))
 	for i := range items {
 		m, err := newModel(&items[i])
@@ -72,6 +76,10 @@ func (r GameRevisionTagRepository) Delete(ctx context.Context, i *entity.GameRev
 }
 
 func (r GameRevisionTagRepository) DeleteMultiple(ctx context.Context, items []entity.GameRevisionTag) error {
+	if len(items) == 0 {
+		return nil
+	}
+
 	models := make([]model, len(items))
 	for i := range items {
 		m, err := newModel(&items[i])

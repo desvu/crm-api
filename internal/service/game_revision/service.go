@@ -3,7 +3,6 @@ package game_revision
 import (
 	"context"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
@@ -54,7 +53,6 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionDa
 	}
 
 	if data.Platforms != nil {
-		spew.Dump(*data.Platforms)
 		revision.Platforms = *data.Platforms
 	}
 
