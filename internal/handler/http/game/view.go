@@ -4,7 +4,6 @@ import (
 	"github.com/qilin/crm-api/internal/domain/entity"
 	gameenum "github.com/qilin/crm-api/internal/domain/enum/game"
 	"github.com/qilin/crm-api/internal/domain/enum/game_media"
-	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 )
 
 //swagger:model Game
@@ -32,7 +31,7 @@ type revision struct {
 
 	// example: published
 	// enum: draft,publishing,published
-	Status game_revision.Status `json:"status"`
+	Status string `json:"status"`
 
 	// example: Summary game
 	Summary string `json:"summary,omitempty"`
@@ -119,7 +118,7 @@ func (h Handler) view(i *entity.GameEx) game {
 		Slug:  i.Slug,
 		Revision: revision{
 			ID:          i.Revision.ID,
-			Status:      i.Revision.Status,
+			Status:      i.Revision.Status.String(),
 			Summary:     i.Revision.Summary,
 			Description: i.Revision.Description,
 			License:     i.Revision.License,
