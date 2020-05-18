@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
+	"math"
 
 	"github.com/disintegration/imaging"
 	"github.com/google/uuid"
@@ -229,47 +231,14 @@ func checkResolution(w, h int, t game_media.Type) bool {
 }
 
 func checkAspectRatio(w, h int, t game_media.Type) bool {
-	aspectWidth, aspectHeight := getAspectRatio(w, h)
-
 	if !t.IsNeedValidate {
 		return true
 	}
 
-	if aspectWidth != t.AspectWidth || aspectHeight != t.AspectHeight {
-		return false
+	if w == int(math.Round(float64(h)/float64(t.ResultHeight)*float64(t.ResultWidth))) {
+		log.Println(w, int(math.Round(float64(h)/float64(t.ResultHeight)*float64(t.ResultWidth))))
+		return true
 	}
 
-	return true
-}
-
-func getAspectRatio(w, h int) (int, int) {
-	if w == h {
-		return 1, 1
-	}
-
-	var (
-		dividend int
-		divisor  int
-	)
-
-	if h > w {
-		dividend = h
-		divisor = w
-	} else {
-		dividend = w
-		divisor = h
-	}
-
-	var gcd = -1
-	for gcd == -1 {
-		remainder := dividend % divisor
-		if remainder == 0 {
-			gcd = divisor
-		} else {
-			dividend = divisor
-			divisor = remainder
-		}
-	}
-
-	return w / gcd, h / gcd
+	return false
 }
