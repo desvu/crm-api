@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"log"
 	"math"
 
 	"github.com/disintegration/imaging"
@@ -236,7 +235,6 @@ func checkAspectRatio(w, h int, t game_media.Type) bool {
 	}
 
 	if w == int(math.Round(float64(h)/float64(t.ResultHeight)*float64(t.ResultWidth))) {
-		log.Println(w, int(math.Round(float64(h)/float64(t.ResultHeight)*float64(t.ResultWidth))))
 		return true
 	}
 
