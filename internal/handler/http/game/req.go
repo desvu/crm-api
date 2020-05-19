@@ -57,22 +57,22 @@ type reqUpsert struct {
 	// example: 360
 	PlayTime *uint `json:"play_time"`
 
-	// example: [windows, macOS]
+	// example: ["windows", "macOS"]
 	Platforms *[]string `json:"platforms"`
 
-	// example: [32]
+	// example: [4]
 	Developers *[]uint `json:"developers"`
 
-	// example: [14, 44, 67]
+	// example: [1, 3]
 	Features *[]uint `json:"features"`
 
-	// example: [53, 23, 1]
+	// example: [2, 1]
 	Genres *[]uint `json:"genres"`
 
-	// example: [1]
+	// example: [4,6,7]
 	Publishers *[]uint `json:"publishers"`
 
-	// example: [12, 17, 19]
+	// example: [3, 2, 6, 4]
 	Tags *[]uint `json:"tags"`
 
 	// example: [2, 5, 8, 9]
