@@ -7,7 +7,7 @@ import (
 //swagger:model DeveloperList
 type developerList []developer
 
-//swagger:model genre
+//swagger:model developer
 type developer struct {
 	// example: 12
 	ID uint `json:"id"`

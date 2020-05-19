@@ -25,6 +25,8 @@ type reqUpsertWrapper struct {
 }
 
 type reqUpsert struct {
+	// ID is required on revision update
+	//
 	// example: 11002485-cb51-4b29-8423-cba43f29f143
 	ID *string `json:"id"`
 
@@ -56,7 +58,7 @@ type reqUpsert struct {
 	PlayTime *uint `json:"play_time"`
 
 	// example: [windows, macOS]
-	Platforms *[]gameenum.Platform `json:"platforms"`
+	Platforms *[]string `json:"platforms"`
 
 	// example: [32]
 	Developers *[]uint `json:"developers"`
@@ -76,7 +78,7 @@ type reqUpsert struct {
 	// example: [2, 5, 8, 9]
 	Media *[]uint `json:"media"`
 
-	//
+	// example: 2020-01-02T00:00:00Z
 	ReleaseDate *time.Time `json:"release_date"`
 
 	// example: [{"url": "https://www.facebook.com/AshOfGods/"},{"url":"https://www.reddit.com/r/ashofgods/"}]
@@ -118,10 +120,14 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertGameData, error) {
 			Features:    req.Features,
 			Genres:      req.Genres,
 			Media:       req.Media,
-			Platforms:   nil, // todo ?
 			ReleaseDate: req.ReleaseDate,
 			SocialLinks: convertSocialLinksToServiceSocialLinks(req.SocialLinks),
 		},
+	}
+
+	if req.Platforms != nil {
+		platforms := gameenum.NewPlatformArrayByStrings((*req.Platforms)...)
+		data.CommonGameData.Platforms = &platforms
 	}
 
 	if req.Localization != nil {
