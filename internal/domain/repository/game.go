@@ -15,9 +15,16 @@ type GameRepository interface {
 	FindBySlug(ctx context.Context, slug string) (*entity.Game, error)
 	FindByIDs(ctx context.Context, ids []string) ([]entity.Game, error)
 	FindByFilter(ctx context.Context, data *FindByFilterGameDate) ([]entity.Game, error)
+	FindByTitleSubstring(ctx context.Context, data *FindByTitleSubstringData) ([]entity.Game, error)
 }
 
 type FindByFilterGameDate struct {
+	Limit  int
+	Offset int
+}
+
+type FindByTitleSubstringData struct {
+	Title  string
 	Limit  int
 	Offset int
 }

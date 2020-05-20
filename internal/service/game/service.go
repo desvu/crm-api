@@ -347,6 +347,36 @@ func (s *Service) GetExByFilter(ctx context.Context, data *service.GetByFilterGa
 	return gamesEx, nil
 }
 
+func (s *Service) GetByTitleSubstring(ctx context.Context, data service.GetByTitleSubstringData) ([]entity.GameEx, error) {
+	games, err := s.GameRepository.FindByTitleSubstring(ctx, &repository.FindByTitleSubstringData{
+		Title:  data.Title,
+		Limit:  int(data.Limit),
+		Offset: int(data.Offset),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	revisions, err := s.GameRevisionService.GetLastByGameIDs(ctx, entity.NewGameArray(games).IDs())
+	if err != nil {
+		return nil, err
+	}
+
+	var gamesEx []entity.GameEx
+	for i := range games {
+		for j := range revisions {
+			if games[i].ID == revisions[j].GameID {
+				gamesEx = append(gamesEx, entity.GameEx{
+					Game:     games[i],
+					Revision: &revisions[j],
+				})
+			}
+		}
+	}
+
+	return gamesEx, nil
+}
+
 func (s *Service) checkNoExistGameBySlug(ctx context.Context, slug string) error {
 	gameSlug, err := s.GetBySlug(ctx, slug)
 	if err != nil && err != errors.GameNotFound {

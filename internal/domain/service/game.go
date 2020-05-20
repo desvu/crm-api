@@ -30,6 +30,9 @@ type GameService interface {
 
 	// GetExBySlug returns last published game by slug
 	GetExBySlug(ctx context.Context, slug string) (*entity.GameEx, error)
+
+	// FindByTitle returns games found by title substring
+	GetByTitleSubstring(ctx context.Context, data GetByTitleSubstringData) ([]entity.GameEx, error)
 }
 
 type CommonGameData struct {
@@ -194,4 +197,10 @@ func validateTrailer(fl validator.FieldLevel) bool {
 type GetByFilterGameDate struct {
 	Limit  int
 	Offset int
+}
+
+type GetByTitleSubstringData struct {
+	Title  string
+	Limit  uint
+	Offset uint
 }
