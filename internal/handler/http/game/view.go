@@ -77,8 +77,10 @@ type localization struct {
 
 type rating struct {
 	// required: true
+	// enum: PEGI,ESRB,BBFC,USK,CERO
 	Agency string `json:"agency"`
 	// required: true
+	// enum: U,PG,12A,12,15,18,R18,A,B,C,D,Z,EC,E,E10+,T,M,A,RP,3,7,12,16,18,USK,0,6,12,16,18
 	Rating string `json:"rating"`
 	// required: true
 	DisplayOnlineNotice bool `json:"display_online_notice"`
