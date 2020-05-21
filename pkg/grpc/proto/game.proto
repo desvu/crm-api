@@ -106,7 +106,8 @@ message Localization {
 }
 
 message SocialLink {
-    string url = 1;
+    string type = 1;
+    string url = 2;
 }
 
 message Rating {

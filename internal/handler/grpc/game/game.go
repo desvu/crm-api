@@ -120,7 +120,8 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 
 	for _, item := range game.Revision.SocialLinks {
 		result.SocialLinks = append(result.SocialLinks, &proto.SocialLink{
-			Url: item.URL,
+			Type: item.Type.String(),
+			Url:  item.URL,
 		})
 	}
 
