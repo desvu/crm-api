@@ -52,6 +52,7 @@ message Game {
     repeated Media media = 20;
     repeated Review reviews = 21;
     uint32 playTime = 22;
+    string releaseDate = 23;
 }
 
 message Media {
