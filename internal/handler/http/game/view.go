@@ -52,6 +52,9 @@ type revision struct {
 
 type socialLink struct {
 	// required: true
+	// enum: twitch,facebook,twitter,youtube,reddit,vk,discord
+	Type string `json:"type"`
+	// required: true
 	URL string `json:"url"`
 }
 

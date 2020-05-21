@@ -129,7 +129,7 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 	for _, item := range game.Revision.Media {
 		result.Media = append(result.Media, &proto.Media{
 			Type: item.Type.Name,
-			Url:  item.FilePath,
+			Url:  h.URLBuilder.BuildGameMedia(&item),
 		})
 	}
 
@@ -144,7 +144,8 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 
 	for _, item := range game.Revision.SocialLinks {
 		result.SocialLinks = append(result.SocialLinks, &proto.SocialLink{
-			Url: item.URL,
+			Type: item.Type.String(),
+			Url:  item.URL,
 		})
 	}
 

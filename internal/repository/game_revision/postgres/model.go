@@ -3,6 +3,8 @@ package postgres
 import (
 	"time"
 
+	"github.com/qilin/crm-api/internal/domain/enum/game_social_link"
+
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
@@ -66,7 +68,8 @@ func newSocialLinksModel(i *[]entity.SocialLink) *[]SocialLinks {
 	var socialLinks = make([]SocialLinks, 0)
 	for _, item := range *i {
 		socialLinks = append(socialLinks, SocialLinks{
-			URL: item.URL,
+			Type: item.Type.Value(),
+			URL:  item.URL,
 		})
 	}
 	return &socialLinks
@@ -76,7 +79,8 @@ func convertSocialLinks(m *[]SocialLinks) *[]entity.SocialLink {
 	var socialLinks = make([]entity.SocialLink, 0)
 	for _, item := range *m {
 		socialLinks = append(socialLinks, entity.SocialLink{
-			URL: item.URL,
+			Type: game_social_link.NewType(item.Type),
+			URL:  item.URL,
 		})
 	}
 	return &socialLinks
@@ -139,7 +143,8 @@ func convertSystemRequirements(m *[]SystemRequirements) *[]entity.SystemRequirem
 }
 
 type SocialLinks struct {
-	URL string `json:"url"`
+	Type uint8  `json:"type"`
+	URL  string `json:"url"`
 }
 
 type SystemRequirements struct {

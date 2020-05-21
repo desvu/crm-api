@@ -3,6 +3,8 @@ package game
 import (
 	"time"
 
+	"github.com/qilin/crm-api/internal/domain/enum/game_social_link"
+
 	"github.com/labstack/echo/v4"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	gameenum "github.com/qilin/crm-api/internal/domain/enum/game"
@@ -81,7 +83,7 @@ type reqUpsert struct {
 	// example: 2020-01-02T00:00:00Z
 	ReleaseDate *time.Time `json:"release_date"`
 
-	// example: [{"url": "https://www.facebook.com/AshOfGods/"},{"url":"https://www.reddit.com/r/ashofgods/"}]
+	// example: [{"type": "facebook", "url": "https://www.facebook.com/AshOfGods/"},{"type": "reddit", "url":"https://www.reddit.com/r/ashofgods/"}]
 	SocialLinks *[]socialLink `json:"social_links"`
 
 	// example: [{"language": "eng", "interface": true, "audio": true, "subtitles": true}]
@@ -204,7 +206,7 @@ func convertSocialLinksToServiceSocialLinks(links *[]socialLink) *[]service.Soci
 	}
 	list := make([]service.SocialLink, len(*links))
 	for i, item := range *links {
-		list[i] = service.SocialLink{URL: item.URL}
+		list[i] = service.SocialLink{Type: game_social_link.NewTypeByString(item.Type), URL: item.URL}
 	}
 	return &list
 }

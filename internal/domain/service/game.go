@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/qilin/crm-api/internal/domain/enum/game_social_link"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game"
@@ -156,7 +158,8 @@ func (d UpdateGameData) Validate() error {
 }
 
 type SocialLink struct {
-	URL string
+	Type game_social_link.Type
+	URL  string
 }
 
 func (d SocialLink) Validate() error {
