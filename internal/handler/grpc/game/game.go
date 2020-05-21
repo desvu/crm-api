@@ -162,7 +162,7 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		result.Reviews = append(result.Reviews, &proto.Review{
 			PressName: item.PressName,
 			Link:      item.Link,
-			Score:     item.Score,
+			Score:     uint32(item.Score),
 			Quote:     item.Quote,
 		})
 	}

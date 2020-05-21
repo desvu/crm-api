@@ -92,7 +92,7 @@ type reqUpsert struct {
 	// example: [{"agency": "CERO", "rating": "A", "display_online_notice": true, "show_age_restrict": true}]
 	Rating *[]rating `json:"rating"`
 
-	// example: [{ "press_name": "IGN", "link": "https://www.ign.com/articles/2013/09/16/grand-theft-auto-v-review", "score": "10/10", "quote": "Grand Theft Auto V is not only a preposterously enjoyable video game, but also an intelligent and sharp-tongued satire of contemporary America." }]
+	// example: [{ "press_name": "IGN", "link": "https://www.ign.com/articles/2013/09/16/grand-theft-auto-v-review", "score": 9, "quote": "Grand Theft Auto V is not only a preposterously enjoyable video game, but also an intelligent and sharp-tongued satire of contemporary America." }]
 	Review *[]review `json:"review"`
 
 	// example: [{"platform": "windows", "minimal": {"cpu": "i5", "gpu": "GTC 1050", "disk_space": 6500, "ram": 6000}, "recommended": {"cpu": "i7", "gpu": "GTC 1080", "disk_space": 6500, "ram": 8000}}]

@@ -9,7 +9,7 @@ type model struct {
 	GameRevisionID uint   `pg:"game_revision_id"`
 	PressName      string `pg:"press_name"`
 	Link           string `pg:"link"`
-	Score          string `pg:"score"`
+	Score          uint   `pg:"score"`
 	Quote          string `pg:"quote"`
 
 	tableName struct{} `pg:"game_revision_reviews"`
