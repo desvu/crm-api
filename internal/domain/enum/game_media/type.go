@@ -19,7 +19,7 @@ func NewType(t uint) Type {
 			Name:           "wideSlider",
 			IsNeedResize:   true,
 			ResultWidth:    1064,
-			ResultHeight:   560,
+			ResultHeight:   599,
 			IsNeedValidate: true,
 			AspectWidth:    16,
 			AspectHeight:   9,
