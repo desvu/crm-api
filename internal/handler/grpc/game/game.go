@@ -132,6 +132,7 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		}
 		if item.Minimal != nil {
 			r.Minimal = &proto.RequirementsSet{
+				OS:        item.Minimal.OS,
 				CPU:       item.Minimal.CPU,
 				GPU:       item.Minimal.GPU,
 				DiskSpace: uint32(item.Minimal.DiskSpace),
@@ -140,6 +141,7 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		}
 		if item.Recommended != nil {
 			r.Recommended = &proto.RequirementsSet{
+				OS:        item.Recommended.OS,
 				CPU:       item.Recommended.CPU,
 				GPU:       item.Recommended.GPU,
 				DiskSpace: uint32(item.Recommended.DiskSpace),

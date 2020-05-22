@@ -103,13 +103,14 @@ type systemRequirements struct {
 	// required: true
 	// example: windows
 	Platform string `json:"platform"`
-	// example: {"cpu": "i5", "gpu": "GTC 1050", "disk_space": 6500, "ram": 6000}
+	// example: {"os": "Windows 7/8 64-bit", "cpu": "i5", "gpu": "GTC 1050", "disk_space": 6500, "ram": 6000}
 	Minimal *requirementsSet `json:"minimal,omitempty"`
-	// example: {"cpu": "i7", "gpu": "GTC 1080", "disk_space": 6500, "ram": 8000}
+	// example: {"os": "Windows 10 64-bit", "cpu": "i7", "gpu": "GTC 1080", "disk_space": 6500, "ram": 8000}
 	Recommended *requirementsSet `json:"recommended,omitempty"`
 }
 
 type requirementsSet struct {
+	OS        string `json:"os"`
 	CPU       string `json:"cpu"`
 	GPU       string `json:"gpu"`
 	DiskSpace uint   `json:"disk_space"`
@@ -176,6 +177,7 @@ func (h Handler) view(i *entity.GameEx) game {
 		}
 		if r.Minimal != nil {
 			set.Minimal = &requirementsSet{
+				OS:        r.Minimal.OS,
 				CPU:       r.Minimal.CPU,
 				GPU:       r.Minimal.GPU,
 				DiskSpace: r.Minimal.DiskSpace,
@@ -184,6 +186,7 @@ func (h Handler) view(i *entity.GameEx) game {
 		}
 		if r.Recommended != nil {
 			set.Recommended = &requirementsSet{
+				OS:        r.Minimal.OS,
 				CPU:       r.Recommended.CPU,
 				GPU:       r.Recommended.GPU,
 				DiskSpace: r.Recommended.DiskSpace,
