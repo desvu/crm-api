@@ -52,6 +52,7 @@ message Game {
     repeated Media media = 20;
     repeated Review reviews = 21;
     uint32 playTime = 22;
+    string releaseDate = 23;
 }
 
 message Media {
@@ -96,6 +97,7 @@ message RequirementsSet {
     string GPU = 2;
     uint32 DiskSpace = 3;
     uint32 RAM = 4;
+    string OS = 5;
 }
 
 message Localization {
