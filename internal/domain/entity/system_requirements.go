@@ -9,6 +9,7 @@ type SystemRequirements struct {
 }
 
 type RequirementsSet struct {
+	OS        string
 	CPU       string
 	GPU       string
 	DiskSpace uint

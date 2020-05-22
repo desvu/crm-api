@@ -82,12 +82,13 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		Slug:        game.Slug,
 		Type:        game.Type.String(),
 		RevisionID:  uint64(game.Revision.ID),
+		PlayTime:    uint32(game.Revision.PlayTime),
+		Platforms:   game.Revision.Platforms.Strings(),
+		ReleaseDate: game.Revision.ReleaseDate.String(),
 		Summary:     game.Revision.Summary,
 		Description: game.Revision.Description,
 		License:     game.Revision.License,
-		Platforms:   game.Revision.Platforms.Strings(),
 		Trailer:     game.Revision.Trailer,
-		PlayTime:    uint32(game.Revision.PlayTime),
 	}
 
 	for _, item := range game.Revision.Tags {
@@ -155,6 +156,7 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		}
 		if item.Minimal != nil {
 			r.Minimal = &proto.RequirementsSet{
+				OS:        item.Minimal.OS,
 				CPU:       item.Minimal.CPU,
 				GPU:       item.Minimal.GPU,
 				DiskSpace: uint32(item.Minimal.DiskSpace),
@@ -163,6 +165,7 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		}
 		if item.Recommended != nil {
 			r.Recommended = &proto.RequirementsSet{
+				OS:        item.Recommended.OS,
 				CPU:       item.Recommended.CPU,
 				GPU:       item.Recommended.GPU,
 				DiskSpace: uint32(item.Recommended.DiskSpace),
@@ -186,7 +189,7 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 		result.Reviews = append(result.Reviews, &proto.Review{
 			PressName: item.PressName,
 			Link:      item.Link,
-			Score:     item.Score,
+			Score:     uint32(item.Score),
 			Quote:     item.Quote,
 		})
 	}

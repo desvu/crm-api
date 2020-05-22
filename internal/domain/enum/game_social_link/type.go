@@ -3,14 +3,14 @@ package game_social_link
 type Type uint8
 
 const (
-	TypeUndefined Type = 1
-	TypeTwitch    Type = 2
-	TypeFacebook  Type = 3
-	TypeYoutube   Type = 4
-	TypeTwitter   Type = 5
-	TypeDiscord   Type = 6
-	TypeReddit    Type = 7
-	TypeVk        Type = 8
+	TypeUndefined Type = 0
+	TypeTwitch    Type = 1
+	TypeFacebook  Type = 2
+	TypeYoutube   Type = 3
+	TypeTwitter   Type = 4
+	TypeDiscord   Type = 5
+	TypeReddit    Type = 6
+	TypeVk        Type = 7
 )
 
 func NewType(v uint8) Type {

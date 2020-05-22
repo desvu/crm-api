@@ -2,6 +2,7 @@ package game_revision
 
 import (
 	"context"
+	"time"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game"
@@ -41,6 +42,12 @@ func (s *Service) Update(ctx context.Context, data *service.UpdateGameRevisionDa
 	}
 
 	if data.Status != nil {
+		if revision.Status == game_revision.StatusDraft || revision.Status == game_revision.StatusPublishing {
+			if *data.Status == game_revision.StatusPublished {
+				publishedAt := time.Now()
+				revision.PublishedAt = &publishedAt
+			}
+		}
 		revision.Status = *data.Status
 	}
 

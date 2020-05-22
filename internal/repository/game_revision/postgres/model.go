@@ -94,6 +94,7 @@ func newSystemRequirementsModel(i *[]entity.SystemRequirements) *[]SystemRequire
 		}
 		if item.Minimal != nil {
 			requirementsSet.Minimal = &RequirementsSetModel{
+				OS:        item.Minimal.OS,
 				CPU:       item.Minimal.CPU,
 				GPU:       item.Minimal.GPU,
 				DiskSpace: item.Minimal.DiskSpace,
@@ -102,6 +103,7 @@ func newSystemRequirementsModel(i *[]entity.SystemRequirements) *[]SystemRequire
 		}
 		if item.Recommended != nil {
 			requirementsSet.Recommended = &RequirementsSetModel{
+				OS:        item.Recommended.OS,
 				CPU:       item.Recommended.CPU,
 				GPU:       item.Recommended.GPU,
 				DiskSpace: item.Recommended.DiskSpace,
@@ -154,6 +156,7 @@ type SystemRequirements struct {
 }
 
 type RequirementsSetModel struct {
+	OS        string `json:"os"`
 	CPU       string `json:"cpu"`
 	GPU       string `json:"gpu"`
 	DiskSpace uint   `json:"disk_space"`
