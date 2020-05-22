@@ -5,6 +5,6 @@ type Review struct {
 	GameRevisionID uint
 	PressName      string
 	Link           string
-	Score          string
+	Score          uint
 	Quote          string
 }

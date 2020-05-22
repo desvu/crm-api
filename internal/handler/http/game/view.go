@@ -94,7 +94,8 @@ type review struct {
 	// required: true
 	Link string `json:"link"`
 	// required: true
-	Score string `json:"score"`
+	// example: 8
+	Score uint `json:"score"`
 	// required: true
 	Quote string `json:"quote"`
 }

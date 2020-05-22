@@ -122,6 +122,6 @@ message Rating {
 message Review {
     string PressName = 1;
     string Link = 2;
-    string Score = 3;
+    uint32 Score = 3;
     string Quote = 4;
 }
