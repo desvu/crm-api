@@ -20,7 +20,7 @@ type ReviewService interface {
 type ReviewData struct {
 	PressName string `validate:"required"`
 	Link      string `validate:"required"`
-	Score     uint   `validate:"required,lte=10"`
+	Score     uint   `validate:"required,lte=100"`
 	Quote     string `validate:"required"`
 }
 
