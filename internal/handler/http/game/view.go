@@ -93,8 +93,10 @@ type review struct {
 	PressName string `json:"press_name"`
 	// required: true
 	Link string `json:"link"`
+	// Review score in range 0-100
+	//
 	// required: true
-	// example: 8
+	// example: 90
 	Score uint `json:"score"`
 	// required: true
 	Quote string `json:"quote"`
