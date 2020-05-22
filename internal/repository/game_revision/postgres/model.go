@@ -124,6 +124,7 @@ func convertSystemRequirements(m *[]SystemRequirements) *[]entity.SystemRequirem
 		}
 		if item.Minimal != nil {
 			requirementsSet.Minimal = &entity.RequirementsSet{
+				OS:        item.Minimal.OS,
 				CPU:       item.Minimal.CPU,
 				GPU:       item.Minimal.GPU,
 				DiskSpace: item.Minimal.DiskSpace,
@@ -132,6 +133,7 @@ func convertSystemRequirements(m *[]SystemRequirements) *[]entity.SystemRequirem
 		}
 		if item.Recommended != nil {
 			requirementsSet.Recommended = &entity.RequirementsSet{
+				OS:        item.Recommended.OS,
 				CPU:       item.Recommended.CPU,
 				GPU:       item.Recommended.GPU,
 				DiskSpace: item.Recommended.DiskSpace,
