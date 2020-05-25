@@ -21,6 +21,7 @@ var (
 	// GameRevision service
 	GameRevisionNotFound                 = errors.NewService(errors.ErrNotFound, "game revision not found", "game_revision_not_found")
 	GameRevisionUniqueSystemRequirements = errors.NewService(errors.ErrValidation, "systemRequirements platform param must be unique", "game_revision_unique_system_requirements")
+	GameRevisionDraftAlreadyExist        = errors.NewService(errors.ErrAlreadyExist, "game revision draft already exist", "game_revision_draft_already_exist")
 
 	// GameStorePublish service
 	GameStorePublishNotFound = errors.NewService(errors.ErrNotFound, "game store publish not found", "game_store_publish_not_found")
