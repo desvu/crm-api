@@ -34,9 +34,8 @@ func (s *Service) create(ctx context.Context, game *entity.Game) (*entity.GameRe
 
 func (s *Service) createEmptyDraft(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error) {
 	newRevision := &entity.GameRevision{
-		GameID:             game.ID,
-		Status:             game_revision.StatusDraft,
-		SystemRequirements: []entity.SystemRequirements{},
+		GameID: game.ID,
+		Status: game_revision.StatusDraft,
 	}
 
 	if err := s.GameRevisionRepository.Create(ctx, newRevision); err != nil {
