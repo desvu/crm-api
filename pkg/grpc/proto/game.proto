@@ -10,6 +10,15 @@ service GameService {
 
     // GetByID returns latest published game by slug
     rpc GetByID(GetByIDRequest) returns (GameResponse) {}
+
+    // FindByTitle returns list of games found by title substring
+    rpc SearchByTitle(FindByTitleRequest) returns (SearchByTitleResponse) {}
+}
+
+message FindByTitleRequest {
+    string title = 1;
+    uint32 offset = 2;
+    uint32 limit = 3;
 }
 
 message GetBySlugRequest {
@@ -23,6 +32,10 @@ message GetByIDRequest {
 message Request {
     string gameID = 1;
     uint64 revisionID = 2;
+}
+
+message SearchByTitleResponse {
+    repeated Game games = 1;
 }
 
 message GameResponse {

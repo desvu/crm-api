@@ -140,3 +140,25 @@ func (r GameRepository) FindByFilter(ctx context.Context, data *repository.FindB
 
 	return entities, nil
 }
+
+func (r GameRepository) FindByTitleSubstring(ctx context.Context, data *repository.FindByTitleSubstringData) ([]entity.Game, error) {
+	var models []model
+
+	q := r.h.ModelContext(ctx, &models).Where("title ilike ?", "%"+data.Title+"%").
+		Limit(data.Limit)
+
+	if data.Offset != 0 {
+		q.Offset(data.Offset)
+	}
+
+	if err := q.Select(); err != nil {
+		return nil, errors.NewInternal(err)
+	}
+
+	entities := make([]entity.Game, len(models))
+	for i := range models {
+		entities[i] = *models[i].Convert()
+	}
+
+	return entities, nil
+}

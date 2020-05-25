@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/service"
 	"github.com/qilin/crm-api/pkg/errors/grpcerror"
 
 	"github.com/qilin/crm-api/pkg/grpc/proto"
@@ -49,6 +50,29 @@ func (h *Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Reque
 	}
 
 	return &proto.GameResponse{Game: result}, nil
+}
+
+func (h *Handler) SearchByTitle(ctx context.Context, request *proto.FindByTitleRequest) (*proto.SearchByTitleResponse, error) {
+	games, err := h.GameService.GetByTitleSubstring(ctx, service.GetByTitleSubstringData{
+		Title:  request.Title,
+		Limit:  uint(request.Limit),
+		Offset: uint(request.Offset),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	response := make([]*proto.Game, len(games))
+	for i, g := range games {
+		response[i], err = h.convertGame(&g)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &proto.SearchByTitleResponse{
+		Games: response,
+	}, nil
 }
 
 func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
