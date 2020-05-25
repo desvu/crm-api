@@ -188,6 +188,10 @@ func (r GameRevisionRatingRepository) FindByGameRevisionID(ctx context.Context, 
 }
 
 func (r GameRevisionRatingRepository) FindByGameRevisionIDAndAgency(ctx context.Context, gameRevisionID uint, agencies []uint8) ([]entity.Rating, error) {
+	if len(agencies) == 0 {
+		return nil, nil
+	}
+
 	var models []model
 
 	err := r.h.ModelContext(ctx, &models).

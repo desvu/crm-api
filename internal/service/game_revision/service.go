@@ -232,19 +232,7 @@ func (s *Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entit
 		return s.GameRevisionExRepository.FindByID(ctx, draftRevision.ID)
 	}
 
-	newRevision := &entity.GameRevision{
-		GameID:             game.ID,
-		Status:             game_revision.StatusDraft,
-		SystemRequirements: []entity.SystemRequirements{},
-	}
-
-	if err = s.GameRevisionRepository.Create(ctx, newRevision); err != nil {
-		return nil, err
-	}
-
-	return &entity.GameRevisionEx{
-		GameRevision: *newRevision,
-	}, nil
+	return s.create(ctx, game)
 }
 
 func (s *Service) IsGamesPublished(ctx context.Context, gameIDs []string) error {
