@@ -4,13 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/qilin/crm-api/pkg/transactor"
-
 	"github.com/go-pg/pg/v9"
 	"github.com/go-redis/redis/v7"
 	"github.com/qilin/crm-api/internal/config"
 	"github.com/qilin/crm-api/pkg/repository/handler/postgres"
 	"github.com/qilin/crm-api/pkg/repository/handler/sql"
+	"github.com/qilin/crm-api/pkg/transactor"
 )
 
 type Store struct {
@@ -58,7 +57,7 @@ func newPostgres(conf config.PostgresConf, transactionStore *transactor.Store) (
 		),
 	}
 
-	handler.Handler.GetConnection().AddQueryHook(dbLogger{})
+	//handler.Handler.GetConnection().AddQueryHook(dbLogger{})
 
 	return handler, nil
 }

@@ -225,23 +225,13 @@ func (r GameRevisionRepository) FindPublishedByGameIDs(ctx context.Context, game
 }
 
 func (r GameRevisionRepository) FindByFilter(ctx context.Context, filter *repository.FindByFilterGameRevisionData) ([]entity.GameRevision, error) {
-	if filter.GenreIDs != nil && len(*filter.GenreIDs) == 0 {
-		return nil, nil
-	}
+	isZeroResult := filter.Limit == 0 ||
+		len(filter.GenreIDs) == 0 ||
+		len(filter.FeatureIDs) == 0 ||
+		len(filter.Languages) == 0 ||
+		len(filter.Platforms) == 0
 
-	if filter.FeatureIDs != nil && len(*filter.FeatureIDs) == 0 {
-		return nil, nil
-	}
-
-	if filter.Languages != nil && len(*filter.Languages) == 0 {
-		return nil, nil
-	}
-
-	if filter.Platforms != nil && len(*filter.Platforms) == 0 {
-		return nil, nil
-	}
-
-	if filter.Limit == 0 {
+	if isZeroResult {
 		return nil, nil
 	}
 
@@ -256,14 +246,14 @@ func (r GameRevisionRepository) FindByFilter(ctx context.Context, filter *reposi
 		q.Where("model.status = ?", game_revision.StatusPublished.Value())
 	}
 
-	if filter.GenreIDs != nil {
+	if len(filter.GenreIDs) > 0 {
 		q.Join("join game_revision_genres on game_revision_genres.game_revision_id = model.id").
-			WhereIn("game_revision_genres.genre_id in (?)", *filter.GenreIDs)
+			WhereIn("game_revision_genres.genre_id in (?)", filter.GenreIDs)
 	}
 
-	if filter.FeatureIDs != nil {
+	if len(filter.FeatureIDs) > 0 {
 		q.Join("join game_revision_features on game_revision_features.game_revision_id = model.id").
-			WhereIn("game_revision_features.feature_id in (?)", *filter.FeatureIDs)
+			WhereIn("game_revision_features.feature_id in (?)", filter.FeatureIDs)
 	}
 
 	orderType := "desc"

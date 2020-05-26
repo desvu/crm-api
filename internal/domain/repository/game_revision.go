@@ -27,10 +27,10 @@ type GameRevisionRepository interface {
 
 type FindByFilterGameRevisionData struct {
 	OnlyPublished bool
-	GenreIDs      *[]uint
-	FeatureIDs    *[]uint
-	Languages     *[]string
-	Platforms     *[]game.Platform
+	GenreIDs      []uint
+	FeatureIDs    []uint
+	Languages     []string
+	Platforms     []game.Platform
 	OrderType     enum.SortOrderType
 	OrderBy       enum.SortOrderColumn
 	Limit         int

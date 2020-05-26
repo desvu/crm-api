@@ -200,10 +200,10 @@ func validateTrailer(fl validator.FieldLevel) bool {
 
 type GetByFilterGameData struct {
 	OnlyPublished bool
-	GenreIDs      *[]uint
-	FeatureIDs    *[]uint
-	Languages     *[]string
-	Platforms     *[]game.Platform
+	GenreIDs      []uint
+	FeatureIDs    []uint
+	Languages     []string
+	Platforms     []game.Platform
 	OrderType     enum.SortOrderType
 	OrderBy       enum.SortOrderColumn
 	Limit         int

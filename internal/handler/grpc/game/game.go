@@ -60,34 +60,32 @@ func (h *Handler) SearchByTitle(ctx context.Context, request *proto.FindByTitleR
 }
 
 func (h *Handler) GetByFilter(ctx context.Context, request *proto.GetByFilterRequest) (*proto.GamesResponse, error) {
-	var filterData service.GetByFilterGameData
+	filterData := &service.GetByFilterGameData{
+		Languages: request.Languages,
+	}
 
 	for _, genreID := range request.Genres {
-		var genres []uint
-		genres = append(genres, uint(genreID))
-		filterData.GenreIDs = &genres
+		filterData.GenreIDs = append(filterData.GenreIDs, uint(genreID))
 	}
 
 	for _, featureID := range request.Features {
-		var features []uint
-		features = append(features, uint(featureID))
-		filterData.FeatureIDs = &features
+		filterData.FeatureIDs = append(filterData.FeatureIDs, uint(featureID))
 	}
 
 	if len(request.Platforms) > 0 {
 		platforms := game.NewPlatformArrayByStrings(request.Platforms...).Items()
-		filterData.Platforms = &platforms
+		filterData.Platforms = platforms
 	}
 
 	if len(request.Languages) > 0 {
-		filterData.Languages = &request.Languages
+		filterData.Languages = request.Languages
 	}
 
 	if request.SortByReleaseDate {
 		filterData.OrderBy = enum.SortOrderColumnReleaseDate
 	}
 
-	games, err := h.GameService.GetExByFilter(ctx, &filterData)
+	games, err := h.GameService.GetExByFilter(ctx, filterData)
 	if err != nil {
 		return nil, grpcerror.New(err)
 	}
