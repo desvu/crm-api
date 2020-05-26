@@ -54,6 +54,7 @@ func New(params Params) *echo.Echo {
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
 
 	api := e.Group("/api/v1")
 
