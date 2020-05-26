@@ -6,11 +6,11 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/qilin/crm-api/internal/domain/enum/game_social_link"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/enum"
 	"github.com/qilin/crm-api/internal/domain/enum/game"
+	"github.com/qilin/crm-api/internal/domain/enum/game_social_link"
 	"github.com/qilin/crm-api/internal/domain/errors"
 )
 
@@ -25,7 +25,7 @@ type GameService interface {
 	GetByID(ctx context.Context, id string) (*entity.Game, error)
 	GetExByID(ctx context.Context, id string) (*entity.GameEx, error)
 	GetExByIDAndRevisionID(ctx context.Context, id string, revisionID uint) (*entity.GameEx, error)
-	GetExByFilter(ctx context.Context, data *GetByFilterGameDate) ([]entity.GameEx, error)
+	GetExByFilter(ctx context.Context, data *GetByFilterGameData) ([]entity.GameEx, error)
 
 	// GetExLastPublishedByID returns last published game by id
 	GetExLastPublishedByID(ctx context.Context, id string) (*entity.GameEx, error)
@@ -198,13 +198,20 @@ func validateTrailer(fl validator.FieldLevel) bool {
 	return match
 }
 
-type GetByFilterGameDate struct {
-	Limit  int
-	Offset int
+type GetByFilterGameData struct {
+	OnlyPublished bool
+	GenreIDs      []uint
+	FeatureIDs    []uint
+	Languages     []string
+	Platforms     []game.Platform
+	OrderType     enum.SortOrderType
+	OrderBy       enum.SortOrderColumn
+	Limit         int
+	Offset        int
 }
 
 type GetByTitleSubstringData struct {
 	Title  string
-	Limit  uint
-	Offset uint
+	Limit  int
+	Offset int
 }

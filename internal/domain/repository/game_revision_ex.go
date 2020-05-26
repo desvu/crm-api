@@ -11,4 +11,5 @@ type GameRevisionExRepository interface {
 	FindLastByGameIDs(ctx context.Context, gameIDs []string) ([]entity.GameRevisionEx, error)
 	FindByIDAndGameID(ctx context.Context, id uint, gameID string) (*entity.GameRevisionEx, error)
 	FindLastPublishedByGameID(ctx context.Context, gameID string) (*entity.GameRevisionEx, error)
+	FindByFilter(ctx context.Context, filter *FindByFilterGameRevisionData) ([]entity.GameRevisionEx, error)
 }

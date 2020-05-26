@@ -3,10 +3,12 @@ package game
 import (
 	"context"
 
+	"github.com/qilin/crm-api/internal/domain/enum/enum"
+
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/game"
 	"github.com/qilin/crm-api/internal/domain/service"
 	"github.com/qilin/crm-api/pkg/errors/grpcerror"
-
 	"github.com/qilin/crm-api/pkg/grpc/proto"
 )
 
@@ -38,41 +40,62 @@ func (h *Handler) GetByID(ctx context.Context, request *proto.GetByIDRequest) (*
 	return &proto.GameResponse{Game: result}, nil
 }
 
-func (h *Handler) GetByIDAndRevisionID(ctx context.Context, request *proto.Request) (*proto.GameResponse, error) {
-	game, err := h.GameService.GetExByIDAndRevisionID(ctx, request.GameID, uint(request.RevisionID))
-	if err != nil {
-		return nil, grpcerror.New(err)
-	}
-
-	result, err := h.convertGame(game)
-	if err != nil {
-		return nil, grpcerror.New(err)
-	}
-
-	return &proto.GameResponse{Game: result}, nil
-}
-
-func (h *Handler) SearchByTitle(ctx context.Context, request *proto.FindByTitleRequest) (*proto.SearchByTitleResponse, error) {
+func (h *Handler) SearchByTitle(ctx context.Context, request *proto.FindByTitleRequest) (*proto.GamesResponse, error) {
 	games, err := h.GameService.GetByTitleSubstring(ctx, service.GetByTitleSubstringData{
 		Title:  request.Title,
-		Limit:  uint(request.Limit),
-		Offset: uint(request.Offset),
+		Limit:  int(request.Limit),
+		Offset: int(request.Offset),
 	})
+
 	if err != nil {
 		return nil, err
 	}
 
-	response := make([]*proto.Game, len(games))
-	for i, g := range games {
-		response[i], err = h.convertGame(&g)
-		if err != nil {
-			return nil, err
-		}
+	result, err := h.convertGames(games)
+	if err != nil {
+		return nil, grpcerror.New(err)
 	}
 
-	return &proto.SearchByTitleResponse{
-		Games: response,
-	}, nil
+	return &proto.GamesResponse{Games: result}, nil
+}
+
+func (h *Handler) GetByFilter(ctx context.Context, request *proto.GetByFilterRequest) (*proto.GamesResponse, error) {
+	filterData := &service.GetByFilterGameData{
+		Languages: request.Languages,
+	}
+
+	for _, genreID := range request.Genres {
+		filterData.GenreIDs = append(filterData.GenreIDs, uint(genreID))
+	}
+
+	for _, featureID := range request.Features {
+		filterData.FeatureIDs = append(filterData.FeatureIDs, uint(featureID))
+	}
+
+	if len(request.Platforms) > 0 {
+		platforms := game.NewPlatformArrayByStrings(request.Platforms...).Items()
+		filterData.Platforms = platforms
+	}
+
+	if len(request.Languages) > 0 {
+		filterData.Languages = request.Languages
+	}
+
+	if request.SortByReleaseDate {
+		filterData.OrderBy = enum.SortOrderColumnReleaseDate
+	}
+
+	games, err := h.GameService.GetExByFilter(ctx, filterData)
+	if err != nil {
+		return nil, grpcerror.New(err)
+	}
+
+	result, err := h.convertGames(games)
+	if err != nil {
+		return nil, grpcerror.New(err)
+	}
+
+	return &proto.GamesResponse{Games: result}, nil
 }
 
 func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
@@ -192,6 +215,20 @@ func (h *Handler) convertGame(game *entity.GameEx) (*proto.Game, error) {
 			Score:     uint32(item.Score),
 			Quote:     item.Quote,
 		})
+	}
+
+	return result, nil
+}
+
+func (h *Handler) convertGames(games []entity.GameEx) ([]*proto.Game, error) {
+	var result []*proto.Game
+	for _, item := range games {
+		g, err := h.convertGame(&item)
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, g)
 	}
 
 	return result, nil

@@ -8,6 +8,7 @@ import (
 	"github.com/qilin/crm-api/internal/domain/enum/game"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 	"github.com/qilin/crm-api/internal/domain/errors"
+	"github.com/qilin/crm-api/internal/domain/repository"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
@@ -233,6 +234,24 @@ func (s *Service) GetDraftByGame(ctx context.Context, game *entity.Game) (*entit
 	}
 
 	return s.create(ctx, game)
+}
+
+func (s *Service) GetByFilter(ctx context.Context, data *service.GetByFilterGameData) ([]entity.GameRevisionEx, error) {
+	if data.Limit == 0 {
+		data.Limit = 30
+	}
+
+	return s.GameRevisionExRepository.FindByFilter(ctx, &repository.FindByFilterGameRevisionData{
+		OnlyPublished: data.OnlyPublished,
+		GenreIDs:      data.GenreIDs,
+		FeatureIDs:    data.FeatureIDs,
+		Languages:     data.Languages,
+		Platforms:     data.Platforms,
+		OrderType:     data.OrderType,
+		OrderBy:       data.OrderBy,
+		Limit:         data.Limit,
+		Offset:        data.Offset,
+	})
 }
 
 func (s *Service) IsGamesPublished(ctx context.Context, gameIDs []string) error {

@@ -1,13 +1,15 @@
 package env
 
 import (
-	"github.com/qilin/crm-api/pkg/transactor"
+	"context"
+	"fmt"
 
 	"github.com/go-pg/pg/v9"
 	"github.com/go-redis/redis/v7"
 	"github.com/qilin/crm-api/internal/config"
 	"github.com/qilin/crm-api/pkg/repository/handler/postgres"
 	"github.com/qilin/crm-api/pkg/repository/handler/sql"
+	"github.com/qilin/crm-api/pkg/transactor"
 )
 
 type Store struct {
@@ -42,7 +44,7 @@ func newStore(conf config.Store, transactionStore *transactor.Store) (*Store, er
 }
 
 func newPostgres(conf config.PostgresConf, transactionStore *transactor.Store) (*Postgres, error) {
-	return &Postgres{
+	handler := &Postgres{
 		Handler: postgres.New(
 			postgres.Config{
 				Host:     conf.Host,
@@ -53,7 +55,11 @@ func newPostgres(conf config.PostgresConf, transactionStore *transactor.Store) (
 			},
 			transactionStore,
 		),
-	}, nil
+	}
+
+	//handler.Handler.GetConnection().AddQueryHook(dbLogger{})
+
+	return handler, nil
 }
 
 func newRedis(conf config.RedisConf) (*Redis, error) {
@@ -69,4 +75,15 @@ func newRedis(conf config.RedisConf) (*Redis, error) {
 	//}
 
 	return &Redis{nil}, nil
+}
+
+type dbLogger struct{}
+
+func (d dbLogger) BeforeQuery(c context.Context, q *pg.QueryEvent) (context.Context, error) {
+	return c, nil
+}
+
+func (d dbLogger) AfterQuery(c context.Context, q *pg.QueryEvent) error {
+	fmt.Println(q.FormattedQuery())
+	return nil
 }

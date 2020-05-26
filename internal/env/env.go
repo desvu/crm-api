@@ -3,11 +3,10 @@ package env
 import (
 	"context"
 
-	"github.com/qilin/crm-api/internal/env/app"
-
 	"github.com/isayme/go-amqp-reconnect/rabbitmq"
 	"github.com/pkg/errors"
 	"github.com/qilin/crm-api/internal/config"
+	"github.com/qilin/crm-api/internal/env/app"
 	"github.com/qilin/crm-api/internal/env/migration/postgres"
 	"github.com/qilin/crm-api/internal/env/storage"
 	"github.com/qilin/crm-api/pkg/transactor"

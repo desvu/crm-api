@@ -3,6 +3,9 @@ package repository
 import (
 	"context"
 
+	"github.com/qilin/crm-api/internal/domain/enum/enum"
+	"github.com/qilin/crm-api/internal/domain/enum/game"
+
 	"github.com/qilin/crm-api/internal/domain/entity"
 )
 
@@ -19,4 +22,17 @@ type GameRevisionRepository interface {
 	FindDraftByGameID(ctx context.Context, gameID string) (*entity.GameRevision, error)
 	FindLastPublishedByGameID(ctx context.Context, gameID string) (*entity.GameRevision, error)
 	FindPublishedByGameIDs(ctx context.Context, gameIDs []string) ([]string, error)
+	FindByFilter(ctx context.Context, filter *FindByFilterGameRevisionData) ([]entity.GameRevision, error)
+}
+
+type FindByFilterGameRevisionData struct {
+	OnlyPublished bool
+	GenreIDs      []uint
+	FeatureIDs    []uint
+	Languages     []string
+	Platforms     []game.Platform
+	OrderType     enum.SortOrderType
+	OrderBy       enum.SortOrderColumn
+	Limit         int
+	Offset        int
 }
