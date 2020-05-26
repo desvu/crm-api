@@ -2,10 +2,13 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-pg/pg/v9"
 	"github.com/qilin/crm-api/internal/domain/entity"
+	"github.com/qilin/crm-api/internal/domain/enum/enum"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
+	"github.com/qilin/crm-api/internal/domain/repository"
 	"github.com/qilin/crm-api/internal/env"
 	"github.com/qilin/crm-api/pkg/errors"
 	"github.com/qilin/crm-api/pkg/repository/handler/sql"
@@ -219,4 +222,74 @@ func (r GameRevisionRepository) FindPublishedByGameIDs(ctx context.Context, game
 	}
 
 	return res, nil
+}
+
+func (r GameRevisionRepository) FindByFilter(ctx context.Context, filter *repository.FindByFilterGameRevisionData) ([]entity.GameRevision, error) {
+	if filter.GenreIDs != nil && len(*filter.GenreIDs) == 0 {
+		return nil, nil
+	}
+
+	if filter.FeatureIDs != nil && len(*filter.FeatureIDs) == 0 {
+		return nil, nil
+	}
+
+	if filter.Languages != nil && len(*filter.Languages) == 0 {
+		return nil, nil
+	}
+
+	if filter.Platforms != nil && len(*filter.Platforms) == 0 {
+		return nil, nil
+	}
+
+	if filter.Limit == 0 {
+		return nil, nil
+	}
+
+	var models []model
+
+	q := r.h.ModelContext(ctx, &models).
+		ColumnExpr("model.*").
+		DistinctOn("model.game_id").
+		Join("join games on games.id = model.game_id")
+
+	if filter.OnlyPublished {
+		q.Where("model.status = ?", game_revision.StatusPublished.Value())
+	}
+
+	if filter.GenreIDs != nil {
+		q.Join("join game_revision_genres on game_revision_genres.game_revision_id = model.id").
+			WhereIn("game_revision_genres.genre_id in (?)", *filter.GenreIDs)
+	}
+
+	if filter.FeatureIDs != nil {
+		q.Join("join game_revision_features on game_revision_features.game_revision_id = model.id").
+			WhereIn("game_revision_features.feature_id in (?)", *filter.FeatureIDs)
+	}
+
+	orderType := "desc"
+	if filter.OrderType == enum.SortOrderAsc {
+		orderType = "asc"
+	}
+
+	switch filter.OrderBy {
+	case enum.SortOrderColumnReleaseDate:
+		q.Order("model.game_id", fmt.Sprintf("%s %s", "model.release_date", orderType))
+	case enum.SortOrderColumnName:
+		q.Order("model.game_id", fmt.Sprintf("%s %s", "games.title", orderType))
+	default:
+		q.Order("model.game_id", fmt.Sprintf("%s %s", "model.id", orderType))
+	}
+
+	err := q.Select()
+
+	if err != nil {
+		return nil, errors.NewInternal(err)
+	}
+
+	entities := make([]entity.GameRevision, len(models))
+	for i := range models {
+		entities[i] = *models[i].Convert()
+	}
+
+	return entities, nil
 }

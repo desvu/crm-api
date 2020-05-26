@@ -52,3 +52,7 @@ func (p PlatformArray) Strings() []string {
 
 	return source
 }
+
+func (p PlatformArray) Items() []Platform {
+	return p
+}

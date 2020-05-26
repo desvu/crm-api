@@ -3,12 +3,11 @@ package game
 import (
 	"context"
 
-	"github.com/qilin/crm-api/internal/domain/repository"
-
 	"github.com/google/uuid"
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 	"github.com/qilin/crm-api/internal/domain/errors"
+	"github.com/qilin/crm-api/internal/domain/repository"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
@@ -318,28 +317,29 @@ func (s *Service) GetExByIDAndRevisionID(ctx context.Context, id string, revisio
 	}, nil
 }
 
-func (s *Service) GetExByFilter(ctx context.Context, data *service.GetByFilterGameDate) ([]entity.GameEx, error) {
-	games, err := s.GameRepository.FindByFilter(ctx, &repository.FindByFilterGameDate{
-		Limit:  data.Limit,
-		Offset: data.Offset,
-	})
+func (s *Service) GetExByFilter(ctx context.Context, data *service.GetByFilterGameData) ([]entity.GameEx, error) {
+	if data.Limit == 0 {
+		data.Limit = 30
+	}
+
+	revisions, err := s.GameRevisionService.GetByFilter(ctx, data)
 	if err != nil {
 		return nil, err
 	}
 
-	revisions, err := s.GameRevisionService.GetLastByGameIDs(ctx, entity.NewGameArray(games).IDs())
+	games, err := s.GameRepository.FindByIDs(ctx, entity.NewGameRevisionExArray(revisions).GameIDs())
 	if err != nil {
 		return nil, err
 	}
 
-	var gamesEx []entity.GameEx
-	for i := range games {
-		for j := range revisions {
-			if games[i].ID == revisions[j].GameID {
-				gamesEx = append(gamesEx, entity.GameEx{
-					Game:     games[i],
-					Revision: &revisions[j],
-				})
+	gamesEx := make([]entity.GameEx, len(revisions))
+	for i := range revisions {
+		for j := range games {
+			if games[j].ID == revisions[i].GameID {
+				gamesEx[i] = entity.GameEx{
+					Revision: &revisions[i],
+					Game:     games[j],
+				}
 			}
 		}
 	}
@@ -350,8 +350,8 @@ func (s *Service) GetExByFilter(ctx context.Context, data *service.GetByFilterGa
 func (s *Service) GetByTitleSubstring(ctx context.Context, data service.GetByTitleSubstringData) ([]entity.GameEx, error) {
 	games, err := s.GameRepository.FindByTitleSubstring(ctx, &repository.FindByTitleSubstringData{
 		Title:  data.Title,
-		Limit:  int(data.Limit),
-		Offset: int(data.Offset),
+		Limit:  data.Limit,
+		Offset: data.Offset,
 	})
 	if err != nil {
 		return nil, err

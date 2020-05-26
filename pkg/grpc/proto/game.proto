@@ -3,16 +3,17 @@ package proto;
 option go_package = "pkg/grpc/proto";
 
 service GameService {
-    rpc GetByIDAndRevisionID(Request) returns (GameResponse) {}
-
     // GetBySlug returns latest published game by slug
     rpc GetBySlug(GetBySlugRequest) returns (GameResponse) {}
 
     // GetByID returns latest published game by slug
     rpc GetByID(GetByIDRequest) returns (GameResponse) {}
 
+    // GetByFilter returns latest published games by filter
+    rpc GetByFilter(GetByFilterRequest) returns (GamesResponse) {}
+
     // FindByTitle returns list of games found by title substring
-    rpc SearchByTitle(FindByTitleRequest) returns (SearchByTitleResponse) {}
+    rpc SearchByTitle(FindByTitleRequest) returns (GamesResponse) {}
 }
 
 message FindByTitleRequest {
@@ -29,17 +30,21 @@ message GetByIDRequest {
     string gameID = 1;
 }
 
-message Request {
-    string gameID = 1;
-    uint64 revisionID = 2;
-}
-
-message SearchByTitleResponse {
-    repeated Game games = 1;
+message GetByFilterRequest {
+    repeated uint64 genres = 1;
+    repeated string platforms = 2;
+    repeated uint64 features = 3;
+    repeated string languages = 4;
+    bool sortByReleaseDate = 5;
+    bool sortByBestSales = 6;
 }
 
 message GameResponse {
     Game game = 1;
+}
+
+message GamesResponse {
+    repeated Game games = 1;
 }
 
 message Game {

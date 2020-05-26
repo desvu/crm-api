@@ -119,7 +119,7 @@ func (r GameRepository) FindByIDs(ctx context.Context, ids []string) ([]entity.G
 	return entities, nil
 }
 
-func (r GameRepository) FindByFilter(ctx context.Context, data *repository.FindByFilterGameDate) ([]entity.Game, error) {
+func (r GameRepository) FindByFilter(ctx context.Context, data *repository.FindByFilterGameData) ([]entity.Game, error) {
 	var models []model
 
 	q := r.h.ModelContext(ctx, &models).

@@ -66,6 +66,19 @@ func (r GameExRepository) FindLastByGameIDs(ctx context.Context, gameIDs []strin
 	return r.fetchRows(ctx, games)
 }
 
+func (r GameExRepository) FindByFilter(ctx context.Context, filter *repository.FindByFilterGameRevisionData) ([]entity.GameRevisionEx, error) {
+	games, err := r.GameRevisionRepository.FindByFilter(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(games) == 0 {
+		return nil, nil
+	}
+
+	return r.fetchRows(ctx, games)
+}
+
 func (r GameExRepository) FindLastPublishedByGameID(ctx context.Context, gameID string) (*entity.GameRevisionEx, error) {
 	game, err := r.GameRevisionRepository.FindLastPublishedByGameID(ctx, gameID)
 	if err != nil {

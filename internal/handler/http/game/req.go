@@ -230,13 +230,13 @@ type reqGetByFilter struct {
 	Offset int `query:"offset"`
 }
 
-func convertGetByFilterRequest(c echo.Context) (*service.GetByFilterGameDate, error) {
+func convertGetByFilterRequest(c echo.Context) (*service.GetByFilterGameData, error) {
 	req := new(reqGetByFilter)
 	if err := c.Bind(req); err != nil {
 		return nil, err
 	}
 
-	return &service.GetByFilterGameDate{
+	return &service.GetByFilterGameData{
 		Limit:  req.Limit,
 		Offset: req.Offset,
 	}, nil
