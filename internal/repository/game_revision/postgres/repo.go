@@ -225,12 +225,12 @@ func (r GameRevisionRepository) FindPublishedByGameIDs(ctx context.Context, game
 }
 
 func (r GameRevisionRepository) FindByFilter(ctx context.Context, filter *repository.FindByFilterGameRevisionData) ([]entity.GameRevision, error) {
-	isZeroResult := filter.Limit == 0 &&
-		len(filter.GenreIDs) == 0 &&
-		len(filter.FeatureIDs) == 0 &&
-		len(filter.Languages) == 0 &&
-		len(filter.Platforms) == 0 &&
-		len(filter.Title) == 0
+	isZeroResult := filter.Limit == 0 ||
+		(len(filter.GenreIDs) == 0 &&
+			len(filter.FeatureIDs) == 0 &&
+			len(filter.Languages) == 0 &&
+			len(filter.Platforms) == 0 &&
+			len(filter.Title) == 0)
 
 	if isZeroResult {
 		return nil, nil
