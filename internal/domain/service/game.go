@@ -199,6 +199,7 @@ func validateTrailer(fl validator.FieldLevel) bool {
 }
 
 type GetByFilterGameData struct {
+	Title         string
 	OnlyPublished bool
 	GenreIDs      []uint
 	FeatureIDs    []uint

@@ -225,11 +225,12 @@ func (r GameRevisionRepository) FindPublishedByGameIDs(ctx context.Context, game
 }
 
 func (r GameRevisionRepository) FindByFilter(ctx context.Context, filter *repository.FindByFilterGameRevisionData) ([]entity.GameRevision, error) {
-	isZeroResult := filter.Limit == 0 ||
-		len(filter.GenreIDs) == 0 ||
-		len(filter.FeatureIDs) == 0 ||
-		len(filter.Languages) == 0 ||
-		len(filter.Platforms) == 0
+	isZeroResult := filter.Limit == 0 &&
+		len(filter.GenreIDs) == 0 &&
+		len(filter.FeatureIDs) == 0 &&
+		len(filter.Languages) == 0 &&
+		len(filter.Platforms) == 0 &&
+		len(filter.Title) == 0
 
 	if isZeroResult {
 		return nil, nil
@@ -241,6 +242,10 @@ func (r GameRevisionRepository) FindByFilter(ctx context.Context, filter *reposi
 		ColumnExpr("model.*").
 		DistinctOn("model.game_id").
 		Join("join games on games.id = model.game_id")
+
+	if len(filter.Title) != 0 {
+		q.Where("games.title ilike ?", "%"+filter.Title+"%")
+	}
 
 	if filter.OnlyPublished {
 		q.Where("model.status = ?", game_revision.StatusPublished.Value())
@@ -270,7 +275,7 @@ func (r GameRevisionRepository) FindByFilter(ctx context.Context, filter *reposi
 		q.Order("model.game_id", fmt.Sprintf("%s %s", "model.id", orderType))
 	}
 
-	err := q.Select()
+	err := q.Limit(filter.Limit).Offset(filter.Offset).Select()
 
 	if err != nil {
 		return nil, errors.NewInternal(err)

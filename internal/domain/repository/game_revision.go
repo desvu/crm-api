@@ -27,6 +27,7 @@ type GameRevisionRepository interface {
 
 type FindByFilterGameRevisionData struct {
 	OnlyPublished bool
+	Title         string
 	GenreIDs      []uint
 	FeatureIDs    []uint
 	Languages     []string
