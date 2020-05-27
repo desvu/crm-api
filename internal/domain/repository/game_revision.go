@@ -23,6 +23,7 @@ type GameRevisionRepository interface {
 	FindLastPublishedByGameID(ctx context.Context, gameID string) (*entity.GameRevision, error)
 	FindPublishedByGameIDs(ctx context.Context, gameIDs []string) ([]string, error)
 	FindByFilter(ctx context.Context, filter *FindByFilterGameRevisionData) ([]entity.GameRevision, error)
+	CountByFilter(ctx context.Context, filter *FindByFilterGameRevisionData) (int, error)
 }
 
 type FindByFilterGameRevisionData struct {

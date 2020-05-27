@@ -212,7 +212,7 @@ type gameList struct {
 	Pagination pagination `json:"pagination"`
 }
 
-func (h Handler) viewArray(items []entity.GameEx) gameList {
+func (h Handler) viewArray(items []entity.GameEx, totalCount int) gameList {
 	var games = make([]game, len(items))
 	for i := range items {
 		games[i] = h.view(&items[i])
@@ -221,7 +221,7 @@ func (h Handler) viewArray(items []entity.GameEx) gameList {
 	return gameList{
 		Games: games,
 		Pagination: pagination{
-			Total: 0,
+			Total: totalCount,
 		},
 	}
 }

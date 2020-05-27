@@ -35,6 +35,9 @@ type GameService interface {
 
 	// FindByTitle returns games found by title substring
 	GetByTitleSubstring(ctx context.Context, data GetByTitleSubstringData) ([]entity.GameEx, error)
+
+	// GetCountByFilter returns count games founded by filter
+	GetCountByFilter(ctx context.Context, data *GetByFilterGameData) (int, error)
 }
 
 type CommonGameData struct {

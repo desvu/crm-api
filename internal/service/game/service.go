@@ -347,6 +347,10 @@ func (s *Service) GetExByFilter(ctx context.Context, data *service.GetByFilterGa
 	return gamesEx, nil
 }
 
+func (s *Service) GetCountByFilter(ctx context.Context, data *service.GetByFilterGameData) (int, error) {
+	return s.GameRevisionService.GetCountByFilter(ctx, data)
+}
+
 func (s *Service) GetByTitleSubstring(ctx context.Context, data service.GetByTitleSubstringData) ([]entity.GameEx, error) {
 	games, err := s.GameRepository.FindByTitleSubstring(ctx, &repository.FindByTitleSubstringData{
 		Title:  data.Title,

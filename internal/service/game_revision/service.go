@@ -254,6 +254,16 @@ func (s *Service) GetByFilter(ctx context.Context, data *service.GetByFilterGame
 	})
 }
 
+func (s *Service) GetCountByFilter(ctx context.Context, data *service.GetByFilterGameData) (int, error) {
+	return s.GameRevisionRepository.CountByFilter(ctx, &repository.FindByFilterGameRevisionData{
+		OnlyPublished: data.OnlyPublished,
+		GenreIDs:      data.GenreIDs,
+		FeatureIDs:    data.FeatureIDs,
+		Languages:     data.Languages,
+		Platforms:     data.Platforms,
+	})
+}
+
 func (s *Service) IsGamesPublished(ctx context.Context, gameIDs []string) error {
 	res, err := s.GameRevisionRepository.FindPublishedByGameIDs(ctx, gameIDs)
 	if err != nil {

@@ -277,3 +277,34 @@ func (r GameRevisionRepository) FindByFilter(ctx context.Context, filter *reposi
 
 	return entities, nil
 }
+
+func (r GameRevisionRepository) CountByFilter(ctx context.Context, filter *repository.FindByFilterGameRevisionData) (int, error) {
+	var models []model
+
+	q := r.h.ModelContext(ctx, &models).
+		ColumnExpr("model.*").
+		DistinctOn("model.game_id").
+		Join("join games on games.id = model.game_id")
+
+	if filter.OnlyPublished {
+		q.Where("model.status = ?", game_revision.StatusPublished.Value())
+	}
+
+	if len(filter.GenreIDs) > 0 {
+		q.Join("join game_revision_genres on game_revision_genres.game_revision_id = model.id").
+			WhereIn("game_revision_genres.genre_id in (?)", filter.GenreIDs)
+	}
+
+	if len(filter.FeatureIDs) > 0 {
+		q.Join("join game_revision_features on game_revision_features.game_revision_id = model.id").
+			WhereIn("game_revision_features.feature_id in (?)", filter.FeatureIDs)
+	}
+
+	count, err := q.Count()
+
+	if err != nil {
+		return 0, errors.NewInternal(err)
+	}
+
+	return count, nil
+}
