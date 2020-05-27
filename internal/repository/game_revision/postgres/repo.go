@@ -264,7 +264,7 @@ func (r GameRevisionRepository) FindByFilter(ctx context.Context, filter *reposi
 		q.Order("model.game_id", fmt.Sprintf("%s %s", "model.id", orderType))
 	}
 
-	err := q.Select()
+	err := q.Limit(filter.Limit).Select()
 
 	if err != nil {
 		return nil, errors.NewInternal(err)

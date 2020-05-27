@@ -300,23 +300,6 @@ func (s *Service) GetExBySlug(ctx context.Context, slug string) (*entity.GameEx,
 	}, nil
 }
 
-func (s *Service) GetExByIDAndRevisionID(ctx context.Context, id string, revisionID uint) (*entity.GameEx, error) {
-	game, err := s.GetByID(ctx, id)
-	if err != nil {
-		return nil, err
-	}
-
-	revision, err := s.GameRevisionService.GetByIDAndGameID(ctx, revisionID, game.ID)
-	if err != nil {
-		return nil, err
-	}
-
-	return &entity.GameEx{
-		Game:     *game,
-		Revision: revision,
-	}, nil
-}
-
 func (s *Service) GetExByFilter(ctx context.Context, data *service.GetByFilterGameData) ([]entity.GameEx, error) {
 	if data.Limit == 0 {
 		data.Limit = 30
