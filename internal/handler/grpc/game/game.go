@@ -62,6 +62,8 @@ func (h *Handler) SearchByTitle(ctx context.Context, request *proto.FindByTitleR
 func (h *Handler) GetByFilter(ctx context.Context, request *proto.GetByFilterRequest) (*proto.GamesResponse, error) {
 	filterData := &service.GetByFilterGameData{
 		Languages: request.Languages,
+		Limit:     int(request.Limit),
+		Offset:    int(request.Offset),
 	}
 
 	for _, genreID := range request.Genres {

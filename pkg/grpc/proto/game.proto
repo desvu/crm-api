@@ -37,6 +37,8 @@ message GetByFilterRequest {
     repeated string languages = 4;
     bool sortByReleaseDate = 5;
     bool sortByBestSales = 6;
+    uint32 offset = 7;
+    uint32 limit = 8;
 }
 
 message GameResponse {
