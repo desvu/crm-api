@@ -211,9 +211,3 @@ type GetByFilterGameData struct {
 	Limit         int
 	Offset        int
 }
-
-type GetByTitleSubstringData struct {
-	Title  string
-	Limit  int
-	Offset int
-}
