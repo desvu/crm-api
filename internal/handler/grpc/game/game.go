@@ -42,10 +42,11 @@ func (h *Handler) GetByID(ctx context.Context, request *proto.GetByIDRequest) (*
 
 func (h *Handler) GetByFilter(ctx context.Context, request *proto.GetByFilterRequest) (*proto.GamesResponse, error) {
 	filterData := &service.GetByFilterGameData{
-		Title:     request.Title,
-		Languages: request.Languages,
-		Limit:     int(request.Limit),
-		Offset:    int(request.Offset),
+		Title:         request.Title,
+		Languages:     request.Languages,
+		OnlyPublished: request.OnlyPublished,
+		Limit:         int(request.Limit),
+		Offset:        int(request.Offset),
 	}
 
 	for _, genreID := range request.Genres {
