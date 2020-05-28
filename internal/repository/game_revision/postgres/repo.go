@@ -290,6 +290,10 @@ func (r GameRevisionRepository) CountByFilter(ctx context.Context, filter *repos
 		DistinctOn("model.game_id").
 		Join("join games on games.id = model.game_id")
 
+	if len(filter.Title) != 0 {
+		q.Where("games.title ilike ?", "%"+filter.Title+"%")
+	}
+
 	if filter.OnlyPublished {
 		q.Where("model.status = ?", game_revision.StatusPublished.Value())
 	}

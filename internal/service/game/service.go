@@ -7,7 +7,6 @@ import (
 	"github.com/qilin/crm-api/internal/domain/entity"
 	"github.com/qilin/crm-api/internal/domain/enum/game_revision"
 	"github.com/qilin/crm-api/internal/domain/errors"
-	"github.com/qilin/crm-api/internal/domain/repository"
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
@@ -332,36 +331,6 @@ func (s *Service) GetExByFilter(ctx context.Context, data *service.GetByFilterGa
 
 func (s *Service) GetCountByFilter(ctx context.Context, data *service.GetByFilterGameData) (int, error) {
 	return s.GameRevisionService.GetCountByFilter(ctx, data)
-}
-
-func (s *Service) GetByTitleSubstring(ctx context.Context, data service.GetByTitleSubstringData) ([]entity.GameEx, error) {
-	games, err := s.GameRepository.FindByTitleSubstring(ctx, &repository.FindByTitleSubstringData{
-		Title:  data.Title,
-		Limit:  data.Limit,
-		Offset: data.Offset,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	revisions, err := s.GameRevisionService.GetLastByGameIDs(ctx, entity.NewGameArray(games).IDs())
-	if err != nil {
-		return nil, err
-	}
-
-	var gamesEx []entity.GameEx
-	for i := range games {
-		for j := range revisions {
-			if games[i].ID == revisions[j].GameID {
-				gamesEx = append(gamesEx, entity.GameEx{
-					Game:     games[i],
-					Revision: &revisions[j],
-				})
-			}
-		}
-	}
-
-	return gamesEx, nil
 }
 
 func (s *Service) checkNoExistGameBySlug(ctx context.Context, slug string) error {
