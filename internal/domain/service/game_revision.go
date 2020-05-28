@@ -18,6 +18,7 @@ type GameRevisionService interface {
 	GetLastByGameIDs(ctx context.Context, gameIDs []string) ([]entity.GameRevisionEx, error)
 	GetLastPublishedByGame(ctx context.Context, game *entity.Game) (*entity.GameRevisionEx, error)
 	GetByFilter(ctx context.Context, data *GetByFilterGameData) ([]entity.GameRevisionEx, error)
+	GetCountByFilter(ctx context.Context, data *GetByFilterGameData) (int, error)
 	IsGamesPublished(ctx context.Context, ids []string) error
 }
 

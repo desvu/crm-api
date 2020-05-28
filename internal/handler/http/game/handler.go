@@ -26,7 +26,12 @@ func (h Handler) GetByFilter(c echo.Context) error {
 		return err
 	}
 
-	return response.New(c, h.viewArray(games))
+	totalCount, err := h.GameService.GetCountByFilter(c.Request().Context(), data)
+	if err != nil {
+		return err
+	}
+
+	return response.New(c, h.viewArray(games, totalCount))
 }
 
 // swagger:route GET /games/{id} games reqGetByID

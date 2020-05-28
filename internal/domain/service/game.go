@@ -24,8 +24,6 @@ type GameService interface {
 
 	GetByID(ctx context.Context, id string) (*entity.Game, error)
 	GetExByID(ctx context.Context, id string) (*entity.GameEx, error)
-	GetExByIDAndRevisionID(ctx context.Context, id string, revisionID uint) (*entity.GameEx, error)
-	GetExByFilter(ctx context.Context, data *GetByFilterGameData) ([]entity.GameEx, error)
 
 	// GetExLastPublishedByID returns last published game by id
 	GetExLastPublishedByID(ctx context.Context, id string) (*entity.GameEx, error)
@@ -35,6 +33,12 @@ type GameService interface {
 
 	// FindByTitle returns games found by title substring
 	GetByTitleSubstring(ctx context.Context, data GetByTitleSubstringData) ([]entity.GameEx, error)
+
+	// GetExByFilter returns games founded by filter
+	GetExByFilter(ctx context.Context, data *GetByFilterGameData) ([]entity.GameEx, error)
+
+	// GetCountByFilter returns count games founded by filter
+	GetCountByFilter(ctx context.Context, data *GetByFilterGameData) (int, error)
 }
 
 type CommonGameData struct {

@@ -29,8 +29,8 @@ message GetByFilterRequest {
     string title = 5;
     bool sortByReleaseDate = 6;
     bool sortByBestSales = 7;
-    uint64 limit = 8;
-    uint64 offset = 9;
+    uint32 offset = 8;
+    uint32 limit = 9;
 }
 
 message GameResponse {

@@ -57,7 +57,7 @@ func newPostgres(conf config.PostgresConf, transactionStore *transactor.Store) (
 		),
 	}
 
-	//handler.Handler.GetConnection().AddQueryHook(dbLogger{})
+	handler.Handler.GetConnection().AddQueryHook(dbLogger{})
 
 	return handler, nil
 }
