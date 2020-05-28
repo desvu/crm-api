@@ -11,15 +11,6 @@ service GameService {
 
     // GetByFilter returns latest published games by filter
     rpc GetByFilter(GetByFilterRequest) returns (GamesResponse) {}
-
-    // FindByTitle returns list of games found by title substring
-    rpc SearchByTitle(FindByTitleRequest) returns (GamesResponse) {}
-}
-
-message FindByTitleRequest {
-    string title = 1;
-    uint32 offset = 2;
-    uint32 limit = 3;
 }
 
 message GetBySlugRequest {
@@ -35,10 +26,11 @@ message GetByFilterRequest {
     repeated string platforms = 2;
     repeated uint64 features = 3;
     repeated string languages = 4;
-    bool sortByReleaseDate = 5;
-    bool sortByBestSales = 6;
-    uint32 offset = 7;
-    uint32 limit = 8;
+    string title = 5;
+    bool sortByReleaseDate = 6;
+    bool sortByBestSales = 7;
+    uint32 offset = 8;
+    uint32 limit = 9;
 }
 
 message GameResponse {

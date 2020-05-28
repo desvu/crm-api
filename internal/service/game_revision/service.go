@@ -242,6 +242,7 @@ func (s *Service) GetByFilter(ctx context.Context, data *service.GetByFilterGame
 	}
 
 	return s.GameRevisionExRepository.FindByFilter(ctx, &repository.FindByFilterGameRevisionData{
+		Title:         data.Title,
 		OnlyPublished: data.OnlyPublished,
 		GenreIDs:      data.GenreIDs,
 		FeatureIDs:    data.FeatureIDs,
@@ -256,6 +257,7 @@ func (s *Service) GetByFilter(ctx context.Context, data *service.GetByFilterGame
 
 func (s *Service) GetCountByFilter(ctx context.Context, data *service.GetByFilterGameData) (int, error) {
 	return s.GameRevisionRepository.CountByFilter(ctx, &repository.FindByFilterGameRevisionData{
+		Title:         data.Title,
 		OnlyPublished: data.OnlyPublished,
 		GenreIDs:      data.GenreIDs,
 		FeatureIDs:    data.FeatureIDs,

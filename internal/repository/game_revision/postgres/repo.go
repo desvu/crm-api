@@ -236,6 +236,10 @@ func (r GameRevisionRepository) FindByFilter(ctx context.Context, filter *reposi
 		DistinctOn("model.game_id").
 		Join("join games on games.id = model.game_id")
 
+	if len(filter.Title) != 0 {
+		q.Where("games.title ilike ?", "%"+filter.Title+"%")
+	}
+
 	if filter.OnlyPublished {
 		q.Where("model.status = ?", game_revision.StatusPublished.Value())
 	}
@@ -264,7 +268,7 @@ func (r GameRevisionRepository) FindByFilter(ctx context.Context, filter *reposi
 		q.Order("model.game_id", fmt.Sprintf("%s %s", "model.id", orderType))
 	}
 
-	err := q.Limit(filter.Limit).Select()
+	err := q.Limit(filter.Limit).Offset(filter.Offset).Select()
 
 	if err != nil {
 		return nil, errors.NewInternal(err)
@@ -285,6 +289,10 @@ func (r GameRevisionRepository) CountByFilter(ctx context.Context, filter *repos
 		ColumnExpr("model.*").
 		DistinctOn("model.game_id").
 		Join("join games on games.id = model.game_id")
+
+	if len(filter.Title) != 0 {
+		q.Where("games.title ilike ?", "%"+filter.Title+"%")
+	}
 
 	if filter.OnlyPublished {
 		q.Where("model.status = ?", game_revision.StatusPublished.Value())

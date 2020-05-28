@@ -31,9 +31,6 @@ type GameService interface {
 	// GetExBySlug returns last published game by slug
 	GetExBySlug(ctx context.Context, slug string) (*entity.GameEx, error)
 
-	// FindByTitle returns games found by title substring
-	GetByTitleSubstring(ctx context.Context, data GetByTitleSubstringData) ([]entity.GameEx, error)
-
 	// GetExByFilter returns games founded by filter
 	GetExByFilter(ctx context.Context, data *GetByFilterGameData) ([]entity.GameEx, error)
 
@@ -203,6 +200,7 @@ func validateTrailer(fl validator.FieldLevel) bool {
 }
 
 type GetByFilterGameData struct {
+	Title         string
 	OnlyPublished bool
 	GenreIDs      []uint
 	FeatureIDs    []uint
@@ -212,10 +210,4 @@ type GetByFilterGameData struct {
 	OrderBy       enum.SortOrderColumn
 	Limit         int
 	Offset        int
-}
-
-type GetByTitleSubstringData struct {
-	Title  string
-	Limit  int
-	Offset int
 }

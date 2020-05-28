@@ -40,27 +40,9 @@ func (h *Handler) GetByID(ctx context.Context, request *proto.GetByIDRequest) (*
 	return &proto.GameResponse{Game: result}, nil
 }
 
-func (h *Handler) SearchByTitle(ctx context.Context, request *proto.FindByTitleRequest) (*proto.GamesResponse, error) {
-	games, err := h.GameService.GetByTitleSubstring(ctx, service.GetByTitleSubstringData{
-		Title:  request.Title,
-		Limit:  int(request.Limit),
-		Offset: int(request.Offset),
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	result, err := h.convertGames(games)
-	if err != nil {
-		return nil, grpcerror.New(err)
-	}
-
-	return &proto.GamesResponse{Games: result}, nil
-}
-
 func (h *Handler) GetByFilter(ctx context.Context, request *proto.GetByFilterRequest) (*proto.GamesResponse, error) {
 	filterData := &service.GetByFilterGameData{
+		Title:     request.Title,
 		Languages: request.Languages,
 		Limit:     int(request.Limit),
 		Offset:    int(request.Offset),
