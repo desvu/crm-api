@@ -7,6 +7,7 @@ import (
 	"github.com/qilin/crm-api/internal/domain/service"
 )
 
+//swagger:parameters reqDocumentUpsert
 type reqUpsert struct {
 	ID       *uint  `json:"id"`
 	Text     string `json:"text"`
@@ -36,7 +37,7 @@ func convertUpsertRequest(c echo.Context) (*service.UpsertDocumentData, error) {
 	return data, nil
 }
 
-//swagger:parameters reqGetByFilter
+//swagger:parameters reqDocumentGetByFilter
 type reqGetByFilter struct {
 	// in: query
 	// example: true
@@ -64,7 +65,7 @@ func convertGetByFilterRequest(c echo.Context) (*service.GetByFilterDocumentData
 	}, nil
 }
 
-//swagger:parameters reqGetByID reqActivate
+//swagger:parameters reqDocumentGetByID reqDocumentActivate
 type reqByID struct {
 	// in: path
 	// required: true

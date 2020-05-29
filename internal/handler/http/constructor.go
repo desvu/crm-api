@@ -94,8 +94,9 @@ func New(params Params) *echo.Echo {
 	api.DELETE("/storefronts/:id", params.Storefronts.Delete)
 
 	// documents
-	api.GET("/documents", params.DocumentHandler.List)
+	api.GET("/documents", params.DocumentHandler.GetByFilter)
 	api.POST("/documents", params.DocumentHandler.Upsert)
+	api.GET("/documents/:id", params.DocumentHandler.GetByID)
 	api.POST("/documents/:id/activate", params.DocumentHandler.Activate)
 
 	return e
