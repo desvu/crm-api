@@ -2,6 +2,7 @@ package repository
 
 import (
 	"github.com/qilin/crm-api/internal/repository/developer"
+	"github.com/qilin/crm-api/internal/repository/document"
 	"github.com/qilin/crm-api/internal/repository/feature"
 	"github.com/qilin/crm-api/internal/repository/game"
 	"github.com/qilin/crm-api/internal/repository/game_media"
@@ -46,5 +47,6 @@ func New() fx.Option {
 		game_revision_localization.New,
 		game_revision_rating.New,
 		game_revision_review.New,
+		document.New,
 	)
 }

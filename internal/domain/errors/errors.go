@@ -66,6 +66,11 @@ var (
 
 	// Review service
 	ReviewMax3Available = errors.NewService(errors.ErrValidation, "maximum 3 reviews available", "maximum_3_reviews_available")
+
+	// Document service
+	DocumentNotFound            = errors.NewService(errors.ErrNotFound, "document not found", "document_not_found")
+	DocumentAlreadyActivated    = errors.NewService(errors.ErrValidation, "document already activated", "document_already_activated")
+	DocumentUnsupportedLanguage = errors.NewService(errors.ErrValidation, "unsupported document language", "document_unsupported_language")
 )
 
 func NewInternal(err error) errors.Error {

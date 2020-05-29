@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/qilin/crm-api/internal/service/developer"
+	"github.com/qilin/crm-api/internal/service/document"
 	"github.com/qilin/crm-api/internal/service/feature"
 	"github.com/qilin/crm-api/internal/service/game"
 	"github.com/qilin/crm-api/internal/service/game_media"
@@ -32,5 +33,6 @@ func New() fx.Option {
 		localization.New,
 		rating.New,
 		review.New,
+		document.New,
 	)
 }

@@ -20,6 +20,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/qilin/crm-api/internal/handler/http/developer"
+	"github.com/qilin/crm-api/internal/handler/http/document"
 	"github.com/qilin/crm-api/internal/handler/http/feature"
 	"github.com/qilin/crm-api/internal/handler/http/game"
 	"github.com/qilin/crm-api/internal/handler/http/game_media"
@@ -42,6 +43,7 @@ type Params struct {
 	TagHandler       tag.Handler
 	DeveloperHandler developer.Handler
 	PublisherHandler publisher.Handler
+	DocumentHandler  document.Handler
 }
 
 func New(params Params) *echo.Echo {
@@ -90,6 +92,11 @@ func New(params Params) *echo.Echo {
 	api.PUT("/storefronts/:id", params.Storefronts.Update)
 	api.POST("/storefronts/:id/activate", params.Storefronts.Activate)
 	api.DELETE("/storefronts/:id", params.Storefronts.Delete)
+
+	// documents
+	api.GET("/documents", params.DocumentHandler.List)
+	api.POST("/documents", params.DocumentHandler.Upsert)
+	api.POST("/documents/:id/activate", params.DocumentHandler.Activate)
 
 	return e
 }
