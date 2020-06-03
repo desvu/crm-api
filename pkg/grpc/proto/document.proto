@@ -1,0 +1,45 @@
+syntax = "proto3";
+package proto;
+option go_package = "pkg/grpc/proto";
+
+service DocumentService {
+    //
+    rpc AddDocument(AddDocumentRequest) returns (DocumentResponse) {}
+    // GetByID returns document by id
+    rpc GetByID(GetDocumentByIDRequest) returns (DocumentResponse) {}
+    // GetByFilter returns accepted user documents by filter
+    rpc GetByUserID(GetDocumentsByUserIDRequest) returns (DocumentsResponse) {}
+}
+
+message AddDocumentRequest {
+    string userID = 1;
+    uint64 docID = 2;
+}
+
+message GetDocumentByIDRequest {
+    uint64 documentID = 1;
+}
+
+message Document {
+    uint64 ID = 1;
+    string Title = 2;
+    string Text = 3;
+    string Reason = 4;
+    string Type = 5;
+    string Language = 6;
+    string Version = 7;
+}
+
+message DocumentResponse {
+    Document document = 1;
+}
+
+message DocumentsResponse {
+    repeated Document documents = 1;
+}
+
+message GetDocumentsByUserIDRequest {
+    string userID = 1;
+    uint32 limit = 2;
+    uint32 offset = 3;
+}

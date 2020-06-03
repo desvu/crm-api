@@ -15,6 +15,7 @@ import (
 	"github.com/qilin/crm-api/internal/service/review"
 	"github.com/qilin/crm-api/internal/service/storefront"
 	"github.com/qilin/crm-api/internal/service/tag"
+	"github.com/qilin/crm-api/internal/service/user"
 	"go.uber.org/fx"
 )
 
@@ -34,5 +35,6 @@ func New() fx.Option {
 		rating.New,
 		review.New,
 		document.New,
+		user.New,
 	)
 }

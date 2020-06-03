@@ -112,7 +112,7 @@ func (r DocumentRepository) FindByFilter(ctx context.Context, filter *repository
 	q := r.h.ModelContext(ctx, &models)
 
 	if filter.OnlyActivated {
-		// todo
+		q.Where("activated_at NOT NULL")
 	}
 
 	err := q.Limit(filter.Limit).Offset(filter.Offset).Select()

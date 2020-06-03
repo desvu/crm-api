@@ -22,6 +22,8 @@ import (
 	"github.com/qilin/crm-api/internal/repository/publisher"
 	"github.com/qilin/crm-api/internal/repository/storefront"
 	"github.com/qilin/crm-api/internal/repository/tag"
+	"github.com/qilin/crm-api/internal/repository/user"
+	"github.com/qilin/crm-api/internal/repository/user_document"
 	"go.uber.org/fx"
 )
 
@@ -48,5 +50,7 @@ func New() fx.Option {
 		game_revision_rating.New,
 		game_revision_review.New,
 		document.New,
+		user.New,
+		user_document.New,
 	)
 }

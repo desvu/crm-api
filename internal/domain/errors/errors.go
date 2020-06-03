@@ -71,6 +71,7 @@ var (
 	DocumentNotFound            = errors.NewService(errors.ErrNotFound, "document not found", "document_not_found")
 	DocumentAlreadyActivated    = errors.NewService(errors.ErrValidation, "document already activated", "document_already_activated")
 	DocumentUnsupportedLanguage = errors.NewService(errors.ErrValidation, "unsupported document language", "document_unsupported_language")
+	DocumentAlreadyAdded        = errors.NewService(errors.ErrValidation, "document already added", "document_already_added")
 )
 
 func NewInternal(err error) errors.Error {

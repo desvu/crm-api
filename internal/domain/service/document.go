@@ -17,12 +17,17 @@ type DocumentService interface {
 	Delete(ctx context.Context, id uint) error
 	Activate(ctx context.Context, id uint) error
 
+	AddDocumentToUser(ctx context.Context, doc *entity.Document, userID uint) error
+
 	GetByID(ctx context.Context, id uint) (*entity.Document, error)
 	GetExByID(ctx context.Context, id uint) (*entity.Document, error)
 
 	// GetExByFilter returns games founded by filter
 	GetExByFilter(ctx context.Context, data *GetByFilterDocumentData) ([]entity.Document, error)
 	GetCountByFilter(ctx context.Context, data *GetByFilterDocumentData) (int, error)
+
+	// GetUserDocuments returns list of documents added to user
+	GetUserDocuments(ctx context.Context, data *GetUserDocumentsData) ([]entity.Document, error)
 }
 
 type CommonDocumentData struct {
@@ -62,4 +67,11 @@ type GetByFilterDocumentData struct {
 	OrderType     enum.SortOrderType
 	Limit         int
 	Offset        int
+}
+
+type GetUserDocumentsData struct {
+	UserID    uint
+	OrderType enum.SortOrderType
+	Limit     uint
+	Offset    uint
 }

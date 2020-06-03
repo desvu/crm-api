@@ -116,6 +116,26 @@ func (s *Service) Activate(ctx context.Context, id uint) error {
 	return nil
 }
 
+func (s *Service) AddDocumentToUser(ctx context.Context, document *entity.Document, userID uint) error {
+	if document.ActivatedAt == nil {
+		return errors.DocumentNotFound
+	}
+
+	userDoc, err := s.UserDocumentRepository.FindByUserAndDocumentID(ctx, userID, document.ID)
+	if err != nil {
+		return err
+	}
+	if userDoc != nil {
+		return errors.DocumentAlreadyAdded
+	}
+
+	return s.UserDocumentRepository.Create(ctx, &entity.UserDocument{
+		UserID:     userID,
+		DocumentID: document.ID,
+		CreatedAt:  time.Now(),
+	})
+}
+
 func (s *Service) GetByID(ctx context.Context, id uint) (*entity.Document, error) {
 	doc, err := s.DocumentRepository.FindByID(ctx, id)
 	if err != nil {
@@ -152,4 +172,23 @@ func (s *Service) GetCountByFilter(ctx context.Context, data *service.GetByFilte
 		Limit:         data.Limit,
 		Offset:        data.Offset,
 	})
+}
+
+func (s *Service) GetUserDocuments(ctx context.Context, data *service.GetUserDocumentsData) ([]entity.Document, error) {
+	if data.Limit == 0 {
+		data.Limit = 10
+	}
+	if data.Limit > 1000 {
+		data.Limit = 1000
+	}
+	userDocs, err := s.UserDocumentRepository.FindByUserID(ctx, repository.FindUserDocumentsByUserIdData{
+		UserID: data.UserID,
+		Limit:  int(data.Limit),
+		Offset: int(data.Offset),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return s.DocumentRepository.FindByIDs(ctx, entity.NewUserDocumentArray(userDocs).DocumentIDs())
 }

@@ -1,4 +1,4 @@
-package document
+package user
 
 import (
 	"github.com/qilin/crm-api/internal/domain/repository"
@@ -9,11 +9,12 @@ import (
 type ServiceParams struct {
 	fx.In
 
+	UserRepository         repository.UserRepository
 	DocumentRepository     repository.DocumentRepository
 	UserDocumentRepository repository.UserDocumentRepository
 }
 
-func New(params ServiceParams) service.DocumentService {
+func New(params ServiceParams) service.UserService {
 	return &Service{
 		params,
 	}

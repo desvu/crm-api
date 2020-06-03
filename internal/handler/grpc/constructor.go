@@ -3,6 +3,7 @@ package grpc
 import (
 	"net"
 
+	"github.com/qilin/crm-api/internal/handler/grpc/document"
 	"github.com/qilin/crm-api/internal/handler/grpc/game"
 	"github.com/qilin/crm-api/internal/handler/grpc/storefront"
 	"github.com/qilin/crm-api/pkg/grpc/proto"
@@ -20,6 +21,7 @@ type Params struct {
 
 	GameHandler       *game.Handler
 	StorefrontHandler *storefront.Handler
+	DocumentHandler   *document.Handler
 }
 
 func New(p Params) (*Server, error) {
@@ -31,6 +33,7 @@ func New(p Params) (*Server, error) {
 	server := grpc.NewServer()
 	proto.RegisterGameServiceServer(server, p.GameHandler)
 	proto.RegisterStorefrontServiceServer(server, p.StorefrontHandler)
+	proto.RegisterDocumentServiceServer(server, p.DocumentHandler)
 
 	return &Server{
 		Server:   server,
