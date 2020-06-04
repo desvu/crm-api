@@ -51,13 +51,7 @@ func (app *App) Init() error {
 		app.fxOptions,
 		fx.NopLogger,
 
-		fx.Invoke(
-			func(http *echo.Echo, grpc *grpc.Server) (*App, error) {
-				app.http = http
-				app.grpc = grpc
-				return app, nil
-			},
-		),
+		fx.Populate(&app.http, &app.grpc),
 	)
 
 	err := fx.New(app.fxOptions).Start(context.Background())
